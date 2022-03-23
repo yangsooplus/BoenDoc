@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SignInActivity"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1 초 진 단"
+        android:textSize="24sp"
+        android:textColor="@color/skyblue"
+        android:fontFamily="@font/spoqahansansneomedium"
+        android:gravity="center"
+        android:layout_gravity="center"
+        android:layout_marginTop="130dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="번개닥터"
+        android:textSize="48sp"
+        android:textColor="@color/skyblue"
+        android:fontFamily="@font/spoqahansansneobold"
+        android:gravity="center"
+        android:layout_gravity="center"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="이메일"
+        android:textSize="14sp"
+        android:textColor="@color/black"
+        android:fontFamily="@font/spoqahansansneomedium"
+        android:layout_marginLeft="60dp"
+        android:layout_marginTop="40dp"/>
+
+    <EditText
+        android:id="@+id/edit_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="60dp"
+        android:layout_marginTop="5dp"
+        android:padding="5dp"
+        android:background="@color/lightgray"
+        android:hint="    이메일"
+        android:textSize="14sp"
+        android:fontFamily="@font/spoqahansansneolight"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="비밀번호"
+        android:textSize="14sp"
+        android:textColor="@color/black"
+        android:fontFamily="@font/spoqahansansneomedium"
+        android:layout_marginLeft="60dp"
+        android:layout_marginTop="10dp"/>
+
+    <EditText
+        android:id="@+id/edit_pw"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="60dp"
+        android:layout_marginTop="5dp"
+        android:padding="5dp"
+        android:background="@color/lightgray"
+        android:hint="    비밀번호"
+        android:password="true"
+        android:textSize="14sp"
+        android:fontFamily="@font/spoqahansansneolight"/>
+
+    <Button
+        android:id="@+id/btn_signin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="60dp"
+        android:layout_marginTop="80dp"
+        android:text="로그인"
+        android:textColor="@color/black"
+        android:gravity="center"/>
+
+    <Button
+        android:id="@+id/btn_signup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="60dp"
+        android:layout_marginTop="5dp"
+        android:text="회원가입"
+        android:textColor="@color/black"
+        android:backgroundTint="@color/yellow"
+        android:gravity="center"/>
+
+
+</LinearLayout>
