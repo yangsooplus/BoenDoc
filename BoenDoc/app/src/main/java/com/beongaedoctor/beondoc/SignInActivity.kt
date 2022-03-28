@@ -8,6 +8,10 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.beongaedoctor.beondoc.databinding.ActivitySignInBinding
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
 
 class SignInActivity : AppCompatActivity() {
 
@@ -17,11 +21,93 @@ class SignInActivity : AppCompatActivity() {
     // 매번 null 체크 하지 않도록 바인딩 변수 재선언
     private val binding get() = SIABinding!!
 
-
+    private lateinit var retrofit: Retrofit
+    private lateinit var loginService: LoginService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        //setContentView(R.layout.activity_sign_in)
+
+        //val id = "testid"
+        //val pw = "testpw"
+
+        //서버 연결
+        retrofit = RetrofitClass.getInstance()
+
+        /*
+        *
+        loginService = retrofit.create(LoginService::class.java)
+        loginService.requestLogin(id, pw).enqueue(object : Callback<Login>{
+            override fun onFailure(call: Call<Login>, t: Throwable) {
+                //실패할 경우 실행
+                println("실패")
+            }
+
+            override fun onResponse(call: Call<Login>, response: Response<Login>) {
+                //성공할 경우 실행
+                println(response.body())
+            }
+
+        })
+        *  */
+
+        /*
+        val testclassService = retrofit.create(TestClassService::class.java)
+        testclassService.getPost()?.enqueue(object : Callback<TestClass>{
+            override fun onResponse(call: Call<TestClass>, response: Response<TestClass>) {
+                if (response.isSuccessful) {
+                    var result: TestClass? = response.body()
+                    println(result?.toString())
+                }
+                else {
+                    println("실패")
+                }
+            }
+
+            override fun onFailure(call: Call<TestClass>, t: Throwable) {
+                println(t.message)
+            }
+
+        })
+        */
+
+        var sampleProfile = Profile("양수진", 4, "23", "164", "99")
+
+        val profileService = retrofit.create(ProfileService::class.java)
+        profileService.setProfile(sampleProfile).enqueue(object : Callback<Profile>{
+            override fun onResponse(call: Call<Profile>, response: Response<Profile>) {
+                if (response.isSuccessful) {
+                    println(sampleProfile.toString() + "전송완료")
+                }
+                else {
+                    println("POST 실패")
+                }
+            }
+
+            override fun onFailure(call: Call<Profile>, t: Throwable) {
+                println(t.message)
+            }
+        })
+
+
+        profileService.getAllProfile().enqueue(object : Callback<List<Profile>> {
+            override fun onResponse(call: Call<List<Profile>>, response: Response<List<Profile>>) {
+                if (response.isSuccessful) {
+                    var result: List<Profile>? = response.body()
+                    println(result?.toString())
+                }
+                else {
+                    println("GET 실패")
+                }
+
+            }
+
+            override fun onFailure(call: Call<List<Profile>>, t: Throwable) {
+                println(t.message)
+            }
+
+        })
+
+
 
         SIABinding = ActivitySignInBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -67,3 +153,4 @@ class SignInActivity : AppCompatActivity() {
         }
     }
 }
+

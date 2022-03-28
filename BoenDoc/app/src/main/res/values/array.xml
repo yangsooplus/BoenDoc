@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="sexitemList">
-        <item>남성</item>
         <item>여성</item>
+        <item>남성</item>
     </string-array>
 
 
