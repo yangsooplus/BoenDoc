@@ -33,22 +33,7 @@ class SignInActivity : AppCompatActivity() {
         //서버 연결
         retrofit = RetrofitClass.getInstance()
 
-        /*
-        *
-        loginService = retrofit.create(LoginService::class.java)
-        loginService.requestLogin(id, pw).enqueue(object : Callback<Login>{
-            override fun onFailure(call: Call<Login>, t: Throwable) {
-                //실패할 경우 실행
-                println("실패")
-            }
 
-            override fun onResponse(call: Call<Login>, response: Response<Login>) {
-                //성공할 경우 실행
-                println(response.body())
-            }
-
-        })
-        *  */
 
         /*
         val testclassService = retrofit.create(TestClassService::class.java)
@@ -70,39 +55,43 @@ class SignInActivity : AppCompatActivity() {
         })
         */
 
-        var sampleProfile = Profile("양수진", 4, "23", "164", "99")
 
-        val profileService = retrofit.create(ProfileService::class.java)
-        profileService.setProfile(sampleProfile).enqueue(object : Callback<Profile>{
-            override fun onResponse(call: Call<Profile>, response: Response<Profile>) {
-                if (response.isSuccessful) {
-                    println(sampleProfile.toString() + "전송완료")
-                }
-                else {
-                    println("POST 실패")
-                }
+
+        var sampleMember = Member("양수진", 3, "23", "164", "99")
+        val profileService = retrofit.create(MemberService::class.java)
+
+        profileService.setProfile(sampleMember).enqueue(object : Callback<Member> {
+            override fun onResponse(call: Call<Member>, response: Response<Member>) {
+                if (response.isSuccessful)
+                    println("쳐넣음")
+                else
+                    println("연결은했는데안됨")
             }
 
-            override fun onFailure(call: Call<Profile>, t: Throwable) {
-                println(t.message)
+            override fun onFailure(call: Call<Member>, t: Throwable) {
+                println("그냥 안됨")
             }
+
         })
 
 
-        profileService.getAllProfile().enqueue(object : Callback<List<Profile>> {
-            override fun onResponse(call: Call<List<Profile>>, response: Response<List<Profile>>) {
+        profileService.getAllProfile().enqueue(object : Callback<MemberList> {
+            override fun onResponse(call: Call<MemberList>, response: Response<MemberList>) {
                 if (response.isSuccessful) {
-                    var result: List<Profile>? = response.body()
+                    var result: MemberList? = response.body()
                     println(result?.toString())
                 }
                 else {
                     println("GET 실패")
+                    println(response.errorBody()!!.string())
                 }
 
             }
 
-            override fun onFailure(call: Call<List<Profile>>, t: Throwable) {
+            override fun onFailure(call: Call<MemberList>, t: Throwable) {
+
                 println(t.message)
+
             }
 
         })
