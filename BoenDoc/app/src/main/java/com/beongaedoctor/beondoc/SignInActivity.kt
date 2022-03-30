@@ -22,7 +22,7 @@ class SignInActivity : AppCompatActivity() {
     private val binding get() = SIABinding!!
 
     private lateinit var retrofit: Retrofit
-    private lateinit var loginService: LoginService
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -6,7 +6,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
-
     <application
         android:name=".App"
         android:allowBackup="true"
@@ -16,11 +15,13 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BeonDoc"
         android:usesCleartextTraffic="true">
+        <activity
+            android:name=".ChatActivity"
+            android:exported="true" />
 
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
-
 
         <activity
             android:name=".SignUpActivity"
@@ -40,7 +41,6 @@
         <activity
             android:name=".SignInActivity"
             android:exported="true" />
-
     </application>
 
 </manifest>

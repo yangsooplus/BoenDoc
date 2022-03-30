@@ -89,6 +89,7 @@
         android:layout_marginTop="80dp"
         android:text="로그인"
         android:textColor="@color/black"
+        android:backgroundTint="@color/skyblue"
         android:gravity="center"/>
 
     <Button
