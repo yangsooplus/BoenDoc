@@ -4,12 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <TextView
+        android:id="@+id/rightChatItem"
         android:layout_width="240dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
         android:background="@drawable/lightgraymessage"
         android:fontFamily="@font/spoqahansansneolight"
@@ -18,7 +19,7 @@
         android:paddingRight="10dp"
         android:text="샘플대사입니다. 가로로 240dp만큼 고정했습니다. 가나다라마바사아자차카타파하 텍스트가 길어지면 말풍선 이미지가 늘어납니다."
         android:textColor="@color/black"
-        android:textSize="12sp"
+        android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

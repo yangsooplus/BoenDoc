@@ -24,7 +24,7 @@
         android:fontFamily="@font/spoqahansansneomedium"
         android:text="번개닥터"
         android:textColor="@color/black"
-        android:textSize="12sp"
+        android:textSize="14sp"
         app:layout_constraintStart_toEndOf="@+id/imageView"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -41,7 +41,7 @@
         android:paddingRight="4dp"
         android:paddingVertical="5dp"
         android:textColor="@color/black"
-        android:textSize="12sp"
+        android:textSize="14sp"
         android:fontFamily="@font/spoqahansansneolight"
         android:text="샘플대사입니다. 가로로 240dp만큼 고정했습니다. 가나다라마바사아자차카타파하 텍스트가 길어지면 말풍선 이미지가 늘어납니다."/>
 
