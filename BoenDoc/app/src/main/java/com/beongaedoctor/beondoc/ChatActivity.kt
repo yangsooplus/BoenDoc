@@ -1,5 +1,6 @@
 package com.beongaedoctor.beondoc
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -53,6 +54,12 @@ class ChatActivity : AppCompatActivity() {
             binding.chatRecyclerView.scrollToPosition(chatItemList.size - 1) //가장 밑으로 스크롤하기
 
             binding.chatEditText.setText("")
+        }
+
+        binding.tempBtn.setOnClickListener {
+            //나중에는 스레드나.. 함수 이용해서 진단 완료 시 자동으로 액티비티 이동
+            val resultIntent = Intent(this, ResultActivity::class.java)
+            startActivity(resultIntent)
         }
 
 

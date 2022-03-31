@@ -16,6 +16,9 @@
         android:theme="@style/Theme.BeonDoc"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".ResultActivity"
+            android:exported="false" />
+        <activity
             android:name=".ChatActivity"
             android:exported="true" />
 

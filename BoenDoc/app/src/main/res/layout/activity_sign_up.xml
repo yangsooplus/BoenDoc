@@ -322,8 +322,9 @@
         android:layout_marginHorizontal="32dp"
         android:background="@drawable/roundbtn"
         android:text="회원가입"
-        android:textSize="16sp"
-        android:fontFamily="@font/spoqahansansneomedium"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:fontFamily="@font/spoqahansansneobold"
         />
 
 </LinearLayout>

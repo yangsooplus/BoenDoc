@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ResultActivity"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/skyblue"
+        android:text="진단 결과"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:fontFamily="@font/spoqahansansneobold"
+        android:gravity="center"
+        />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginVertical="20dp"
+        android:background="@drawable/semiroundbtng"
+        android:orientation="vertical"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:id="@+id/maindiseaseName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:text="질환 이름"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:fontFamily="@font/spoqahansansneobold"
+                />
+
+            <TextView
+                android:id="@+id/mainseverity"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/rectemergency"
+                android:text="응급"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:gravity="center"
+                android:fontFamily="@font/spoqahansansneobold"
+                />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/mainexplanation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="어디가 어떻게 아픈 질환입니다. 질환 설명이 들어갑니다 어쩌구저쩌구 설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명설"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:fontFamily="@font/spoqahansansneolight"
+            />
+
+
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginHorizontal="20dp"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="뭔가 추가 컨텐츠가 있으면 이 곳에 들어갑니다. 질환 이름은 고정된 채 이부분부터 아래 버튼까지의 공간이 스크롤 됩니다." />
+
+
+
+            <ListView
+                android:id="@+id/otherResultList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:dividerHeight="5dp"
+                android:divider="@color/white"
+                />
+
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginVertical="10dp"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <Button
+            android:id="@+id/gotoPharmacy"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/roundbtn"
+            android:text="가까운 약국 찾기"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:fontFamily="@font/spoqahansansneobold"
+            
+            />
+
+        <Button
+            android:id="@+id/gotoHospital"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:background="@drawable/roundbtn"
+            android:text="가까운 병원 찾기"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            android:fontFamily="@font/spoqahansansneobold"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>
