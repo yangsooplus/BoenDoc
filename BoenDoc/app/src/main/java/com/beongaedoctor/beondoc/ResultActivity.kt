@@ -1,9 +1,9 @@
 package com.beongaedoctor.beondoc
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.beongaedoctor.beondoc.databinding.ActivityResultBinding
-import com.beongaedoctor.beondoc.databinding.ActivitySignUpBinding
 
 class ResultActivity : AppCompatActivity() {
 
@@ -25,6 +25,13 @@ class ResultActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.otherResultList.adapter = OtherResultAdapter(this, otherResultList)
+
+
+
+        binding.gotoHospital.setOnClickListener {
+            val mapIntent = Intent(this, MapActivity::class.java)
+            startActivity(mapIntent)
+        }
 
     }
 }
