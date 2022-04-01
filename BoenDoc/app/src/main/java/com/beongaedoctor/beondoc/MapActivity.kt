@@ -4,7 +4,7 @@ package com.beongaedoctor.beondoc
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.beongaedoctor.beondoc.databinding.ActivityMapBinding
-import net.daum.android.map.MapView
+import net.daum.mf.map.api.MapView
 
 
 class MapActivity : AppCompatActivity() {

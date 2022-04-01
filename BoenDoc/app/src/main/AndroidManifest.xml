@@ -22,9 +22,7 @@
             android:name=".MapActivity"
             android:exported="false" />
 
-        <meta-data
-            android:name="com.kakao.sdk.AppKey"
-            android:value="d4d606790b291dd43ec187954aa00752" />
+
 
         <activity
             android:name=".ResultActivity"
@@ -55,6 +53,11 @@
         <activity
             android:name=".SignInActivity"
             android:exported="true" />
+
+        <meta-data
+            android:name="com.kakao.sdk.AppKey"
+            android:value="d4d606790b291dd43ec187954aa00752" />
+
     </application>
 
 </manifest>
