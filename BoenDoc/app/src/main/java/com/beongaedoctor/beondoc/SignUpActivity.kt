@@ -1,6 +1,7 @@
 package com.beongaedoctor.beondoc
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -12,6 +13,12 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import com.beongaedoctor.beondoc.databinding.ActivitySignInBinding
 import com.beongaedoctor.beondoc.databinding.ActivitySignUpBinding
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
 import java.util.regex.Pattern
 
 class SignUpActivity : AppCompatActivity() {
@@ -23,11 +30,19 @@ class SignUpActivity : AppCompatActivity() {
     private val binding get() = SUABinding!!
     var user: User = User()
 
+
     //비밀번호 확인 일치 여부. false 일때는 계속 버튼 비활성화
     var passwordAccord = false
 
     //이메일 형식 유효성
     var emailValidation = false
+
+    private lateinit var retrofit: Retrofit
+    private var memberService : MemberService? = null
+
+    private var sp : SharedPreferences? = null
+    private var gson : Gson? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +50,16 @@ class SignUpActivity : AppCompatActivity() {
         //뷰 바인딩
         SUABinding = ActivitySignUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        //서버 연결
+        retrofit = RetrofitClass.getInstance()
+        memberService = retrofit.create(MemberService::class.java)
+
+        //데이터 저장
+        sp = getSharedPreferences("shared",MODE_PRIVATE);
+        gson = GsonBuilder().create()
+
+
 
         //이메일 유효성 검사
         binding.email.addTextChangedListener(object : TextWatcher {
@@ -117,7 +142,7 @@ class SignUpActivity : AppCompatActivity() {
         binding.sexSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             //https://stickode.tistory.com/8
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                user.sex = position
+                user.sex = position.toLong()
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
@@ -139,8 +164,7 @@ class SignUpActivity : AppCompatActivity() {
                 saveUser()
 
 
-            //user 정보 db에 저장.
-            //기기에도 저장해두면?
+
 
 
             //문제 없을 시 로그인 화면으로 이동 (혹은 자동 로그인 후 메인으로 이동)
@@ -165,11 +189,44 @@ class SignUpActivity : AppCompatActivity() {
         user.height = binding.height.text.toString().toDouble()
         user.weight = binding.weight.text.toString().toDouble()
         //user.sex 는 spinner 선택 시 저장
-        user.age = binding.age.text.toString().toInt()
+        user.age = binding.age.text.toString().toString()
         user.anamnesis = cutAnamesis(binding.anamnesis.text.toString())
 
+        var member = Member(user.name,
+            0,
+            user.height.toString(),
+            user.weight.toString(),
+            user.sex.toString(),
+            user.age.toLong())
 
-        println(user) //test
+
+        //user 정보 db에 저장.
+        //var sampleMember = Member("양수진", 3, "23", "164", "99", 0)
+        memberService!!.setProfile(member).enqueue(object : Callback<Member> {
+            override fun onResponse(call: Call<Member>, response: Response<Member>) {
+                if (response.isSuccessful)
+                    println("쳐넣음")
+                else
+                    println("연결은했는데안됨")
+            }
+
+            override fun onFailure(call: Call<Member>, t: Throwable) {
+                println("그냥 안됨")
+            }
+        })
+
+
+        //기기에도 정보 저장 - SharedPreferences
+        val memberInfo = gson!!.toJson(member, Member::class.java)
+        val editor : SharedPreferences.Editor = sp!!.edit()
+        editor.putString("memberInfo",memberInfo);
+        editor.commit();
+
+        //테스트용 불러오기 - SharedPreferences
+        val gsonMemberInfo = sp!!.getString("memberInfo","")
+        val testMemberInfo : Member = gson!!.fromJson(gsonMemberInfo, Member::class.java)
+        println(testMemberInfo.name + "정보 불러왔음")
+
     }
 
     fun checkEmail():Boolean{

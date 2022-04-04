@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
@@ -57,28 +58,16 @@ class SignInActivity : AppCompatActivity() {
 
 
 
-        var sampleMember = Member("양수진", 3, "23", "164", "99")
         val profileService = retrofit.create(MemberService::class.java)
 
-        profileService.setProfile(sampleMember).enqueue(object : Callback<Member> {
-            override fun onResponse(call: Call<Member>, response: Response<Member>) {
-                if (response.isSuccessful)
-                    println("쳐넣음")
-                else
-                    println("연결은했는데안됨")
-            }
-
-            override fun onFailure(call: Call<Member>, t: Throwable) {
-                println("그냥 안됨")
-            }
-
-        })
 
 
         profileService.getAllProfile().enqueue(object : Callback<MemberList> {
             override fun onResponse(call: Call<MemberList>, response: Response<MemberList>) {
                 if (response.isSuccessful) {
                     var result: MemberList? = response.body()
+                    //Log.d("get", result.toString())
+                    println("뭐야 GET 여기야")
                     println(result?.toString())
                 }
                 else {
@@ -89,12 +78,13 @@ class SignInActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<MemberList>, t: Throwable) {
-
+                println("GET 오류")
                 println(t.message)
 
             }
 
         })
+
 
 
 

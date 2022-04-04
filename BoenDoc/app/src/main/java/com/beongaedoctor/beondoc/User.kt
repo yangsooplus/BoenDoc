@@ -10,8 +10,8 @@ data class User (
     var name: String = "",
     var height: Double = 0.0,
     var weight: Double = 0.0,
-    var sex: Int = 0,
-    var age: Int = 0,
+    var sex: Long = 0,
+    var age: String = "",
     var anamnesis: List<String> = emptyList<String>()
 )
 
@@ -22,8 +22,8 @@ interface UserInterface {
                 @Query("name") name: String,
                 @Query("height") height: Double,
                 @Query("weight") weight: Double,
-                @Query("sex") sex: Int,
-                @Query("age") age: Int,
+                @Query("sex") sex: Long,
+                @Query("age") age: String,
                 @Query("anamnesis") anamnesis: List<String>
                 )
 

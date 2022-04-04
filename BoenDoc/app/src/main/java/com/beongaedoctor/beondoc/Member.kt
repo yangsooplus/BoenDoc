@@ -12,41 +12,49 @@ data class MemberList(
     val memberList : List<Member>
 )
 
+
 data class Member (
     @SerializedName("name")
     var name : String,
     @SerializedName("id")
     var id : Long,
-    @SerializedName("age :")
+    @SerializedName("age")
     var age : String,
     @SerializedName("height")
     var height : String,
     @SerializedName("weight")
-    var weight : String
+    var weight : String,
+    @SerializedName("gender")
+    var gender : Long
         )
 
 
-data class MemberShort (
-    @SerializedName("name")
-    var name : String,
-    @SerializedName("id")
-    var id : Long
-    )
 
 interface MemberService {
-    @GET("api/v2/members")
+    @GET("api/members")
     fun getProfile() : Call<Member>
 
-    @GET("api/v2/members")
+    @GET("api/members")
     fun getAllProfile() : Call<MemberList>
 
-    @GET("api/v2/members")
+    @GET("api/members")
     fun getProfile(@Path("id") id : Long) : Call<Member>
 
-    @POST("api/v2/members")
+    @POST("api/members")
     fun setProfile(@Body profile: Member) : Call<Member>
 
-    @POST("api/v2/members")
-    fun setProfileShort(@Body profile: MemberShort) : Call<MemberShort>
+}
+
+
+data class Login(
+    @SerializedName("email")
+    var email : String,
+    @SerializedName("password")
+    var password : String
+)
+
+interface LoginService {
+    @POST("로그인경로")
+    fun requestLogin(@Body data: Login) : Call<Login>
 
 }
