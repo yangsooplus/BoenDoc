@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MypageActivity"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/skyblue"
+        android:text="마이페이지"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:fontFamily="@font/spoqahansansneobold"
+        android:gravity="center"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="20dp"
+        android:orientation="horizontal"
+        >
+
+        <TextView
+            android:id="@+id/username_mp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="사용자"
+            android:fontFamily="@font/spoqahansansneobold"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/nim"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:fontFamily="@font/spoqahansansneomedium"
+            android:text="님"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/username_mp"
+             />
+
+        <TextView
+            android:id="@+id/userid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="50dp"
+            android:fontFamily="@font/spoqahansansneolight"
+            android:text="yangsooplus@naver.com"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/nim"
+            app:layout_constraintTop_toTopOf="parent" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="4dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="성별:  "
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/spoqahansansneomedium"
+            />
+
+        <TextView
+            android:id="@+id/usersex"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="남"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/spoqahansansneomedium"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:text="연령:  "
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/spoqahansansneomedium"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="test"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/spoqahansansneomedium"
+            />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="4dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="test"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/spoqahansansneomedium"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="test"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/spoqahansansneomedium"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="test"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/spoqahansansneomedium"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="test"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:fontFamily="@font/spoqahansansneomedium"
+            />
+
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -142,6 +142,7 @@ class SignInActivity : AppCompatActivity() {
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                 if (response.isSuccessful) {
                     println("로그인성공")
+                    println(response.body().toString())
                 }
                 else {
                     println("로그인 연결은 성공, 근데 통신은 안됨")
@@ -151,6 +152,7 @@ class SignInActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
                 println(t.message)
+                println("여기임ㅋㅋ")
             }
 
         })

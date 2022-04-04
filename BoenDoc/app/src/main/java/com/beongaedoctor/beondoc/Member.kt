@@ -47,8 +47,8 @@ interface MemberService {
 
 
 data class Login(
-    @SerializedName("email")
-    var email : String,
+    @SerializedName("loginId")
+    var loginId : String,
     @SerializedName("password")
     var password : String
 )
@@ -62,5 +62,8 @@ interface LoginService {
 
 data class LoginResponse(
     @SerializedName("id")
-    var id : Long
-)
+    var id : Long,
+    @SerializedName("name")
+    var name : String,
+
+    )

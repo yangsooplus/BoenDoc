@@ -1,10 +1,12 @@
 package com.beongaedoctor.beondoc
 
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.beongaedoctor.beondoc.databinding.ActivityChatBinding
 import com.beongaedoctor.beondoc.databinding.ActivityMainBinding
+import com.google.gson.GsonBuilder
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,10 +26,18 @@ class MainActivity : AppCompatActivity() {
             startActivity(chatIntent)
         }
 
-//        binding.mypageBtn.setOnClickListener {
-//            val mypageIntent = Intent(this, MypageActivity::class.java)
-//            startActivity(mypageIntent)
-//        }
+        val sp = getSharedPreferences("shared", MODE_PRIVATE)
+        val gson = GsonBuilder().create()
+        val gsonMemberInfo = sp!!.getString("memberInfo","")
+        val testMemberInfo : Member = gson!!.fromJson(gsonMemberInfo, Member::class.java)
+        binding.username.text = testMemberInfo.name
+
+        binding.mypageBtn.setOnClickListener {
+            val mypageIntent = Intent(this, MypageActivity::class.java)
+            startActivity(mypageIntent)
+        }
 
     }
+
+
 }

@@ -19,11 +19,11 @@
         android:theme="@style/Theme.BeonDoc"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".MypageActivity"
+            android:exported="false" />
+        <activity
             android:name=".MapActivity"
             android:exported="false" />
-
-
-
         <activity
             android:name=".ResultActivity"
             android:exported="false" />
@@ -57,7 +57,6 @@
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="d4d606790b291dd43ec187954aa00752" />
-
     </application>
 
 </manifest>
