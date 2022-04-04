@@ -53,8 +53,14 @@ data class Login(
     var password : String
 )
 
+
 interface LoginService {
-    @POST("로그인경로")
-    fun requestLogin(@Body data: Login) : Call<Login>
+    @POST("api/login")
+    fun requestLogin(@Body data: Login) : Call<LoginResponse>
 
 }
+
+data class LoginResponse(
+    @SerializedName("id")
+    var id : Long
+)

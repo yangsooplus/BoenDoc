@@ -109,7 +109,7 @@ class SignInActivity : AppCompatActivity() {
             }
             else {
                 //로그인 시도 - 유효성 검사
-
+                requestLogin(email, password)
 
                 //유효하면 메인 액티비티로 이동
                 Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show()
@@ -130,6 +130,32 @@ class SignInActivity : AppCompatActivity() {
             val siginupIntent = Intent(this, SignUpActivity::class.java) //여기에 회원가입 뷰
             startActivity(siginupIntent)
         }
+    }
+
+
+
+    fun requestLogin(email : String, pw : String) {
+        val loginInfo = Login(email, pw)
+        val loginService = retrofit.create(LoginService::class.java)
+
+        loginService.requestLogin(loginInfo).enqueue(object : Callback<LoginResponse> {
+            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+                if (response.isSuccessful) {
+                    println("로그인성공")
+                }
+                else {
+                    println("로그인 연결은 성공, 근데 통신은 안됨")
+                    println(response.errorBody()!!.string())
+                }
+            }
+
+            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                println(t.message)
+            }
+
+        })
+
+
     }
 }
 
