@@ -37,7 +37,7 @@ interface MemberService {
     @GET("api/members")
     fun getAllProfile() : Call<MemberList>
 
-    @GET("api/members")
+    @GET("api/members/{id}")
     fun getProfile(@Path("id") id : Long) : Call<Member>
 
     @POST("api/members")

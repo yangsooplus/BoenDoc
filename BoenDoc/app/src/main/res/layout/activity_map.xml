@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -19,9 +19,45 @@
         android:gravity="center"
         />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/mapview"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-</RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/mapview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+        <ImageView
+            android:id="@+id/getCurLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:src="@drawable/getcurrloc"
+            android:layout_gravity="bottom"
+            />
+
+
+    </FrameLayout>
+
+
+
+
+
+
+
+
+    <Button
+        android:id="@+id/gotoMain"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background = "@drawable/semiroundbtn"
+        android:fontFamily="@font/spoqahansansneobold"
+        android:gravity="center"
+        android:text="메인메뉴로"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
+
+</LinearLayout>
