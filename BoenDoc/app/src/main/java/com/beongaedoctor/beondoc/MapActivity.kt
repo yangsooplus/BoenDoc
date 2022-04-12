@@ -12,6 +12,9 @@ import android.os.Bundle
 import android.os.Looper
 import android.provider.Settings
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -19,6 +22,9 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.beongaedoctor.beondoc.databinding.ActivityMapBinding
 import com.google.android.gms.location.*
+import net.daum.mf.map.api.CalloutBalloonAdapter
+import net.daum.mf.map.api.MapPOIItem
+import net.daum.mf.map.api.MapPoint
 import net.daum.mf.map.api.MapView
 import retrofit2.Call
 import retrofit2.Callback
@@ -64,12 +70,25 @@ class MapActivity : AppCompatActivity(){
         binding.mapview.addView(mapView)
 
 
+
         //https://fre2-dom.tistory.com/134?category=949323
         mLocationRequest =  LocationRequest.create().apply {
 
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
 
         }
+
+
+
+        mapView!!.setCalloutBalloonAdapter(CustomBallonAdapter(layoutInflater)) //커스텀 말풍선 등록
+
+
+
+    }
+
+
+    override fun onStart() {
+        super.onStart()
 
         // 위치추적 버튼
         binding.getCurLocation.setOnClickListener {
@@ -85,14 +104,13 @@ class MapActivity : AppCompatActivity(){
         }
 
 
-
         binding.gotoMain.setOnClickListener {
             searchKeyword("이비인후과", x!!, y!!)
         }
 
 
-    }
 
+    }
 
     private fun startLocationUpdates() {
 
@@ -203,7 +221,7 @@ class MapActivity : AppCompatActivity(){
 
 
     //https://mechacat.tistory.com/15?category=449793
-    private fun searchKeyword(keyword: String, x:String, y:String, radius:Int = 200) {
+    private fun searchKeyword(keyword: String, x:String, y:String, radius:Int = 1000) {
         val retrofitMap = Retrofit.Builder()   // Retrofit 구성
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
@@ -220,6 +238,10 @@ class MapActivity : AppCompatActivity(){
                 // 통신 성공 (검색 결과는 response.body()에 담겨있음)
                 Log.d("Test", "Raw: ${response.raw()}")
                 Log.d("Test", "Body: ${response.body()}")
+
+                drawMapMarker(response.body()!!)
+
+
             }
 
             override fun onFailure(call: Call<ResultSearchKeyword>, t: Throwable) {
@@ -230,5 +252,40 @@ class MapActivity : AppCompatActivity(){
     }
 
 
+    private fun drawMapMarker(response: ResultSearchKeyword) {
+        for (place in response.documents) {
+            val marker = MapPOIItem()
+            marker.apply {
+                itemName = place.place_name
+                mapPoint = MapPoint.mapPointWithGeoCoord(place.y.toDouble(), place.x.toDouble())
+                markerType = MapPOIItem.MarkerType.BluePin //나중에 커스텀으로
+                //customImageResourceId = R.drawable.이미지  커스텀이미지
+                selectedMarkerType = MapPOIItem.MarkerType.RedPin  // 클릭 시 마커 모양
+                //customSelectedImageResourceId = R.drawable.이미지       // 클릭 시 커스텀 마커 이미지
+                //isCustomImageAutoscale = false      // 커스텀 마커 이미지 크기 자동 조정
+                //setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
+            }
+            mapView!!.addPOIItem(marker)
+        }
+    }
 
+
+    class CustomBallonAdapter(inflater: LayoutInflater): CalloutBalloonAdapter {
+        val mCalloutBalloon: View = inflater.inflate(R.layout.customballon, null)
+        val name: TextView = mCalloutBalloon.findViewById(R.id.placename)
+        val phone: TextView = mCalloutBalloon.findViewById(R.id.placephone)
+        val address: TextView = mCalloutBalloon.findViewById(R.id.placeaddress)
+
+        override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
+            //마커 클릭시 나오는 말풍선
+            name.text = poiItem?.itemName
+            return mCalloutBalloon
+        }
+
+        override fun getPressedCalloutBalloon(poiItem: MapPOIItem?): View {
+            //말풍선 클릭 시 실행
+            name.text = "누르고 있어요"
+            return mCalloutBalloon
+        }
+    }
 }
