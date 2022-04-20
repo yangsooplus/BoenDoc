@@ -2,7 +2,7 @@
 <resources>
     <color name="skyblue">#72E5E5</color>
     <color name="yellow">#FFDC62</color>
-    <color name="lightgray">#E5E5E5</color>
+    <color name="lightgray">#DDE3E8</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="gray">#222222</color>

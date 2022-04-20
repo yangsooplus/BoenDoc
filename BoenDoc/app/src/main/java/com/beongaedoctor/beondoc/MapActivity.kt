@@ -2,6 +2,8 @@ package com.beongaedoctor.beondoc
 
 
 import android.Manifest
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -9,6 +11,7 @@ import android.location.Location
 import android.location.LocationManager
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.os.Looper
 import android.provider.Settings
 import android.util.Log
@@ -32,6 +35,11 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
+
+class BallonInfo (
+    val phone : String,
+    val address : String
+        )
 
 
 class MapActivity : AppCompatActivity(){
@@ -69,47 +77,37 @@ class MapActivity : AppCompatActivity(){
         mapView = MapView(this)
         binding.mapview.addView(mapView)
 
-
-
         //https://fre2-dom.tistory.com/134?category=949323
         mLocationRequest =  LocationRequest.create().apply {
-
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-
         }
-
-
 
         mapView!!.setCalloutBalloonAdapter(CustomBallonAdapter(layoutInflater)) //커스텀 말풍선 등록
 
-
-
+        var clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip: ClipData = ClipData.newPlainText("simple text", "Hello, World!")
     }
 
 
     override fun onStart() {
         super.onStart()
 
-        // 위치추적 버튼
-        binding.getCurLocation.setOnClickListener {
-            if (checkLocationService()) {
-                // GPS가 켜져있을 경우
-                permissionCheck()
-                startLocationUpdates()
 
-            } else {
-                // GPS가 꺼져있을 경우
-                Toast.makeText(this, "GPS를 켜주세요", Toast.LENGTH_SHORT).show()
-            }
+        if (checkLocationService()) {
+            // GPS가 켜져있을 경우
+            startLocationUpdates() //추적
+            permissionCheck()
+
+
+        } else {
+            // GPS가 꺼져있을 경우
+            Toast.makeText(this, "GPS를 켜주세요", Toast.LENGTH_SHORT).show()
         }
 
 
         binding.gotoMain.setOnClickListener {
-            searchKeyword("이비인후과", x!!, y!!)
+            //
         }
-
-
-
     }
 
     private fun startLocationUpdates() {
@@ -137,7 +135,12 @@ class MapActivity : AppCompatActivity(){
     private fun getLastLocation(location: Location) { //주소 값 반환
         x = location.longitude.toString() //현재 x좌표
         y = location.latitude.toString() //현재 y좌표
+
+        Handler().postDelayed({
+            searchKeyword("정형외과", x!!, y!!)
+        }, 1000)
     }
+
 
 
 
@@ -180,6 +183,7 @@ class MapActivity : AppCompatActivity(){
         } else {
             // 권한이 있는 상태
             startTracking()
+
         }
     }
 
@@ -190,6 +194,7 @@ class MapActivity : AppCompatActivity(){
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // 권한 요청 후 승인됨 (추적 시작)
                 Toast.makeText(this, "위치 권한이 승인되었습니다", Toast.LENGTH_SHORT).show()
+                //setCurrLocation()
                 startTracking()
             } else {
                 // 권한 요청 후 거절됨 (다시 요청 or 토스트)
@@ -258,12 +263,13 @@ class MapActivity : AppCompatActivity(){
             marker.apply {
                 itemName = place.place_name
                 mapPoint = MapPoint.mapPointWithGeoCoord(place.y.toDouble(), place.x.toDouble())
-                markerType = MapPOIItem.MarkerType.BluePin //나중에 커스텀으로
-                //customImageResourceId = R.drawable.이미지  커스텀이미지
-                selectedMarkerType = MapPOIItem.MarkerType.RedPin  // 클릭 시 마커 모양
-                //customSelectedImageResourceId = R.drawable.이미지       // 클릭 시 커스텀 마커 이미지
-                //isCustomImageAutoscale = false      // 커스텀 마커 이미지 크기 자동 조정
-                //setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
+                markerType = MapPOIItem.MarkerType.CustomImage
+                customImageResourceId = R.drawable.markerhos
+                selectedMarkerType = MapPOIItem.MarkerType.CustomImage  // 클릭 시 마커 모양
+                customSelectedImageResourceId = R.drawable.markerhosele       // 클릭 시 커스텀 마커 이미지
+                isCustomImageAutoscale = false      // 커스텀 마커 이미지 크기 자동 조정
+                setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
+                userObject = BallonInfo(place.phone, place.road_address_name)
             }
             mapView!!.addPOIItem(marker)
         }
@@ -276,15 +282,22 @@ class MapActivity : AppCompatActivity(){
         val phone: TextView = mCalloutBalloon.findViewById(R.id.placephone)
         val address: TextView = mCalloutBalloon.findViewById(R.id.placeaddress)
 
+
+
         override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
             //마커 클릭시 나오는 말풍선
+            val ballonInfo :BallonInfo = poiItem?.userObject as BallonInfo
             name.text = poiItem?.itemName
+            phone.text = ballonInfo.phone
+            address.text = ballonInfo.address
             return mCalloutBalloon
         }
 
         override fun getPressedCalloutBalloon(poiItem: MapPOIItem?): View {
-            //말풍선 클릭 시 실행
-            name.text = "누르고 있어요"
+            //말풍선 클릭 시 실행됨
+
+
+
             return mCalloutBalloon
         }
     }
