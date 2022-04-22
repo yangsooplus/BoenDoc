@@ -28,15 +28,27 @@ class MainActivity : AppCompatActivity() {
 
         val sp = getSharedPreferences("shared", MODE_PRIVATE)
         val gson = GsonBuilder().create()
-        val gsonMemberInfo = sp!!.getString("memberInfo","")
-        val testMemberInfo : Member = gson!!.fromJson(gsonMemberInfo, Member::class.java)
-        binding.username.text = testMemberInfo.name
+
+        if (sp != null) {
+            val gsonMemberInfo = sp!!.getString("memberInfo","")
+            val testMemberInfo : Member = gson!!.fromJson(gsonMemberInfo, Member::class.java)
+            binding.username.text = testMemberInfo.name
+        }
+        else {
+            binding.username.text = "사용자X"
+        }
+
+
+
+    }
+
+    override fun onStart() {
+        super.onStart()
 
         binding.mypageBtn.setOnClickListener {
             val mypageIntent = Intent(this, MypageActivity::class.java)
             startActivity(mypageIntent)
         }
-
     }
 
 

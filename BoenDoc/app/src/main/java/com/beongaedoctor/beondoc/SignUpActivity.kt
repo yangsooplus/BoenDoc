@@ -28,7 +28,7 @@ class SignUpActivity : AppCompatActivity() {
 
     // 매번 null 체크 하지 않도록 바인딩 변수 재선언
     private val binding get() = SUABinding!!
-    var user: User = User()
+    var member: Member = Member()
 
 
     //비밀번호 확인 일치 여부. false 일때는 계속 버튼 비활성화
@@ -142,11 +142,11 @@ class SignUpActivity : AppCompatActivity() {
         binding.sexSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             //https://stickode.tistory.com/8
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                user.sex = position.toLong()
+                member.gender = position.toLong()
             }
 
             override fun onNothingSelected(p0: AdapterView<*>?) {
-                user.sex = -1 //디버깅용
+                member.gender = -1 //디버깅용
             }
         }
 
@@ -183,25 +183,17 @@ class SignUpActivity : AppCompatActivity() {
     }
 
     fun saveUser() {
-        user.email = binding.email.text.toString()
-        user.password = binding.password.text.toString()
-        user.name = binding.name.text.toString()
-        user.height = binding.height.text.toString().toDouble()
-        user.weight = binding.weight.text.toString().toDouble()
+        member.loginId = binding.email.text.toString()
+        member.password = binding.password.text.toString()
+        member.name = binding.name.text.toString()
+        member.height = binding.height.text.toString()
+        member.weight = binding.weight.text.toString()
         //user.sex 는 spinner 선택 시 저장
-        user.age = binding.age.text.toString().toString()
-        user.anamnesis = cutAnamesis(binding.anamnesis.text.toString())
-
-        var member = Member(user.name,
-            0,
-            user.height.toString(),
-            user.weight.toString(),
-            user.sex.toString(),
-            user.age.toLong())
+        member.age = binding.age.text.toString()
+        //member.anamnesis = cutAnamesis(binding.anamnesis.text.toString())
 
 
         //user 정보 db에 저장.
-        //var sampleMember = Member("양수진", 3, "23", "164", "99", 0)
         memberService!!.setProfile(member).enqueue(object : Callback<Member> {
             override fun onResponse(call: Call<Member>, response: Response<Member>) {
                 if (response.isSuccessful)

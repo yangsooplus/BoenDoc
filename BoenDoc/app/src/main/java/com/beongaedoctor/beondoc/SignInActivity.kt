@@ -2,6 +2,7 @@ package com.beongaedoctor.beondoc
 
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -9,6 +10,8 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.beongaedoctor.beondoc.databinding.ActivitySignInBinding
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -23,42 +26,20 @@ class SignInActivity : AppCompatActivity() {
     private val binding get() = SIABinding!!
 
     private lateinit var retrofit: Retrofit
-
+    private var sp : SharedPreferences? = null
+    private var gson : Gson? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //val id = "testid"
-        //val pw = "testpw"
 
         //서버 연결
         retrofit = RetrofitClass.getInstance()
-
-
-
-        /*
-        val testclassService = retrofit.create(TestClassService::class.java)
-        testclassService.getPost()?.enqueue(object : Callback<TestClass>{
-            override fun onResponse(call: Call<TestClass>, response: Response<TestClass>) {
-                if (response.isSuccessful) {
-                    var result: TestClass? = response.body()
-                    println(result?.toString())
-                }
-                else {
-                    println("실패")
-                }
-            }
-
-            override fun onFailure(call: Call<TestClass>, t: Throwable) {
-                println(t.message)
-            }
-
-        })
-        */
-
-
-
         val profileService = retrofit.create(MemberService::class.java)
+
+        //데이터 저장
+        sp = getSharedPreferences("shared",MODE_PRIVATE);
+        gson = GsonBuilder().create()
 
 
 
@@ -109,13 +90,9 @@ class SignInActivity : AppCompatActivity() {
             }
             else {
                 //로그인 시도 - 유효성 검사
-                requestLogin(email, password)
+                requestLogin(email, password, this)
 
-                //유효하면 메인 액티비티로 이동
-                Toast.makeText(this, "로그인 성공", Toast.LENGTH_SHORT).show()
 
-                val mainIntent = Intent(this, MainActivity::class.java)
-                startActivity(mainIntent)
             }
 
 
@@ -134,7 +111,7 @@ class SignInActivity : AppCompatActivity() {
 
 
 
-    fun requestLogin(email : String, pw : String) {
+    fun requestLogin(email : String, pw : String, SIAContext : Context) {
         val loginInfo = Login(email, pw)
         val loginService = retrofit.create(LoginService::class.java)
 
@@ -143,6 +120,19 @@ class SignInActivity : AppCompatActivity() {
                 if (response.isSuccessful) {
                     println("로그인성공")
                     println(response.body().toString())
+
+                    //기기에도 정보 저장 - SharedPreferences
+                    val memberInfo = gson!!.toJson(response.body()?.member, Member::class.java)
+                    val editor : SharedPreferences.Editor = sp!!.edit()
+                    editor.putString("memberInfo", memberInfo);
+                    editor.commit();
+
+
+                    //유효하면 메인 액티비티로 이동
+                    Toast.makeText(SIAContext, "로그인 성공", Toast.LENGTH_SHORT).show()
+
+                    val mainIntent = Intent(SIAContext, MainActivity::class.java)
+                    startActivity(mainIntent)
                 }
                 else {
                     println("로그인 연결은 성공, 근데 통신은 안됨")
@@ -153,6 +143,9 @@ class SignInActivity : AppCompatActivity() {
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
                 println(t.message)
                 println("여기임ㅋㅋ")
+                Toast.makeText(SIAContext, "접속 실패 하지만 넘어가", Toast.LENGTH_LONG).show()
+                val mainIntent = Intent(SIAContext, MainActivity::class.java)
+                startActivity(mainIntent)
             }
 
         })

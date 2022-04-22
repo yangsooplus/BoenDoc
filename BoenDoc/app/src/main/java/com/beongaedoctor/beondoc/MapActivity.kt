@@ -25,6 +25,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.beongaedoctor.beondoc.databinding.ActivityMapBinding
 import com.google.android.gms.location.*
+import com.google.android.gms.location.LocationServices
 import net.daum.mf.map.api.CalloutBalloonAdapter
 import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint

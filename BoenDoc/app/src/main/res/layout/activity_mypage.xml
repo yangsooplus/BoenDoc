@@ -28,7 +28,7 @@
         >
 
         <TextView
-            android:id="@+id/username_mp"
+            android:id="@+id/username"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="양수진"
@@ -51,7 +51,7 @@
              />
 
         <TextView
-            android:id="@+id/userid"
+            android:id="@+id/useremail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
@@ -231,6 +231,14 @@
         android:textSize="24sp"
         android:textColor="@color/black"
         android:fontFamily="@font/spoqahansansneobold"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/mypageRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="5dp"
+        android:layout_marginHorizontal="20dp"
         />
 
 </LinearLayout>

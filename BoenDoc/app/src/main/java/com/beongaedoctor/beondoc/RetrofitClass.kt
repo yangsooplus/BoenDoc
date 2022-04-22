@@ -10,7 +10,7 @@ object RetrofitClass {
 
     // 서버 주소
     //private const val BASE_URL = "https://jsonplaceholder.typicode.com/"
-    private const val BASE_URL = "http://172.30.1.25:8080/"
+    private const val BASE_URL = "http://192.168.219.147:8080/"
 
     // SingleTon
     fun getInstance(): Retrofit {

@@ -26,7 +26,7 @@ class ChatActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_chat)
+        //setContentView(R.layout.activity_chat)
         chatbinding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -57,7 +57,7 @@ class ChatActivity : AppCompatActivity() {
         }
 
         binding.tempBtn.setOnClickListener {
-            //나중에는 스레드나.. 함수 이용해서 진단 완료 시 자동으로 액티비티 이동
+            //나중에는 스레드나.. 콜백 함수 이용해서 진단 완료 시 자동으로 액티비티 이동
             val resultIntent = Intent(this, ResultActivity::class.java)
             startActivity(resultIntent)
         }
