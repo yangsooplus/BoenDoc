@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
 
         binding.mypageBtn.setOnClickListener {
-            val mypageIntent = Intent(this, MypageActivity::class.java)
+            val mypageIntent = Intent(this, MainMypageActivity::class.java)
             startActivity(mypageIntent)
         }
     }

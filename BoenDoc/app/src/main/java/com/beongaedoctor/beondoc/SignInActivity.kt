@@ -1,5 +1,6 @@
 package com.beongaedoctor.beondoc
 
+import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -29,6 +30,8 @@ class SignInActivity : AppCompatActivity() {
     private var sp : SharedPreferences? = null
     private var gson : Gson? = null
 
+    var dialog : LoadingDialog? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -40,7 +43,7 @@ class SignInActivity : AppCompatActivity() {
         //데이터 저장
         sp = getSharedPreferences("shared",MODE_PRIVATE);
         gson = GsonBuilder().create()
-
+        dialog = LoadingDialog(this)
 
 
         profileService.getAllProfile().enqueue(object : Callback<MemberList> {
@@ -66,20 +69,30 @@ class SignInActivity : AppCompatActivity() {
 
         })
 
-
-
-
         SIABinding = ActivitySignInBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val editEmail = binding.editEmail
-        val editPw = binding.editPw
 
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        if (sp!!.getBoolean("auto", false)) {
+            binding.autologin.isChecked = true
+
+            val sharedEmail = sp!!.getString("Email", null)
+            val sharedPw = sp!!.getString("Pw", null)
+
+            if (sharedEmail != null && sharedPw != null) {
+                requestLogin(sharedEmail, sharedPw, this)
+            }
+        }
 
 
         binding.btnSignin.setOnClickListener {
-            val email = editEmail.text.toString()
-            val password = editPw.text.toString()
+            val email = binding.editEmail.text.toString()
+            val password = binding.editPw.text.toString()
 
             //아이디(이메일), 비밀번호 입력되지 않으면 입력하라고 띄우기
             if (email.isEmpty()) {
@@ -89,24 +102,22 @@ class SignInActivity : AppCompatActivity() {
                 Toast.makeText(this, "비밀번호를 입력해주세요", Toast.LENGTH_LONG).show()
             }
             else {
+                //로딩창
+                dialog!!.show()
+
                 //로그인 시도 - 유효성 검사
                 requestLogin(email, password, this)
-
-
             }
-
-
-
-
-
-
-
         }
 
         binding.btnSignup.setOnClickListener {
             val siginupIntent = Intent(this, SignUpActivity::class.java) //여기에 회원가입 뷰
             startActivity(siginupIntent)
         }
+
+
+
+
     }
 
 
@@ -124,17 +135,28 @@ class SignInActivity : AppCompatActivity() {
                     //기기에도 정보 저장 - SharedPreferences
                     val memberInfo = gson!!.toJson(response.body()?.member, Member::class.java)
                     val editor : SharedPreferences.Editor = sp!!.edit()
-                    editor.putString("memberInfo", memberInfo);
-                    editor.commit();
+                    editor.putString("memberInfo", memberInfo)
+                    editor.commit()
 
+                    //로딩창 종료
+                    dialog!!.dismiss()
 
                     //유효하면 메인 액티비티로 이동
                     Toast.makeText(SIAContext, "로그인 성공", Toast.LENGTH_SHORT).show()
 
-                    val mainIntent = Intent(SIAContext, MainActivity::class.java)
-                    startActivity(mainIntent)
+
+                    if (binding.autologin.isChecked) {
+                        editor.putString("Email", email)
+                        editor.putString("Pw", pw)
+                        editor.putBoolean("auto", true)
+                        editor.commit()
+                    }
+
+                    gotoMain(SIAContext)
                 }
                 else {
+                    //로딩창 종료
+                    dialog!!.dismiss()
                     println("로그인 연결은 성공, 근데 통신은 안됨")
                     println(response.errorBody()!!.string())
                 }
@@ -150,6 +172,12 @@ class SignInActivity : AppCompatActivity() {
 
         })
 
+
+    }
+
+    fun gotoMain(SIAContext : Context) {
+        val mainIntent = Intent(SIAContext, MainActivity::class.java)
+        startActivity(mainIntent)
 
     }
 }

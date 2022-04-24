@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainMypageActivity"
+    android:orientation="vertical"
+    >
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/skyblue"
+        android:text="마이페이지"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:fontFamily="@font/spoqahansansneobold"
+        android:gravity="center"
+        />
+
+    <TextView
+        android:id="@+id/username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="16dp"
+        android:text="양수진"
+        android:fontFamily="@font/spoqahansansneobold"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+ />
+
+
+
+    <TextView
+        android:id="@+id/useremail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="16dp"
+        android:fontFamily="@font/spoqahansansneolight"
+        android:text="yangsooplus@naver.com"
+        android:textSize="12sp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:background="@color/lightgray"/>
+
+    <Button
+        android:id="@+id/inforevisebtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#00ff0000"
+        android:text="회원 정보 수정"
+        android:fontFamily="@font/spoqahansansneolight"
+        android:stateListAnimator="@null"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginHorizontal="16dp"
+        android:background="@color/lightgray"/>
+
+    <Button
+        android:id="@+id/pwrevisebtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#00ff0000"
+        android:text="비밀번호 변경"
+        android:fontFamily="@font/spoqahansansneolight"
+        android:stateListAnimator="@null"
+        />
+
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:background="@color/lightgray"/>
+
+    <Button
+        android:id="@+id/recordbtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#00ff0000"
+        android:text="지난 진단 내역"
+        android:fontFamily="@font/spoqahansansneolight"
+        android:stateListAnimator="@null"
+        />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginHorizontal="16dp"
+        android:background="@color/lightgray"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:background="@color/lightgray"/>
+
+    <Button
+        android:id="@+id/signoutbtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/yellow"
+        android:text="로그아웃"
+        android:fontFamily="@font/spoqahansansneolight"
+        android:stateListAnimator="@null"
+        />
+</LinearLayout>

@@ -35,6 +35,7 @@ class ResultActivity : AppCompatActivity() {
         retrofit = RetrofitClass.getInstance()
         val diagnosisService = retrofit.create(DiagnosisService::class.java)
 
+        /*
         diagnosisService.searchDiseasebyString(1,"탈모","비염","웃음").enqueue(object : Callback<DiagnosisResponse> {
             override fun onResponse(
                 call: Call<DiagnosisResponse>,
@@ -50,6 +51,8 @@ class ResultActivity : AppCompatActivity() {
             }
 
         })
+        */
+
 
         binding.otherResultList.adapter = OtherResultAdapter(this, otherResultList)
 

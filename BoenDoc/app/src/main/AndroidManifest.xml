@@ -19,6 +19,18 @@
         android:theme="@style/Theme.BeonDoc"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".RecordActivity"
+            android:exported="true" />
+        <activity
+            android:name=".MyPwActivity"
+            android:exported="true" />
+        <activity
+            android:name=".MyInfoActivity"
+            android:exported="true" />
+        <activity
+            android:name=".MainMypageActivity"
+            android:exported="true" />
+        <activity
             android:name=".MypageActivity"
             android:exported="false" />
         <activity
