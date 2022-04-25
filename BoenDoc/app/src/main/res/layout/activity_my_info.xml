@@ -23,9 +23,9 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:layout_margin="24dp"
-
+        android:layout_weight="1"
         android:orientation="vertical">
 
         <TextView
@@ -34,7 +34,7 @@
             android:text="이름"
             android:fontFamily="@font/spoqahansansneomedium"
             android:textColor="@color/black"
-            android:textSize="16sp"
+            android:textSize="14sp"
             />
 
         <LinearLayout
@@ -45,13 +45,19 @@
             android:weightSum="6"
             >
             <EditText
+                android:id="@+id/reusername"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="5"
                 android:layout_marginRight="10dp"
                 android:background="@color/lightgray"
+                android:privateImeOptions="defaultInputmode=korean"
+                android:paddingHorizontal="10dp"
+                android:fontFamily="@font/spoqahansansneolight"
+                android:textSize="12sp"
                 />
             <Button
+                android:id="@+id/reusernameBtn"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -66,10 +72,46 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="항목명"
+            android:text="성별"
             android:fontFamily="@font/spoqahansansneomedium"
             android:textColor="@color/black"
-            android:textSize="16sp"
+            android:textSize="14sp"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal"
+            android:weightSum="6"
+            >
+            <Spinner
+                android:id="@+id/resexSpinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_weight="3"
+                />
+            <Button
+                android:id="@+id/reusersexBtn"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/semiroundbtn"
+                android:text="변경"
+                android:fontFamily="@font/spoqahansansneobold"
+                android:textColor="@color/white"
+                />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="연령"
+            android:fontFamily="@font/spoqahansansneomedium"
+            android:textColor="@color/black"
+            android:textSize="14sp"
             />
 
         <LinearLayout
@@ -80,13 +122,59 @@
             android:weightSum="6"
             >
             <EditText
+                android:id="@+id/reuserage"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="5"
                 android:layout_marginRight="10dp"
                 android:background="@color/lightgray"
+                android:inputType="numberDecimal"
+                android:paddingHorizontal="10dp"
+                android:fontFamily="@font/spoqahansansneolight"
+                android:textSize="12sp"
                 />
             <Button
+                android:id="@+id/reuserageBtn"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/semiroundbtn"
+                android:text="변경"
+                android:fontFamily="@font/spoqahansansneobold"
+                android:textColor="@color/white"
+                />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="신장"
+            android:fontFamily="@font/spoqahansansneomedium"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="32dp"
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp"
+            android:weightSum="6"
+            >
+            <EditText
+                android:id="@+id/reuserheight"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:layout_marginRight="10dp"
+                android:background="@color/lightgray"
+                android:inputType="numberDecimal"
+                android:paddingHorizontal="10dp"
+                android:fontFamily="@font/spoqahansansneolight"
+                android:textSize="12sp"
+                />
+            <Button
+                android:id="@+id/reuserheightBtn"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -101,45 +189,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="항목명"
+            android:text="체중"
             android:fontFamily="@font/spoqahansansneomedium"
             android:textColor="@color/black"
-            android:textSize="16sp"
-            />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="32dp"
-            android:orientation="horizontal"
-            android:layout_marginBottom="10dp"
-            android:weightSum="6"
-            >
-            <EditText
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="5"
-                android:layout_marginRight="10dp"
-                android:background="@color/lightgray"
-                />
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/semiroundbtn"
-                android:text="변경"
-                android:fontFamily="@font/spoqahansansneobold"
-                android:textColor="@color/white"
-                />
-        </LinearLayout>
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="항목명"
-            android:fontFamily="@font/spoqahansansneomedium"
-            android:textColor="@color/black"
-            android:textSize="16sp"
+            android:textSize="14sp"
             />
 
         <LinearLayout
@@ -150,13 +203,19 @@
             android:weightSum="6"
             >
             <EditText
+                android:id="@+id/reuserweight"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="5"
                 android:layout_marginRight="10dp"
                 android:background="@color/lightgray"
+                android:inputType="numberDecimal"
+                android:paddingHorizontal="10dp"
+                android:fontFamily="@font/spoqahansansneolight"
+                android:textSize="12sp"
                 />
             <Button
+                android:id="@+id/reuserweightBtn"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -168,77 +227,34 @@
         </LinearLayout>
 
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="항목명"
-            android:fontFamily="@font/spoqahansansneomedium"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            />
 
-        <LinearLayout
+
+
+
+        <Button
             android:layout_width="match_parent"
-            android:layout_height="32dp"
-            android:layout_marginBottom="10dp"
-            android:orientation="horizontal"
-            android:weightSum="6"
-            >
-            <EditText
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="5"
-                android:layout_marginRight="10dp"
-                android:background="@color/lightgray"
-                />
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/semiroundbtn"
-                android:text="변경"
-                android:fontFamily="@font/spoqahansansneobold"
-                android:textColor="@color/white"
-                />
-        </LinearLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="항목명"
+            android:layout_height="40dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/semiroundbtny"
             android:fontFamily="@font/spoqahansansneomedium"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            />
+            android:paddingHorizontal="16dp"
+            android:text="기초 문진 다시하기"
+            android:textColor="@color/white" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="32dp"
-            android:orientation="horizontal"
-            android:weightSum="6"
-            >
-            <EditText
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="5"
-                android:layout_marginRight="10dp"
-                android:background="@color/lightgray"
-                />
-            <Button
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@drawable/semiroundbtn"
-                android:text="변경"
-                android:fontFamily="@font/spoqahansansneobold"
-                android:textColor="@color/white"
-                />
-        </LinearLayout>
+
 
     </LinearLayout>
 
 
-
+    <Button
+        android:id="@+id/reviseDone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@color/skyblue"
+        android:fontFamily="@font/spoqahansansneomedium"
+        android:text="회원 정보 수정"
+        android:textColor="@color/white" />
 
 
 </LinearLayout>
