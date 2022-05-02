@@ -212,7 +212,7 @@ class SignUpActivity : AppCompatActivity() {
         val memberInfo = gson!!.toJson(member, Member::class.java)
         val editor : SharedPreferences.Editor = sp!!.edit()
         editor.putString("memberInfo",memberInfo);
-        editor.commit();
+        editor.apply();
 
         //테스트용 불러오기 - SharedPreferences
         val gsonMemberInfo = sp!!.getString("memberInfo","")

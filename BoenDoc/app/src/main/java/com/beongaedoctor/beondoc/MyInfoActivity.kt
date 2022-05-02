@@ -1,5 +1,6 @@
 package com.beongaedoctor.beondoc
 
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
@@ -7,9 +8,14 @@ import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import com.beongaedoctor.beondoc.databinding.ActivityMyInfoBinding
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
 
 
 class MyInfoActivity : AppCompatActivity() {
@@ -20,8 +26,11 @@ class MyInfoActivity : AppCompatActivity() {
     // 매번 null 체크 하지 않도록 바인딩 변수 재선언
     private val binding get() = minfobinding!!
 
+    private lateinit var retrofit: Retrofit
+    private var memberService : MemberService? = null
     private var sp : SharedPreferences? = null
     private var gson : Gson? = null
+
     var memberInfo : Member? = null
 
 
@@ -34,6 +43,11 @@ class MyInfoActivity : AppCompatActivity() {
         sp = getSharedPreferences("shared",MODE_PRIVATE)
         gson = GsonBuilder().create()
 
+        //서버 연결
+        retrofit = RetrofitClass.getInstance()
+        memberService = retrofit.create(MemberService::class.java)
+
+        //기기에 저장된 유저 정보
         val gsonMemberInfo = sp!!.getString("memberInfo","")
         memberInfo = gson!!.fromJson(gsonMemberInfo, Member::class.java)
 
@@ -63,7 +77,7 @@ class MyInfoActivity : AppCompatActivity() {
         super.onStart()
 
         binding.reviseDone.setOnClickListener {
-            reviseMyInfo()
+            reviseMyInfo(this)
         }
 
         binding.reusernameBtn.setOnClickListener {
@@ -89,14 +103,34 @@ class MyInfoActivity : AppCompatActivity() {
 
     }
 
-    private fun reviseMyInfo() {
+    private fun reviseMyInfo(context : Context) {
         //기기에도 정보 저장 - SharedPreferences
         val memberInfo_ = gson!!.toJson(memberInfo, Member::class.java)
         val editor : SharedPreferences.Editor = sp!!.edit()
         editor.putString("memberInfo",memberInfo_)
-        editor.commit()
+        editor.apply()
 
-        val mypageIntent = Intent(this, MainMypageActivity::class.java)
-        startActivity(mypageIntent)
+
+        //DB 정보 수정 요청
+        memberService!!.reviseProfile(memberInfo!!.id, memberInfo!!).enqueue(object : Callback<Member> {
+            override fun onResponse(call: Call<Member>, response: Response<Member>) {
+                if (response.isSuccessful) {
+                    Toast.makeText(context, "회원 정보 수정", Toast.LENGTH_LONG).show()//변경 알림
+                    val mypageIntent = Intent(context, MainMypageActivity::class.java)
+                    startActivity(mypageIntent) //마이페이지 메인으로 이동
+                }
+            }
+
+            override fun onFailure(call: Call<Member>, t: Throwable) {
+                println(t.message)
+
+                //나중에 아래 지우기
+                Toast.makeText(context, "로컬은 변경했고, DB는 안됐어", Toast.LENGTH_LONG).show()//변경 알림
+                val mypageIntent = Intent(context, MainMypageActivity::class.java)
+                startActivity(mypageIntent) //마이페이지 메인으로 이동
+            }
+
+        })
+        
     }
 }

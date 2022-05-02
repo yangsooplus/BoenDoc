@@ -2,10 +2,7 @@ package com.beongaedoctor.beondoc
 
 import com.google.gson.annotations.SerializedName
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.*
 import java.time.LocalDateTime
 
 data class MemberList(
@@ -48,6 +45,8 @@ interface MemberService {
     @POST("api/members")
     fun setProfile(@Body profile: Member) : Call<Member>
 
+    @PUT("api/members")
+    fun reviseProfile(@Path("id") id : Long, @Body profile: Member) : Call<Member>
 }
 
 

@@ -1,9 +1,122 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MyPwActivity">
+    tools:context=".MyPwActivity"
+    android:orientation="vertical">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@color/skyblue"
+        android:text="비밀번호 변경"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:fontFamily="@font/spoqahansansneobold"
+        android:gravity="center"
+        />
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1"
+    android:layout_margin="24dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="현재 비밀번호"
+        android:fontFamily="@font/spoqahansansneomedium"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        />
+
+    <EditText
+        android:id="@+id/currentPW"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:layout_marginTop="5dp"
+        android:background="@color/lightgray"
+        android:privateImeOptions="defaultInputmode=korean"
+        android:paddingHorizontal="10dp"
+        android:fontFamily="@font/spoqahansansneolight"
+        android:textSize="12sp"
+        />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="새 비밀번호"
+        android:fontFamily="@font/spoqahansansneomedium"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        />
+
+    <EditText
+        android:id="@+id/newPW"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:layout_marginTop="5dp"
+        android:background="@color/lightgray"
+        android:privateImeOptions="defaultInputmode=korean"
+        android:paddingHorizontal="10dp"
+        android:fontFamily="@font/spoqahansansneolight"
+        android:textSize="12sp"
+        />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="새 비밀번호 확인"
+        android:fontFamily="@font/spoqahansansneomedium"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        />
+
+    <EditText
+        android:id="@+id/confirmnewPW"
+        android:layout_width="match_parent"
+        android:layout_height="32dp"
+        android:layout_marginTop="5dp"
+        android:background="@color/lightgray"
+        android:privateImeOptions="defaultInputmode=korean"
+        android:paddingHorizontal="10dp"
+        android:fontFamily="@font/spoqahansansneolight"
+        android:textSize="12sp"
+        />
+
+    <TextView
+        android:id="@+id/password_same"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="비밀번호가 일치하지 않습니다."
+        android:textColor="#FF0000"
+        android:textSize="12sp"
+        android:fontFamily="@font/spoqahansansneolight"
+        />
+
+
+</LinearLayout>
+
+    <Button
+        android:id="@+id/reviseDone"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@color/skyblue"
+        android:fontFamily="@font/spoqahansansneomedium"
+        android:text="비밀번호 변경"
+        android:textColor="@color/white" />
+
+
+</LinearLayout>
