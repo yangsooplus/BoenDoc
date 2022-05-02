@@ -31,9 +31,6 @@
             android:name=".MainMypageActivity"
             android:exported="true" />
         <activity
-            android:name=".MypageActivity"
-            android:exported="false" />
-        <activity
             android:name=".MapActivity"
             android:exported="false" />
         <activity

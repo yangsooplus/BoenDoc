@@ -52,8 +52,7 @@ class ChatAdapter(val ChatItemList:ArrayList<ChatItem>) : RecyclerView.Adapter<R
         }
 
 
-        //각 아이템에 정보 넣기
-        //holder.content.text = ChatItemList[position].content
+
 
         //각 아이템별 클릭 액션은 이곳에
         //holder.itemView.setOnClickListener {  }

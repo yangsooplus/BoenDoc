@@ -17,12 +17,15 @@ class ChatActivity : AppCompatActivity() {
 
     val chatItemList = arrayListOf<ChatItem>()
     val chatItemTestList = arrayListOf(
-        ChatItem(ChatItem.TYPE_LEFT, "어쩌구저쩌구"),
-        ChatItem(ChatItem.TYPE_LEFT,"더미 데이터입니다"),
-        ChatItem(ChatItem.TYPE_LEFT,"글자 수가 늘어나면 말풍선도 따라서 커집니다. 가로 최대 길이는 240dp 입니다."),
-        ChatItem(ChatItem.TYPE_LEFT,"글자 수가 적으면 그만큼 풍선을 작게 만들고 싶은데 그렇게 하면 간단하게 줄바꿈이 안되더라고요"),
-        ChatItem(ChatItem.TYPE_LEFT,"일단 기능적인 부분부터 구현한 다음에 수정하려고 합니다"),
-        ChatItem(ChatItem.TYPE_LEFT, ("어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구어쩌구저쩌구")))
+        ChatItem(ChatItem.TYPE_LEFT,"언제부터 아팠나요?"),
+        ChatItem(ChatItem.TYPE_LEFT,"증상이 있는 부위가 어디인가요?"),
+        ChatItem(ChatItem.TYPE_LEFT,"증상이 얼마나 지속되었나요?"),
+        ChatItem(ChatItem.TYPE_LEFT,"증상의 양상이 어떤가요?"),
+        ChatItem(ChatItem.TYPE_LEFT,"이전에도 같은 증상을 경험한 적이 있나요?"),
+        ChatItem(ChatItem.TYPE_LEFT,"증상을 더 자세히 설명해주세요."),
+        ChatItem(ChatItem.TYPE_LEFT,"복용하고 계신 약물이 있다면 얘기해주세요.")
+    )
+    var chatResposeList = arrayListOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,11 +43,16 @@ class ChatActivity : AppCompatActivity() {
 
         chatItemList.add(ChatItem(ChatItem.TYPE_LEFT, "안녕하세요 번개닥터입니다."))
         (binding.chatRecyclerView.adapter as ChatAdapter).notifyItemInserted(0)
+        chatItemList.add(ChatItem(ChatItem.TYPE_LEFT, "현재 겪고 계신 주요 증상을 설명해주세요."))
+        (binding.chatRecyclerView.adapter as ChatAdapter).notifyItemInserted(1)
+
 
 
         binding.chatTransmit.setOnClickListener {
             val sendText : String = binding.chatEditText.text.toString()
             chatItemList.add(ChatItem(ChatItem.TYPE_RIGHT, sendText))
+            chatResposeList.add(sendText)
+
             if (chatItemTestList.size > 0) { //테스트용 더미 텍스트
                 chatItemList.add(chatItemTestList[0])
                 chatItemTestList.removeAt(0)
@@ -57,6 +65,8 @@ class ChatActivity : AppCompatActivity() {
         }
 
         binding.tempBtn.setOnClickListener {
+            println(chatResposeList)
+
             //나중에는 스레드나.. 콜백 함수 이용해서 진단 완료 시 자동으로 액티비티 이동
             val resultIntent = Intent(this, ResultActivity::class.java)
             startActivity(resultIntent)

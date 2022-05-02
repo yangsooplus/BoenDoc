@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    >
 
     <ImageView
         android:id="@+id/imageView"
@@ -30,20 +32,23 @@
 
     <TextView
         android:id="@+id/leftChatItem"
-        android:layout_width="240dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/skybluemessage"
-        app:layout_constraintStart_toEndOf="@+id/imageView"
-        app:layout_constraintTop_toBottomOf="@+id/nametextView"
+        android:background="@drawable/skybluemsg"
+        android:fontFamily="@font/spoqahansansneolight"
+        android:maxWidth="240dp"
+        android:paddingVertical="5dp"
         android:paddingLeft="16dp"
         android:paddingRight="4dp"
-        android:paddingVertical="5dp"
+        android:text="내용이 들어갑니다"
         android:textColor="@color/black"
         android:textSize="14sp"
-        android:fontFamily="@font/spoqahansansneolight"
-        android:text="샘플대사입니다. 가로로 240dp만큼 고정했습니다. 가나다라마바사아자차카타파하 텍스트가 길어지면 말풍선 이미지가 늘어납니다."/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/imageView"
+        app:layout_constraintTop_toBottomOf="@+id/nametextView" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

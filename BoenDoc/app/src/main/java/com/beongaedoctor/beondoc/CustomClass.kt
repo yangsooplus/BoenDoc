@@ -65,10 +65,6 @@ interface LoginService {
 }
 
 data class LoginResponse(
-    //@SerializedName("id")
-    //var id : Long,
-    //@SerializedName("name")
-    //var name : String,
     @SerializedName("member")
     var member : Member
     )
