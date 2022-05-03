@@ -23,6 +23,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.content.ContextCompat.startActivity
 import com.beongaedoctor.beondoc.databinding.ActivityMapBinding
 import com.google.android.gms.location.*
 import com.google.android.gms.location.LocationServices
@@ -37,7 +39,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 
+//말풍선에 붙일 클래스
 class BallonInfo (
+    val id : String,
     val phone : String,
     val address : String
         )
@@ -69,24 +73,26 @@ class MapActivity : AppCompatActivity(){
     private var y : String? = null //현재 위치 y좌표. null인 경우는 못 불러온 경우임.
     private val REQUEST_PERMISSION_LOCATION = 10
 
+    private val eventListener = MarkerEventListener(this)   // 마커 클릭 이벤트 리스너
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mapbinding = ActivityMapBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        mapView = MapView(this)
+        mapView = MapView(this) //맵 뷰 생성
         binding.mapview.addView(mapView)
 
         //https://fre2-dom.tistory.com/134?category=949323
+        //위치정보 권한 요청
         mLocationRequest =  LocationRequest.create().apply {
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
 
-        mapView!!.setCalloutBalloonAdapter(CustomBallonAdapter(layoutInflater)) //커스텀 말풍선 등록
+        //커스텀 말풍선 등록
+        mapView!!.setCalloutBalloonAdapter(CustomBallonAdapter(layoutInflater, this))
+        mapView!!.setPOIItemEventListener(eventListener)  // 마커 클릭 이벤트 리스너 등록
 
-        var clipboardManager = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-        val clip: ClipData = ClipData.newPlainText("simple text", "Hello, World!")
     }
 
 
@@ -94,14 +100,12 @@ class MapActivity : AppCompatActivity(){
         super.onStart()
 
 
-        if (checkLocationService()) {
-            // GPS가 켜져있을 경우
-            startLocationUpdates() //추적
-            permissionCheck()
+        if (checkLocationService()) { // GPS가 켜져있을 경우
 
+            startLocationUpdates() //사용자 현재 위치 추적
+            permissionCheck() //위치 권한 체크
 
-        } else {
-            // GPS가 꺼져있을 경우
+        } else { // GPS가 꺼져있을 경우
             Toast.makeText(this, "GPS를 켜주세요", Toast.LENGTH_SHORT).show()
         }
 
@@ -137,6 +141,7 @@ class MapActivity : AppCompatActivity(){
         x = location.longitude.toString() //현재 x좌표
         y = location.latitude.toString() //현재 y좌표
 
+        //현재 좌표를 설정한 뒤 키워드 검색 결과를 받아옴
         Handler().postDelayed({
             searchKeyword("정형외과", x!!, y!!)
         }, 1000)
@@ -183,7 +188,7 @@ class MapActivity : AppCompatActivity(){
             }
         } else {
             // 권한이 있는 상태
-            startTracking()
+            startTracking() //카카오맵 위치 트래킹 시작
 
         }
     }
@@ -245,7 +250,7 @@ class MapActivity : AppCompatActivity(){
                 Log.d("Test", "Raw: ${response.raw()}")
                 Log.d("Test", "Body: ${response.body()}")
 
-                drawMapMarker(response.body()!!)
+                drawMapMarker(response.body()!!) //통신 결과를 마커로 뿌려주기
 
 
             }
@@ -270,19 +275,20 @@ class MapActivity : AppCompatActivity(){
                 customSelectedImageResourceId = R.drawable.markerhosele       // 클릭 시 커스텀 마커 이미지
                 isCustomImageAutoscale = false      // 커스텀 마커 이미지 크기 자동 조정
                 setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
-                userObject = BallonInfo(place.phone, place.road_address_name)
+                userObject = BallonInfo(place.id ,place.phone, place.road_address_name) //커스텀 오브젝트 붙여주기
             }
             mapView!!.addPOIItem(marker)
         }
     }
 
 
-    class CustomBallonAdapter(inflater: LayoutInflater): CalloutBalloonAdapter {
+    class CustomBallonAdapter(inflater: LayoutInflater, context: Context): CalloutBalloonAdapter {
         val mCalloutBalloon: View = inflater.inflate(R.layout.customballon, null)
         val name: TextView = mCalloutBalloon.findViewById(R.id.placename)
         val phone: TextView = mCalloutBalloon.findViewById(R.id.placephone)
         val address: TextView = mCalloutBalloon.findViewById(R.id.placeaddress)
 
+        val mapContext = context
 
 
         override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
@@ -298,8 +304,35 @@ class MapActivity : AppCompatActivity(){
             //말풍선 클릭 시 실행됨
 
 
+            //val ballonInfo :BallonInfo = poiItem?.userObject as BallonInfo
+            //val urladdress = "https://map.kakao.com/link/to/" + ballonInfo.id
+            //val intent = Intent(Intent.ACTION_VIEW, Uri.parse(urladdress))
+            //startActivity(mapContext, intent, null)
 
             return mCalloutBalloon
+        }
+    }
+
+
+    class MarkerEventListener(val context: Context): MapView.POIItemEventListener {
+        override fun onPOIItemSelected(p0: MapView?, p1: MapPOIItem?) {
+
+        }
+
+        override fun onCalloutBalloonOfPOIItemTouched(p0: MapView?, p1: MapPOIItem?) {
+
+        }
+
+        override fun onCalloutBalloonOfPOIItemTouched(mapView: MapView?, poiItem: MapPOIItem?, buttonType: MapPOIItem.CalloutBalloonButtonType?) {
+
+            val ballonInfo :BallonInfo = poiItem?.userObject as BallonInfo
+            val urladdress = "https://place.map.kakao.com/" + ballonInfo.id
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(urladdress))
+            startActivity(context, intent, null)
+        }
+
+        override fun onDraggablePOIItemMoved(p0: MapView?, p1: MapPOIItem?, p2: MapPoint?) {
+
         }
     }
 }
