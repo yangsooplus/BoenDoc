@@ -125,5 +125,5 @@ data class DiagnosisResponse(
 
 interface DiagnosisService{
     @POST("/diagnosis/{id}")
-    fun searchDiseasebyString(@Path("id") id:Long, @Body dis1:String,@Body dis2:String,@Body dis3:String) : Call<DiagnosisResponse>
+    fun searchDiseasebyString(@Path("id") id:Long, @Body dis1:String, dis2:String, dis3:String) : Call<DiagnosisResponse>
 }
