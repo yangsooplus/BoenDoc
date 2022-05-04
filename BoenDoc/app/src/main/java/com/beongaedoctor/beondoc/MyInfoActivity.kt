@@ -47,6 +47,15 @@ class MyInfoActivity : AppCompatActivity() {
         retrofit = RetrofitClass.getInstance()
         memberService = retrofit.create(MemberService::class.java)
 
+
+
+
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+
         //기기에 저장된 유저 정보
         val gsonMemberInfo = sp!!.getString("memberInfo","")
         memberInfo = gson!!.fromJson(gsonMemberInfo, Member::class.java)
@@ -71,34 +80,31 @@ class MyInfoActivity : AppCompatActivity() {
         binding.reuserheight.hint = memberInfo!!.height
         binding.reuserweight.hint = memberInfo!!.weight
 
-    }
 
-    override fun onStart() {
-        super.onStart()
-
-        binding.reviseDone.setOnClickListener {
-            reviseMyInfo(this)
-        }
 
         binding.reusernameBtn.setOnClickListener {
-            if(!binding.reusername.text.isNullOrBlank())
+            if(binding.reusername.text.isNotBlank())
                 memberInfo!!.name = binding.reusername.text.toString()
         }
 
         binding.reuserageBtn.setOnClickListener {
-            if(!binding.reuserage.text.isNullOrBlank())
+            if(binding.reuserage.text.isNotBlank())
                 memberInfo!!.age = binding.reuserage.text.toString()
         }
 
         binding.reuserheightBtn.setOnClickListener {
-            if(!binding.reuserheight.text.isNullOrBlank())
+            if(binding.reuserheight.text.isNotBlank())
                 memberInfo!!.height = binding.reuserheight.text.toString()
 
         }
-        binding.reuserweight.setOnClickListener {
-            if(!binding.reuserweight.text.isNullOrBlank())
+        binding.reuserweightBtn.setOnClickListener {
+            if(binding.reuserweight.text.isNotBlank())
                 memberInfo!!.weight = binding.reuserweight.text.toString()
 
+        }
+
+        binding.reviseDone.setOnClickListener {
+            reviseMyInfo(this)
         }
 
     }
@@ -109,6 +115,10 @@ class MyInfoActivity : AppCompatActivity() {
         val editor : SharedPreferences.Editor = sp!!.edit()
         editor.putString("memberInfo",memberInfo_)
         editor.apply()
+
+        val gsonMemberInfo_ = sp!!.getString("memberInfo","")
+        val test = gson!!.fromJson(gsonMemberInfo_, Member::class.java)
+        println(test)
 
 
         //DB 정보 수정 요청

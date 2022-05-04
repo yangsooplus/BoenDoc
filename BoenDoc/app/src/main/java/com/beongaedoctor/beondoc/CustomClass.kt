@@ -45,7 +45,7 @@ interface MemberService {
     @POST("api/members")
     fun setProfile(@Body profile: Member) : Call<Member>
 
-    @PUT("api/members")
+    @PUT("api/members/{id}")
     fun reviseProfile(@Path("id") id : Long, @Body profile: Member) : Call<Member>
 }
 
