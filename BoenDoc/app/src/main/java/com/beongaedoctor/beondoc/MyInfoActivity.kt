@@ -118,12 +118,13 @@ class MyInfoActivity : AppCompatActivity() {
 
         val gsonMemberInfo_ = sp!!.getString("memberInfo","")
         val test = gson!!.fromJson(gsonMemberInfo_, Member::class.java)
-        println(test)
+        println(memberInfo)
 
 
         //DB 정보 수정 요청
-        memberService!!.reviseProfile(memberInfo!!.id, memberInfo!!).enqueue(object : Callback<Member> {
-            override fun onResponse(call: Call<Member>, response: Response<Member>) {
+        memberService!!.reviseProfile(memberInfo!!.id, memberInfo!!
+        ).enqueue(object : Callback<UpdateMemberResponse> {
+            override fun onResponse(call: Call<UpdateMemberResponse>, response: Response<UpdateMemberResponse>) {
                 if (response.isSuccessful) {
                     Toast.makeText(context, "회원 정보 수정", Toast.LENGTH_LONG).show()//변경 알림
                     val mypageIntent = Intent(context, MainMypageActivity::class.java)
@@ -131,7 +132,7 @@ class MyInfoActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onFailure(call: Call<Member>, t: Throwable) {
+            override fun onFailure(call: Call<UpdateMemberResponse>, t: Throwable) {
                 println(t.message)
 
                 //나중에 아래 지우기

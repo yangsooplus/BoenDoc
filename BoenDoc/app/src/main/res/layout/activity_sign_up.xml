@@ -33,7 +33,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="60dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="56dp"
                 android:fontFamily="@font/spoqahansansneomedium"
                 android:text="이메일"
                 android:textColor="@color/black"
@@ -287,45 +287,20 @@
 
             </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="60dp"
-                android:layout_marginTop="20dp"
-                android:fontFamily="@font/spoqahansansneomedium"
-                android:text="과거력"
-                android:textColor="@color/black"
-                android:textSize="14sp" />
 
-            <EditText
-                android:id="@+id/anamnesis"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="60dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="20dp"
-                android:background="@color/lightgray"
-                android:fontFamily="@font/spoqahansansneolight"
-                android:hint="    과거력이 있다면 적어주세요\n     ,로 구분하여 적어주세요\nex)고혈압, 당뇨"
-                android:imeOptions="actionDone"
-                android:padding="5dp"
-                android:privateImeOptions="defaultInputmode=korean"
-                android:textSize="14sp" />
+
 
         </LinearLayout>
     </ScrollView>
 
-    <Button
-        android:id="@+id/signup_btn"
-        android:layout_width="match_parent"
+
+    <ImageView
+        android:id="@+id/singupNextBtn"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginHorizontal="32dp"
-        android:background="@drawable/roundbtn"
-        android:text="회원가입"
-        android:textSize="20sp"
-        android:textColor="@color/white"
-        android:fontFamily="@font/spoqahansansneobold"
+        android:src="@drawable/nextbtn"
+        android:layout_gravity="right"
+        android:layout_margin="16dp"
         />
 
 </LinearLayout>

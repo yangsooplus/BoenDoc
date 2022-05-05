@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         val gson = GsonBuilder().create()
 
         if (sp != null) {
-            val gsonMemberInfo = sp!!.getString("memberInfo","")
+            val gsonMemberInfo = sp?.getString("memberInfo","")
             val testMemberInfo : Member = gson!!.fromJson(gsonMemberInfo, Member::class.java)
             binding.username.text = testMemberInfo.name
         }

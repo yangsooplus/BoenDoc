@@ -1,8 +1,10 @@
 package com.beongaedoctor.beondoc
 
+import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 import retrofit2.Call
 import retrofit2.http.*
+import java.io.Serializable
 import java.time.LocalDateTime
 
 data class MemberList(
@@ -27,10 +29,65 @@ data class Member (
     @SerializedName("weight")
     var weight : String = "",
     @SerializedName("gender")
-    var gender : Long = 0
-        )
+    var gender : Long = 0,
+    @SerializedName("drug")
+    var drug : String = "",
+    @SerializedName("social")
+    var social : String = "",
+    @SerializedName("family")
+    var family : String = "",
+    @SerializedName("trauma")
+    var trauma : String = "",
+    @SerializedName("femininity")
+    var femininity : String = ""
+    //@SerializedName("basicExam")
+    //var basicExam: BasicExam? = null
+        ) : Serializable
 
 
+data class UpdateMemberResponse (
+    @SerializedName("id")
+    var id : Long = 0,
+    @SerializedName("loginId")
+    var loginId: String = "",
+    @SerializedName("password")
+    var password: String = "",
+    @SerializedName("name")
+    var name : String = "",
+    @SerializedName("age")
+    var age : String = "",
+    @SerializedName("height")
+    var height : String = "",
+    @SerializedName("weight")
+    var weight : String = "",
+    @SerializedName("gender")
+    var gender : Long = 0,
+    @SerializedName("drug")
+    var drug : String = "",
+    @SerializedName("social")
+    var social : String = "",
+    @SerializedName("family")
+    var family : String = "",
+    @SerializedName("trauma")
+    var trauma : String = "",
+    @SerializedName("femininity")
+    var femininity : String = ""
+    //@SerializedName("basicExam")
+    //var basicExam: BasicExam? = null
+)
+
+data class BasicExam(
+    @SerializedName("drug")
+    var drug : String = "",
+    @SerializedName("social")
+    var social : String = "",
+    @SerializedName("family")
+    var family : String = "",
+    @SerializedName("trauma")
+    var trauma : String = "",
+    @SerializedName("femininity")
+    var femininity : String = ""
+)
 
 interface MemberService {
     @GET("api/members")
@@ -45,8 +102,13 @@ interface MemberService {
     @POST("api/members")
     fun setProfile(@Body profile: Member) : Call<Member>
 
+
+
+
     @PUT("api/members/{id}")
-    fun reviseProfile(@Path("id") id : Long, @Body profile: Member) : Call<Member>
+    @Headers("Content-Type:application/x-www-form-urlencoded; charset=utf-8")
+    fun reviseProfile(@Path("id") id : Long
+                      , @Body member: Member) : Call<UpdateMemberResponse>
 }
 
 
@@ -62,11 +124,38 @@ interface LoginService {
     @POST("api/login")
     fun requestLogin(@Body data: Login) : Call<LoginResponse>
 
+    @POST("api/loginV2")
+    fun requestLogin2(@Body data: Login) : Call<Member>
+
 }
 
 data class LoginResponse(
-    @SerializedName("member")
-    var member : Member
+    @SerializedName("id")
+    var id : Long = 0,
+    @SerializedName("loginId")
+    var loginId: String = "",
+    @SerializedName("password")
+    var password: String = "",
+    @SerializedName("name")
+    var name : String = "",
+    @SerializedName("age")
+    var age : String = "",
+    @SerializedName("height")
+    var height : String = "",
+    @SerializedName("weight")
+    var weight : String = "",
+    @SerializedName("gender")
+    var gender : Long = 0,
+    @SerializedName("drug")
+    var drug : String = "",
+    @SerializedName("social")
+    var social : String = "",
+    @SerializedName("family")
+    var family : String = "",
+    @SerializedName("trauma")
+    var trauma : String = "",
+    @SerializedName("femininity")
+    var femininity : String = ""
     )
 
 
@@ -112,18 +201,10 @@ data class DiagnosisResponse(
     @SerializedName("disease1")
     var disease1 : String,
     @SerializedName("info1")
-    var info1 : String,
-    @SerializedName("disease2")
-    var disease2 : String,
-    @SerializedName("info2")
-    var info2 : String,
-    @SerializedName("disease3")
-    var disease3 : String,
-    @SerializedName("info3")
-    var info3 : String
+    var info1 : String
 )
 
 interface DiagnosisService{
-    @POST("/diagnosis/{id}")
-    fun searchDiseasebyString(@Path("id") id:Long, @Body dis1:String, dis2:String, dis3:String) : Call<DiagnosisResponse>
+    @POST("api/diagnosis/{id}")
+    fun searchDiseasebyString(@Path("id") id:Long, @Body diseaseName1:String) : Call<DiagnosisResponse>
 }

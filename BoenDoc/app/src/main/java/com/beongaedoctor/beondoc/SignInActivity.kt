@@ -1,14 +1,10 @@
 package com.beongaedoctor.beondoc
 
-import android.app.Dialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.beongaedoctor.beondoc.databinding.ActivitySignInBinding
 import com.google.gson.Gson
@@ -45,7 +41,7 @@ class SignInActivity : AppCompatActivity() {
         gson = GsonBuilder().create()
         dialog = LoadingDialog(this)
 
-
+        /*
         profileService.getAllProfile().enqueue(object : Callback<MemberList> {
             override fun onResponse(call: Call<MemberList>, response: Response<MemberList>) {
                 if (response.isSuccessful) {
@@ -69,6 +65,7 @@ class SignInActivity : AppCompatActivity() {
 
         })
 
+         */
         SIABinding = ActivitySignInBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -126,14 +123,17 @@ class SignInActivity : AppCompatActivity() {
         val loginInfo = Login(email, pw)
         val loginService = retrofit.create(LoginService::class.java)
 
-        loginService.requestLogin(loginInfo).enqueue(object : Callback<LoginResponse> {
-            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+        loginService.requestLogin2(loginInfo).enqueue(object : Callback<Member> {
+            override fun onResponse(call: Call<Member>, response: Response<Member>) {
+
                 if (response.isSuccessful) {
                     println("로그인성공")
+                    println(response.errorBody()?.toString())
                     println(response.body().toString())
 
+
                     //기기에도 정보 저장 - SharedPreferences
-                    val memberInfo = gson!!.toJson(response.body()?.member, Member::class.java)
+                    val memberInfo = gson!!.toJson(response.body(), Member::class.java)
                     val editor : SharedPreferences.Editor = sp!!.edit()
                     editor.putString("memberInfo", memberInfo)
                     editor.commit()
@@ -157,14 +157,14 @@ class SignInActivity : AppCompatActivity() {
                 else {
                     //로딩창 종료
                     dialog!!.dismiss()
-                    println("로그인 연결은 성공, 근데 통신은 안됨")
+                    //println("로그인 연결은 성공, 근데 통신은 안됨")
                     println(response.errorBody()!!.string())
                 }
             }
 
-            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                println(t.message)
-                println("여기임ㅋㅋ")
+            override fun onFailure(call: Call<Member>, t: Throwable) {
+                //println(t.message)
+                //println("여기임ㅋㅋ")
                 Toast.makeText(SIAContext, "접속 실패 하지만 넘어가", Toast.LENGTH_LONG).show()
                 val mainIntent = Intent(SIAContext, MainActivity::class.java)
                 startActivity(mainIntent)
@@ -172,6 +172,56 @@ class SignInActivity : AppCompatActivity() {
 
         })
 
+        /*
+        loginService.requestLogin(loginInfo).enqueue(object : Callback<LoginResponse> {
+            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
+
+                if (response.isSuccessful) {
+                    println("로그인성공")
+                    println(response.errorBody()?.toString())
+                    println(response.body().toString())
+                    val member = response.body()?.let { saveMember(it) }
+
+                    //기기에도 정보 저장 - SharedPreferences
+                    val memberInfo = gson!!.toJson(member, Member::class.java)
+                    val editor : SharedPreferences.Editor = sp!!.edit()
+                    editor.putString("memberInfo", memberInfo)
+                    editor.commit()
+
+                    //로딩창 종료
+                    dialog!!.dismiss()
+
+                    //유효하면 메인 액티비티로 이동
+                    Toast.makeText(SIAContext, "로그인 성공", Toast.LENGTH_SHORT).show()
+
+
+                    if (binding.autologin.isChecked) {
+                        editor.putString("Email", email)
+                        editor.putString("Pw", pw)
+                        editor.putBoolean("auto", true)
+                        editor.commit()
+                    }
+
+                    gotoMain(SIAContext)
+                }
+                else {
+                    //로딩창 종료
+                    dialog!!.dismiss()
+                    //println("로그인 연결은 성공, 근데 통신은 안됨")
+                    println(response.errorBody()!!.string())
+                }
+            }
+
+            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                //println(t.message)
+                //println("여기임ㅋㅋ")
+                Toast.makeText(SIAContext, "접속 실패 하지만 넘어가", Toast.LENGTH_LONG).show()
+                val mainIntent = Intent(SIAContext, MainActivity::class.java)
+                startActivity(mainIntent)
+            }
+
+        })
+*/
 
     }
 
@@ -179,6 +229,24 @@ class SignInActivity : AppCompatActivity() {
         val mainIntent = Intent(SIAContext, MainActivity::class.java)
         startActivity(mainIntent)
 
+    }
+
+    fun saveMember(body: LoginResponse): Member {
+        return Member(
+            body.id,
+            body.loginId,
+            body.password,
+            body.name,
+            body.age,
+            body.height,
+            body.weight,
+            body.gender,
+            body.drug,
+            body.social,
+            body.family,
+            body.trauma,
+            body.femininity
+        )
     }
 }
 

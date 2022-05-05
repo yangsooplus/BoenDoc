@@ -11,6 +11,7 @@ import android.util.Patterns
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import com.beongaedoctor.beondoc.databinding.ActivitySignInBinding
 import com.beongaedoctor.beondoc.databinding.ActivitySignUpBinding
 import com.google.gson.Gson
@@ -52,8 +53,8 @@ class SignUpActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         //서버 연결
-        retrofit = RetrofitClass.getInstance()
-        memberService = retrofit.create(MemberService::class.java)
+        //retrofit = RetrofitClass.getInstance()
+        //memberService = retrofit.create(MemberService::class.java)
 
         //데이터 저장
         sp = getSharedPreferences("shared",MODE_PRIVATE);
@@ -154,22 +155,19 @@ class SignUpActivity : AppCompatActivity() {
 
 
 
-
-
-
-
-        binding.signupBtn.setOnClickListener {
+        binding.singupNextBtn.setOnClickListener {
             //제한 조건을 충족하면 User data class에 값 넣기
-            if (passwordAccord && emailValidation)
+            if (passwordAccord && emailValidation) {
                 saveUser()
 
+                //문제 없을 시 로그인 화면으로 이동 (혹은 자동 로그인 후 메인으로 이동)
+                val BEIntent = Intent(this, BasicExamActivity::class.java)
+                BEIntent.putExtra("member", member)
+                startActivity(BEIntent)
+
+            }
 
 
-
-
-            //문제 없을 시 로그인 화면으로 이동 (혹은 자동 로그인 후 메인으로 이동)
-            val mainIntent = Intent(this, MainActivity::class.java)
-            startActivity(mainIntent)
         }
     }
 
@@ -182,7 +180,7 @@ class SignUpActivity : AppCompatActivity() {
         return anamesis
     }
 
-    fun saveUser() {
+    private fun saveUser() {
         member.loginId = binding.email.text.toString()
         member.password = binding.password.text.toString()
         member.name = binding.name.text.toString()
@@ -192,8 +190,10 @@ class SignUpActivity : AppCompatActivity() {
         member.age = binding.age.text.toString()
         //member.anamnesis = cutAnamesis(binding.anamnesis.text.toString())
 
-
+        return
         //user 정보 db에 저장.
+
+        /*
         memberService!!.setProfile(member).enqueue(object : Callback<Member> {
             override fun onResponse(call: Call<Member>, response: Response<Member>) {
                 if (response.isSuccessful)
@@ -206,18 +206,18 @@ class SignUpActivity : AppCompatActivity() {
                 println("그냥 안됨")
             }
         })
-
+        */
 
         //기기에도 정보 저장 - SharedPreferences
-        val memberInfo = gson!!.toJson(member, Member::class.java)
-        val editor : SharedPreferences.Editor = sp!!.edit()
-        editor.putString("memberInfo",memberInfo);
-        editor.apply();
+        //val memberInfo = gson!!.toJson(member, Member::class.java)
+        //val editor : SharedPreferences.Editor = sp!!.edit()
+        //editor.putString("memberInfo",memberInfo);
+        //editor.apply();
 
         //테스트용 불러오기 - SharedPreferences
-        val gsonMemberInfo = sp!!.getString("memberInfo","")
-        val testMemberInfo : Member = gson!!.fromJson(gsonMemberInfo, Member::class.java)
-        println(testMemberInfo.name + "정보 불러왔음")
+        //val gsonMemberInfo = sp!!.getString("memberInfo","")
+        //val testMemberInfo : Member = gson!!.fromJson(gsonMemberInfo, Member::class.java)
+        //println(testMemberInfo.name + "정보 불러왔음")
 
     }
 

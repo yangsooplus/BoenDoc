@@ -1,9 +1,12 @@
 package com.beongaedoctor.beondoc
 
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.beongaedoctor.beondoc.databinding.ActivityResultBinding
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -25,6 +28,9 @@ class ResultActivity : AppCompatActivity() {
 
     private lateinit var retrofit: Retrofit
 
+    private var sp : SharedPreferences? = null
+    private var gson : Gson? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,13 +41,23 @@ class ResultActivity : AppCompatActivity() {
         retrofit = RetrofitClass.getInstance()
         val diagnosisService = retrofit.create(DiagnosisService::class.java)
 
-        /*
-        diagnosisService.searchDiseasebyString(1,"탈모","비염","웃음").enqueue(object : Callback<DiagnosisResponse> {
+
+        //데이터 저장
+        sp = getSharedPreferences("shared",MODE_PRIVATE)
+        gson = GsonBuilder().create()
+
+        //기기에 저장된 유저 정보
+        val gsonMemberInfo = sp!!.getString("memberInfo","")
+        val memberInfo = gson!!.fromJson(gsonMemberInfo, Member::class.java)
+
+        diagnosisService.searchDiseasebyString(memberInfo.id,"탈모").enqueue(object : Callback<DiagnosisResponse> {
             override fun onResponse(
                 call: Call<DiagnosisResponse>,
                 response: Response<DiagnosisResponse>
             ) {
+                println(response.errorBody()?.string())
                 if (response.isSuccessful) {
+                    println("여기에용~~~ㅍ")
                     println(response.body())
                 }
             }
@@ -51,7 +67,7 @@ class ResultActivity : AppCompatActivity() {
             }
 
         })
-        */
+
 
 
         binding.otherResultList.adapter = OtherResultAdapter(this, otherResultList)

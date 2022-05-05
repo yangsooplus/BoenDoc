@@ -151,8 +151,8 @@ class MyPwActivity : AppCompatActivity() {
 
 
         //DB 비밀번호 수정 요청
-        memberService!!.reviseProfile(member!!.id, member!!).enqueue(object : Callback<Member>{
-            override fun onResponse(call: Call<Member>, response: Response<Member>) {
+        memberService!!.reviseProfile(member!!.id, member!!).enqueue(object : Callback<UpdateMemberResponse>{
+            override fun onResponse(call: Call<UpdateMemberResponse>, response: Response<UpdateMemberResponse>) {
                 if (response.isSuccessful) {
                     Toast.makeText(context, "비밀번호를 변경했습니다..", Toast.LENGTH_LONG).show()//변경 알림
                     val mypageIntent = Intent(context, MainMypageActivity::class.java)
@@ -160,7 +160,7 @@ class MyPwActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onFailure(call: Call<Member>, t: Throwable) {
+            override fun onFailure(call: Call<UpdateMemberResponse>, t: Throwable) {
                 println(t.message)
 
                 //나중에 아래 지우기

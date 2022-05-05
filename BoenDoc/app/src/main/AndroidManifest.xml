@@ -19,6 +19,9 @@
         android:theme="@style/Theme.BeonDoc"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".BasicExamActivity"
+            android:exported="false" />
+        <activity
             android:name=".RecordActivity"
             android:exported="true" />
         <activity
