@@ -26,7 +26,7 @@ object RetrofitClass {
 
             val client = OkHttpClient.Builder()
                 .addInterceptor(interceptor)
-                .connectTimeout(20000L, TimeUnit.SECONDS)
+                .connectTimeout(10L, TimeUnit.SECONDS)
                 .build()
 
             instance = Retrofit.Builder()

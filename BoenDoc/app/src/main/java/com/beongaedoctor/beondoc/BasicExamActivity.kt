@@ -3,9 +3,9 @@ package com.beongaedoctor.beondoc
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.BaseAdapter
 import android.widget.EditText
 import androidx.fragment.app.Fragment
+import com.beongaedoctor.beondoc.Fragment.*
 import com.beongaedoctor.beondoc.databinding.ActivityBasicExamBinding
 import retrofit2.Call
 import retrofit2.Callback
