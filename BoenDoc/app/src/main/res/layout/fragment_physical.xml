@@ -66,7 +66,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:fontFamily="@font/spoqahansansneolight"
-        android:text="(예) 1년 전 교통사고, 위암 수술, 만성 간염, 고혈압 등... "
+        android:text="(예) 위암 수술,1년 전 교통사고, 만성 간염, 고혈압 등... "
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
@@ -78,7 +78,8 @@
         android:layout_height="160dp"
         android:layout_marginTop="32dp"
         android:padding="10dp"
-        android:hint="자유로운 형식으로 입력해주세요"
+        android:hint="자유로운 형식으로 입력해주세요. \n해당사항이 없으면 적지 않으셔도 됩니다."
+        android:textSize="16sp"
         android:gravity="left"
         android:fontFamily="@font/spoqahansansneomedium"
         android:background="@drawable/semiroundbtng"

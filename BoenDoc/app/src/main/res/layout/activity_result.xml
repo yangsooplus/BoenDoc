@@ -95,8 +95,8 @@
 
             <ListView
                 android:id="@+id/otherResultList"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:dividerHeight="5dp"
                 android:divider="@color/white"
                 />
@@ -109,9 +109,9 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginVertical="8dp"
+        android:layout_height="50dp"
+        android:layout_marginHorizontal="4dp"
+        android:layout_marginVertical="4dp"
         android:orientation="horizontal"
         android:weightSum="2">
 
@@ -120,8 +120,8 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:layout_marginRight="8dp"
-            android:background="@drawable/roundbtn"
+            android:layout_marginRight="2dp"
+            android:background="@drawable/semiroundbtn"
             android:text="가까운 약국 찾기"
             android:textSize="16sp"
             android:textColor="@color/white"
@@ -134,8 +134,8 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="8dp"
-            android:background="@drawable/roundbtn"
+            android:layout_marginLeft="2dp"
+            android:background="@drawable/semiroundbtn"
             android:text="가까운 병원 찾기"
             android:textSize="16sp"
             android:textColor="@color/white"

@@ -163,6 +163,7 @@ class SignUpActivity : AppCompatActivity() {
                 //문제 없을 시 로그인 화면으로 이동 (혹은 자동 로그인 후 메인으로 이동)
                 val BEIntent = Intent(this, BasicExamActivity::class.java)
                 BEIntent.putExtra("member", member)
+                BEIntent.putExtra("isRevise", false)
                 startActivity(BEIntent)
 
             }
@@ -172,13 +173,6 @@ class SignUpActivity : AppCompatActivity() {
     }
 
 
-    fun cutAnamesis(data: String): List<String> {
-        var anamesis = emptyList<String>()
-        if (data.isNotEmpty()) {
-            anamesis = data.replace(" ", "").split(',')
-        }
-        return anamesis
-    }
 
     private fun saveUser() {
         member.loginId = binding.email.text.toString()

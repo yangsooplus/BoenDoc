@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="40dp"
+    android:backgroundTint="@color/white"
     tools:context="Fragment.FamilyFragment">
 
 
@@ -75,7 +76,8 @@
         android:layout_height="160dp"
         android:layout_marginTop="32dp"
         android:padding="10dp"
-        android:hint="자유로운 형식으로 입력해주세요"
+        android:hint="자유로운 형식으로 입력해주세요. \n해당사항이 없으면 적지 않으셔도 됩니다."
+        android:textSize="16sp"
         android:gravity="left"
         android:fontFamily="@font/spoqahansansneomedium"
         android:background="@drawable/semiroundbtng"

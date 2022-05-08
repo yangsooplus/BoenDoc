@@ -52,25 +52,34 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:fontFamily="@font/spoqahansansneobold"
-        android:text="사회력을 알려주세요"
+        android:text="사회력을 알려주세요\n(술, 담배, 커피, 직업, 생활습관 등..)"
         android:textColor="@color/black"
         android:textSize="22sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
 
-
-    <EditText
-        android:id="@+id/socialJob"
+    <TextView
+        android:id="@+id/textView5"
         android:layout_width="match_parent"
-        android:layout_height="160dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="188dp"
-        android:background="@drawable/semiroundbtng"
-        android:fontFamily="@font/spoqahansansneomedium"
-        android:gravity="left"
-        android:hint="자유로운 형식으로 입력해주세요"
-        android:padding="10dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/spoqahansansneolight"
+        android:text="(예) 음주 3회/주, 수험생, 흡연 1갑/일, 술 담배 안 함 등... "
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+    <EditText
+        android:id="@+id/socialedittext"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/semiroundbtng"
+        android:fontFamily="@font/spoqahansansneomedium"
+        android:textSize="16sp"
+        android:padding="10dp"
+        android:gravity="left"
+        android:hint="자유로운 형식으로 입력해주세요. \n해당사항이 없으면 적지 않으셔도 됩니다."
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

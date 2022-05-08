@@ -24,7 +24,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_margin="24dp"
+        android:layout_margin="48dp"
         android:layout_weight="1"
         android:orientation="vertical">
 
@@ -231,15 +231,7 @@
 
 
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/semiroundbtny"
-            android:fontFamily="@font/spoqahansansneomedium"
-            android:paddingHorizontal="16dp"
-            android:text="기초 문진 다시하기"
-            android:textColor="@color/white" />
+
 
 
 
@@ -251,11 +243,12 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_marginTop="20dp"
-        android:backgroundTint="@color/skyblue"
+        android:background="@drawable/semiroundbtn"
         android:fontFamily="@font/spoqahansansneomedium"
         android:text="회원 정보 수정"
         android:textColor="@color/white"
-        android:textSize="16sp"/>
+        android:textSize="18sp"
+        />
 
 
 </LinearLayout>

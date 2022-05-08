@@ -14,6 +14,8 @@ class MainMypageActivity : AppCompatActivity() {
     // 매번 null 체크 하지 않도록 바인딩 변수 재선언
     private val binding get() = mainmpbinding!!
 
+    lateinit var memberInfo : Member
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,9 +27,9 @@ class MainMypageActivity : AppCompatActivity() {
 
         if (sp != null) {
             val gsonMemberInfo = sp!!.getString("memberInfo","")
-            val MemberInfo : Member = gson!!.fromJson(gsonMemberInfo, Member::class.java)
-            binding.username.text = MemberInfo.name
-            binding.useremail.text = MemberInfo.loginId
+            memberInfo = gson!!.fromJson(gsonMemberInfo, Member::class.java)
+            binding.username.text = memberInfo.name
+            binding.useremail.text = memberInfo.loginId
         }
         else {
             binding.username.text = "사용자X"
@@ -45,6 +47,14 @@ class MainMypageActivity : AppCompatActivity() {
         binding.pwrevisebtn.setOnClickListener {
             val intent = Intent(this, MyPwActivity::class.java)
             startActivity(intent)
+        }
+
+        binding.berevisebtn.setOnClickListener {
+            val intent = Intent(this, BasicExamActivity::class.java)
+            intent.putExtra("member", memberInfo)
+            intent.putExtra("isRevise", true)
+            startActivity(intent)
+
         }
 
         binding.recordbtn.setOnClickListener {
