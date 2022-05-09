@@ -87,7 +87,7 @@
 
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="뭔가 추가 컨텐츠가 있으면 이 곳에 들어갑니다. 질환 이름은 고정된 채 이부분부터 아래 버튼까지의 공간이 스크롤 됩니다." />
 
@@ -95,7 +95,7 @@
 
             <ListView
                 android:id="@+id/otherResultList"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:dividerHeight="5dp"
                 android:divider="@color/white"

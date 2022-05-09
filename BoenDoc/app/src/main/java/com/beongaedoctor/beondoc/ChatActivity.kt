@@ -17,13 +17,14 @@ class ChatActivity : AppCompatActivity() {
 
     val chatItemList = arrayListOf<ChatItem>()
     val chatItemTestList = arrayListOf(
-        ChatItem(ChatItem.TYPE_LEFT,"언제부터 아팠나요?"),
-        ChatItem(ChatItem.TYPE_LEFT,"증상이 있는 부위가 어디인가요?"),
-        ChatItem(ChatItem.TYPE_LEFT,"증상이 얼마나 지속되었나요?"),
-        ChatItem(ChatItem.TYPE_LEFT,"증상의 양상이 어떤가요?"),
-        ChatItem(ChatItem.TYPE_LEFT,"이전에도 같은 증상을 경험한 적이 있나요?"),
-        ChatItem(ChatItem.TYPE_LEFT,"증상을 더 자세히 설명해주세요."),
-        ChatItem(ChatItem.TYPE_LEFT,"복용하고 계신 약물이 있다면 얘기해주세요.")
+
+        ChatItem(ChatItem.TYPE_LEFT, "언제부터 증상이 나타났나요?"),
+        ChatItem(ChatItem.TYPE_LEFT, "증상이 있는 부위가 어디인가요?"),
+        ChatItem(ChatItem.TYPE_LEFT, "증상이 얼마나 지속되었나요?"),
+        ChatItem(ChatItem.TYPE_LEFT, "증상의 양상이 어떤가요?"),
+        ChatItem(ChatItem.TYPE_LEFT, "이전에도 같은 증상을 경험한 적이 있나요? 혹은 처음 겪는 증상인가요?"),
+        ChatItem(ChatItem.TYPE_LEFT, "증상이 괜찮아지는 상황이 있다면 얘기해주세요."),
+
     )
     var chatResposeList = arrayListOf<String>()
 
@@ -43,7 +44,7 @@ class ChatActivity : AppCompatActivity() {
 
         chatItemList.add(ChatItem(ChatItem.TYPE_LEFT, "안녕하세요 번개닥터입니다."))
         (binding.chatRecyclerView.adapter as ChatAdapter).notifyItemInserted(0)
-        chatItemList.add(ChatItem(ChatItem.TYPE_LEFT, "현재 겪고 계신 주요 증상을 설명해주세요."))
+        chatItemList.add(ChatItem(ChatItem.TYPE_LEFT, "현재 겪고 계신 증상이 어떤가요? 발생하는 모든 증상과 특성을 자세히 설명해주세요."))
         (binding.chatRecyclerView.adapter as ChatAdapter).notifyItemInserted(1)
 
 

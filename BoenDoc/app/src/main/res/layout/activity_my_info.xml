@@ -50,11 +50,13 @@
                 android:layout_height="match_parent"
                 android:layout_weight="5"
                 android:layout_marginRight="10dp"
-                android:background="@color/lightgray"
-                android:privateImeOptions="defaultInputmode=korean"
+                android:background="@drawable/semiroundbtng"
                 android:paddingHorizontal="10dp"
                 android:fontFamily="@font/spoqahansansneolight"
                 android:textSize="12sp"
+                android:privateImeOptions="defaultInputmode=korean"
+                android:imeOptions="actionDone"
+                android:singleLine="true"
                 />
             <Button
                 android:id="@+id/reusernameBtn"
@@ -63,6 +65,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/semiroundbtn"
                 android:text="변경"
+                android:gravity="center"
                 android:fontFamily="@font/spoqahansansneobold"
                 android:textColor="@color/white"
                 />
@@ -100,6 +103,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/semiroundbtn"
                 android:text="변경"
+                android:gravity="center"
                 android:fontFamily="@font/spoqahansansneobold"
                 android:textColor="@color/white"
                 />
@@ -127,11 +131,13 @@
                 android:layout_height="match_parent"
                 android:layout_weight="5"
                 android:layout_marginRight="10dp"
-                android:background="@color/lightgray"
+                android:background="@drawable/semiroundbtng"
                 android:inputType="numberDecimal"
                 android:paddingHorizontal="10dp"
                 android:fontFamily="@font/spoqahansansneolight"
                 android:textSize="12sp"
+                android:imeOptions="actionDone"
+                android:singleLine="true"
                 />
             <Button
                 android:id="@+id/reuserageBtn"
@@ -140,6 +146,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/semiroundbtn"
                 android:text="변경"
+                android:gravity="center"
                 android:fontFamily="@font/spoqahansansneobold"
                 android:textColor="@color/white"
                 />
@@ -167,11 +174,13 @@
                 android:layout_height="match_parent"
                 android:layout_weight="5"
                 android:layout_marginRight="10dp"
-                android:background="@color/lightgray"
+                android:background="@drawable/semiroundbtng"
                 android:inputType="numberDecimal"
                 android:paddingHorizontal="10dp"
                 android:fontFamily="@font/spoqahansansneolight"
                 android:textSize="12sp"
+                android:imeOptions="actionDone"
+                android:singleLine="true"
                 />
             <Button
                 android:id="@+id/reuserheightBtn"
@@ -180,6 +189,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/semiroundbtn"
                 android:text="변경"
+                android:gravity="center"
                 android:fontFamily="@font/spoqahansansneobold"
                 android:textColor="@color/white"
                 />
@@ -208,11 +218,13 @@
                 android:layout_height="match_parent"
                 android:layout_weight="5"
                 android:layout_marginRight="10dp"
-                android:background="@color/lightgray"
+                android:background="@drawable/semiroundbtng"
                 android:inputType="numberDecimal"
                 android:paddingHorizontal="10dp"
                 android:fontFamily="@font/spoqahansansneolight"
                 android:textSize="12sp"
+                android:imeOptions="actionDone"
+                android:singleLine="true"
                 />
             <Button
                 android:id="@+id/reuserweightBtn"
@@ -221,6 +233,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/semiroundbtn"
                 android:text="변경"
+                android:gravity="center"
                 android:fontFamily="@font/spoqahansansneobold"
                 android:textColor="@color/white"
                 />
@@ -248,6 +261,7 @@
         android:text="회원 정보 수정"
         android:textColor="@color/white"
         android:textSize="18sp"
+        android:gravity="center"
         />
 
 

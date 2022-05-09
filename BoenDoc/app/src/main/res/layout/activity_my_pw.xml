@@ -41,11 +41,14 @@
         android:layout_width="match_parent"
         android:layout_height="32dp"
         android:layout_marginTop="5dp"
-        android:background="@color/lightgray"
-        android:privateImeOptions="defaultInputmode=korean"
+        android:background="@drawable/semiroundbtng"
         android:paddingHorizontal="10dp"
         android:fontFamily="@font/spoqahansansneolight"
         android:textSize="12sp"
+        android:imeOptions="actionDone"
+        android:inputType="textPassword"
+        android:privateImeOptions="defaultInputmode=english"
+        android:singleLine="true"
         />
 
 
@@ -64,8 +67,11 @@
         android:layout_width="match_parent"
         android:layout_height="32dp"
         android:layout_marginTop="5dp"
-        android:background="@color/lightgray"
-        android:privateImeOptions="defaultInputmode=korean"
+        android:imeOptions="actionDone"
+        android:inputType="textPassword"
+        android:privateImeOptions="defaultInputmode=english"
+        android:singleLine="true"
+        android:background="@drawable/semiroundbtng"
         android:paddingHorizontal="10dp"
         android:fontFamily="@font/spoqahansansneolight"
         android:textSize="12sp"
@@ -87,11 +93,14 @@
         android:layout_width="match_parent"
         android:layout_height="32dp"
         android:layout_marginTop="5dp"
-        android:background="@color/lightgray"
-        android:privateImeOptions="defaultInputmode=korean"
+        android:background="@drawable/semiroundbtng"
         android:paddingHorizontal="10dp"
         android:fontFamily="@font/spoqahansansneolight"
         android:textSize="12sp"
+        android:imeOptions="actionDone"
+        android:inputType="textPassword"
+        android:privateImeOptions="defaultInputmode=english"
+        android:singleLine="true"
         />
 
     <TextView
@@ -116,6 +125,7 @@
         android:background="@drawable/semiroundbtn"
         android:fontFamily="@font/spoqahansansneomedium"
         android:text="비밀번호 변경"
+        android:gravity="center"
         android:textColor="@color/white"
         android:textSize="18sp"/>
 

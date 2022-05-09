@@ -72,10 +72,16 @@ class ResultActivity : AppCompatActivity() {
 
         binding.otherResultList.adapter = OtherResultAdapter(this, otherResultList)
 
+        binding.gotoPharmacy.setOnClickListener {
+            val mapIntent = Intent(this, MapActivity::class.java)
+            mapIntent.putExtra("mapKeyword", "약국")
+            startActivity(mapIntent)
+        }
 
 
         binding.gotoHospital.setOnClickListener {
             val mapIntent = Intent(this, MapActivity::class.java)
+            mapIntent.putExtra("mapKeyword", "정형외과")
             startActivity(mapIntent)
         }
 

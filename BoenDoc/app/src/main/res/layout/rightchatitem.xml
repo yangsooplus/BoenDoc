@@ -18,7 +18,7 @@
         android:fontFamily="@font/spoqahansansneolight"
         android:paddingVertical="5dp"
         android:paddingStart="8dp"
-        android:paddingEnd="10dp"
+        android:paddingEnd="20dp"
         android:text="샘플대사입니다.ㅇ러ㅏㅇ너랑너랑너라ㅣㄴ언아렁나ㅣ러ㅏㅣㅇ너라ㅣㅇ너라ㅣㅇ너ㅏㄴ이ㅓ라ㅣㅇ너라ㅣ"
         android:textColor="@color/black"
         android:textSize="14sp"

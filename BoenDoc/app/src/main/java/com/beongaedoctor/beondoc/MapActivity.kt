@@ -2,6 +2,7 @@ package com.beongaedoctor.beondoc
 
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -71,14 +72,18 @@ class MapActivity : AppCompatActivity(){
 
     private var x : String? = null //현재 위치 x좌표.
     private var y : String? = null //현재 위치 y좌표. null인 경우는 못 불러온 경우임.
-    private val REQUEST_PERMISSION_LOCATION = 10
 
     private val eventListener = MarkerEventListener(this)   // 마커 클릭 이벤트 리스너
+
+    lateinit var mapKeyword : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mapbinding = ActivityMapBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        mapKeyword = intent.getStringExtra("mapKeyword").toString()
+
 
         mapView = MapView(this) //맵 뷰 생성
         binding.mapview.addView(mapView)
@@ -96,9 +101,10 @@ class MapActivity : AppCompatActivity(){
     }
 
 
+
     override fun onStart() {
         super.onStart()
-
+        binding.mapText.text = "가까운 $mapKeyword 를 추천해드릴게요"
 
         if (checkLocationService()) { // GPS가 켜져있을 경우
 
@@ -144,7 +150,7 @@ class MapActivity : AppCompatActivity(){
 
         //현재 좌표를 설정한 뒤 키워드 검색 결과를 받아옴
         Handler().postDelayed({
-            searchKeyword("정형외과", x!!, y!!)
+            searchKeyword(mapKeyword, x!!, y!!)
         }, 1000)
     }
 
@@ -267,17 +273,34 @@ class MapActivity : AppCompatActivity(){
     private fun drawMapMarker(response: ResultSearchKeyword) {
         for (place in response.documents) {
             val marker = MapPOIItem()
-            marker.apply {
-                itemName = place.place_name
-                mapPoint = MapPoint.mapPointWithGeoCoord(place.y.toDouble(), place.x.toDouble())
-                markerType = MapPOIItem.MarkerType.CustomImage
-                customImageResourceId = R.drawable.markerhos
-                selectedMarkerType = MapPOIItem.MarkerType.CustomImage  // 클릭 시 마커 모양
-                customSelectedImageResourceId = R.drawable.markerhosele       // 클릭 시 커스텀 마커 이미지
-                isCustomImageAutoscale = false      // 커스텀 마커 이미지 크기 자동 조정
-                setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
-                userObject = BallonInfo(place.id ,place.phone, place.road_address_name) //커스텀 오브젝트 붙여주기
+
+            if (mapKeyword.equals("약국")) {
+                marker.apply {
+                    itemName = place.place_name
+                    mapPoint = MapPoint.mapPointWithGeoCoord(place.y.toDouble(), place.x.toDouble())
+                    markerType = MapPOIItem.MarkerType.CustomImage
+                    customImageResourceId = R.drawable.markerpharm
+                    selectedMarkerType = MapPOIItem.MarkerType.CustomImage  // 클릭 시 마커 모양
+                    customSelectedImageResourceId = R.drawable.markerpharmsele       // 클릭 시 커스텀 마커 이미지
+                    isCustomImageAutoscale = false      // 커스텀 마커 이미지 크기 자동 조정
+                    setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
+                    userObject = BallonInfo(place.id ,place.phone, place.road_address_name) //커스텀 오브젝트 붙여주기
+                }
             }
+            else {
+                marker.apply {
+                    itemName = place.place_name
+                    mapPoint = MapPoint.mapPointWithGeoCoord(place.y.toDouble(), place.x.toDouble())
+                    markerType = MapPOIItem.MarkerType.CustomImage
+                    customImageResourceId = R.drawable.markerhos
+                    selectedMarkerType = MapPOIItem.MarkerType.CustomImage  // 클릭 시 마커 모양
+                    customSelectedImageResourceId = R.drawable.markerhosele       // 클릭 시 커스텀 마커 이미지
+                    isCustomImageAutoscale = false      // 커스텀 마커 이미지 크기 자동 조정
+                    setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
+                    userObject = BallonInfo(place.id ,place.phone, place.road_address_name) //커스텀 오브젝트 붙여주기
+                }
+            }
+
             mapView!!.addPOIItem(marker)
         }
     }
