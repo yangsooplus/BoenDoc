@@ -41,31 +41,6 @@ class SignInActivity : AppCompatActivity() {
         gson = GsonBuilder().create()
         dialog = LoadingDialog(this)
 
-        /*
-        profileService.getAllProfile().enqueue(object : Callback<MemberList> {
-            override fun onResponse(call: Call<MemberList>, response: Response<MemberList>) {
-                if (response.isSuccessful) {
-                    var result: MemberList? = response.body()
-                    //Log.d("get", result.toString())
-                    println("뭐야 GET 여기야")
-                    println(result?.toString())
-                }
-                else {
-                    println("GET 실패")
-                    println(response.errorBody()!!.string())
-                }
-
-            }
-
-            override fun onFailure(call: Call<MemberList>, t: Throwable) {
-                println("GET 오류")
-                println(t.message)
-
-            }
-
-        })
-
-         */
         SIABinding = ActivitySignInBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -123,20 +98,24 @@ class SignInActivity : AppCompatActivity() {
         val loginInfo = Login(email, pw)
         val loginService = retrofit.create(LoginService::class.java)
 
-        loginService.requestLogin2(loginInfo).enqueue(object : Callback<Member> {
-            override fun onResponse(call: Call<Member>, response: Response<Member>) {
+        loginService.requestLogin(loginInfo).enqueue(object : Callback<LoginResponse> {
+            override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
 
                 if (response.isSuccessful) {
                     println("로그인성공")
-                    println(response.errorBody()?.toString())
+                    //println(response.errorBody()?.toString())
                     println(response.body().toString())
 
 
                     //기기에도 정보 저장 - SharedPreferences
-                    val memberInfo = gson!!.toJson(response.body(), Member::class.java)
+                    val memberInfo = gson!!.toJson(response.body(), LoginResponse::class.java)
                     val editor : SharedPreferences.Editor = sp!!.edit()
                     editor.putString("memberInfo", memberInfo)
-                    editor.commit()
+                    editor.apply()
+
+                    val gsonDebugmember = sp!!.getString("memberInfo", null)
+                    val debugMember = gson!!.fromJson(gsonDebugmember, LoginResponse::class.java)
+                    println("기기에 저장된 정보: " + debugMember)
 
                     //로딩창 종료
                     dialog!!.dismiss()
@@ -162,7 +141,7 @@ class SignInActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onFailure(call: Call<Member>, t: Throwable) {
+            override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
                 //println(t.message)
                 //println("여기임ㅋㅋ")
                 Toast.makeText(SIAContext, "접속 실패 하지만 넘어가", Toast.LENGTH_LONG).show()

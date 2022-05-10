@@ -122,7 +122,7 @@ class MyInfoActivity : AppCompatActivity() {
 
 
         //DB 정보 수정 요청
-        memberService!!.reviseProfile(memberInfo!!.id, memberInfo!!
+        memberService!!.reviseProfile(memberInfo!!.id, getUpdateMember(memberInfo!!)
         ).enqueue(object : Callback<UpdateMemberResponse> {
             override fun onResponse(call: Call<UpdateMemberResponse>, response: Response<UpdateMemberResponse>) {
                 if (response.isSuccessful) {
@@ -143,5 +143,22 @@ class MyInfoActivity : AppCompatActivity() {
 
         })
 
+    }
+
+    private fun getUpdateMember(member: Member): UpdateMember {
+        return UpdateMember(
+            member.name,
+            member.loginId,
+            member.password,
+            member.age,
+            member.height,
+            member.weight,
+            member.gender,
+            member.drug,
+            member.social,
+            member.family,
+            member.trauma,
+            member.femininity
+        )
     }
 }

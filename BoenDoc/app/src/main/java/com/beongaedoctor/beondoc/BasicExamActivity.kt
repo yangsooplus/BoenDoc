@@ -163,18 +163,17 @@ class BasicExamActivity : AppCompatActivity() {
 
 
 
-    private fun saveMember2Server(member: Member) {
+    private fun saveMember2Server(member_: Member) {
         val retrofit = RetrofitClass.getInstance()
         val memberService = retrofit.create(MemberService::class.java)
 
-        println(member)
-
-        memberService.setProfile(member).enqueue(object : Callback<Member> {
+        //isRevise인 경우에 PUT으로 정보 수정 추가해야함
+        memberService.setProfile(member_).enqueue(object : Callback<Member> {
             override fun onResponse(call: Call<Member>, response: Response<Member>) {
-                if (response.isSuccessful)
-                    println("쳐넣음")
-                else
-                    println("연결은했는데안됨")
+                if (response.isSuccessful) {
+                    member.id = response.body()!!.id
+                }
+
             }
 
             override fun onFailure(call: Call<Member>, t: Throwable) {

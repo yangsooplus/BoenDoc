@@ -26,11 +26,13 @@ class ResultActivity : AppCompatActivity() {
     // 매번 null 체크 하지 않도록 바인딩 변수 재선언
     private val binding get() = RABinding!!
 
+    private lateinit var diagnosisService : DiagnosisService
     private lateinit var retrofit: Retrofit
 
     private var sp : SharedPreferences? = null
     private var gson : Gson? = null
 
+    private var memberInfo : Member? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +41,7 @@ class ResultActivity : AppCompatActivity() {
 
         //서버 연결
         retrofit = RetrofitClass.getInstance()
-        val diagnosisService = retrofit.create(DiagnosisService::class.java)
+        diagnosisService = retrofit.create(DiagnosisService::class.java)
 
 
         //데이터 저장
@@ -48,21 +50,23 @@ class ResultActivity : AppCompatActivity() {
 
         //기기에 저장된 유저 정보
         val gsonMemberInfo = sp!!.getString("memberInfo","")
-        val memberInfo = gson!!.fromJson(gsonMemberInfo, Member::class.java)
+        memberInfo = gson!!.fromJson(gsonMemberInfo, Member::class.java)
 
-        diagnosisService.searchDiseasebyString(memberInfo.id,"탈모").enqueue(object : Callback<DiagnosisResponse> {
+        diagnosisService.searchDiseasebyString(memberInfo!!.id,DN("탈모")).enqueue(object : Callback<DNID> {
             override fun onResponse(
-                call: Call<DiagnosisResponse>,
-                response: Response<DiagnosisResponse>
+                call: Call<DNID>,
+                response: Response<DNID>
             ) {
                 println(response.errorBody()?.string())
                 if (response.isSuccessful) {
-                    println("여기에용~~~ㅍ")
-                    println(response.body())
+
+                    println("받은 아이디: " + response.body())
+                    if ( response.body() != null)
+                        getDiseaseInfo(response.body()!!)
                 }
             }
 
-            override fun onFailure(call: Call<DiagnosisResponse>, t: Throwable) {
+            override fun onFailure(call: Call<DNID>, t: Throwable) {
                 println("실패")
             }
 
@@ -83,6 +87,47 @@ class ResultActivity : AppCompatActivity() {
             val mapIntent = Intent(this, MapActivity::class.java)
             mapIntent.putExtra("mapKeyword", "정형외과")
             startActivity(mapIntent)
+        }
+
+
+    }
+
+    private fun getDiseaseInfo(dnid : DNID) {
+        diagnosisService.getDiseasebyDNID(dnid.id).enqueue(object : Callback<DiagnosisRecord> {
+            override fun onResponse(
+                call: Call<DiagnosisRecord>,
+                response: Response<DiagnosisRecord>
+            ) {
+                if (response.isSuccessful) {
+                    println(response.body())
+                    setMainDiseaseInfo(response.body())
+                }
+            }
+
+            override fun onFailure(call: Call<DiagnosisRecord>, t: Throwable) {
+                println(t.message)
+            }
+
+        })
+    }
+
+    private fun setMainDiseaseInfo(DR : DiagnosisRecord?) {
+        binding.maindiseaseName.text = DR?.name
+        binding.mainexplanation.text = DR?.info
+
+        when (DR?.level) {
+            0 -> {
+                binding.mainseverity.text = "응급"
+                binding.mainseverity.setBackgroundResource(R.drawable.rectemergency)
+            }
+            1 -> {
+                binding.mainseverity.text = "중증"
+                binding.mainseverity.setBackgroundResource(R.drawable.rectserious)
+            }
+            2 -> {
+                binding.mainseverity.text = "경증"
+                binding.mainseverity.setBackgroundResource(R.drawable.rectlight)
+            }
         }
 
     }

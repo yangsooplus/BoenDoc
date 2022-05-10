@@ -16,7 +16,9 @@ object RetrofitClass {
     // 서버 주소
     //private const val BASE_URL = "https://jsonplaceholder.typicode.com/"
     // 달콤 주소
-    private const val BASE_URL = "http://172.30.1.18:8080/"
+    //private const val BASE_URL = "http://172.30.1.18:8080/"
+
+    private const val BASE_URL = "http://172.30.1.37:8080/"
 
     // SingleTon
     fun getInstance(): Retrofit {
@@ -26,7 +28,7 @@ object RetrofitClass {
 
             val client = OkHttpClient.Builder()
                 .addInterceptor(interceptor)
-                .connectTimeout(10L, TimeUnit.SECONDS)
+                .connectTimeout(1000L, TimeUnit.SECONDS)
                 .build()
 
             instance = Retrofit.Builder()

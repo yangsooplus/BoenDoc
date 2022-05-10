@@ -45,6 +45,33 @@ data class Member (
         ) : Serializable
 
 
+data class UpdateMember (
+    @SerializedName("loginId")
+    var loginId: String = "",
+    @SerializedName("password")
+    var password: String = "",
+    @SerializedName("name")
+    var name : String = "",
+    @SerializedName("age")
+    var age : String = "",
+    @SerializedName("height")
+    var height : String = "",
+    @SerializedName("weight")
+    var weight : String = "",
+    @SerializedName("gender")
+    var gender : Long = 0,
+    @SerializedName("drug")
+    var drug : String = "",
+    @SerializedName("social")
+    var social : String = "",
+    @SerializedName("family")
+    var family : String = "",
+    @SerializedName("trauma")
+    var trauma : String = "",
+    @SerializedName("femininity")
+    var femininity : String = ""
+)
+
 data class UpdateMemberResponse (
     @SerializedName("id")
     var id : Long = 0,
@@ -106,9 +133,8 @@ interface MemberService {
 
 
     @PUT("api/members/{id}")
-    @Headers("Content-Type:application/x-www-form-urlencoded; charset=utf-8")
     fun reviseProfile(@Path("id") id : Long
-                      , @Body member: Member) : Call<UpdateMemberResponse>
+                      , @Body member: UpdateMember) : Call<UpdateMemberResponse>
 }
 
 
@@ -192,6 +218,23 @@ data class Diagnosis(
     var gender: Long
 )
 
+data class DiagnosisList(
+    @SerializedName("data")
+    val diseaseList : List<DiagnosisRecord>
+)
+
+data class DiagnosisRecord(
+    @SerializedName("name")
+    var name : String,
+    @SerializedName("info")
+    var info : String,
+    @SerializedName("level")
+    var level : Int,
+    @SerializedName("department")
+    var department : String,
+    @SerializedName("diagnosisTime")
+    var diagnosisTime : String
+)
 
 data class DiagnosisResponse(
     @SerializedName("id")
@@ -204,7 +247,28 @@ data class DiagnosisResponse(
     var info1 : String
 )
 
+
+interface DiagnosisRecordService{
+    @GET("api/diagnosisList/{id}")
+    fun getDiagnosisRecord(@Path("id") id:Long) : Call<DiagnosisList>
+}
+
+data class DN(
+    @SerializedName("diseaseName")
+    var diseaseName: String
+)
+
+data class DNID(
+    @SerializedName("id")
+    var id: Long
+)
+
 interface DiagnosisService{
     @POST("api/diagnosis/{id}")
-    fun searchDiseasebyString(@Path("id") id:Long, @Body diseaseName1:String) : Call<DiagnosisResponse>
+    fun searchDiseasebyString(@Path("id") id:Long, @Body diseaseName:DN) : Call<DNID>
+
+    @GET("api/diagnosisInfo/{id}")
+    fun getDiseasebyDNID(@Path("id") id:Long) : Call<DiagnosisRecord>
 }
+
+

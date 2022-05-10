@@ -151,7 +151,7 @@ class MyPwActivity : AppCompatActivity() {
 
 
         //DB 비밀번호 수정 요청
-        memberService!!.reviseProfile(member!!.id, member!!).enqueue(object : Callback<UpdateMemberResponse>{
+        memberService!!.reviseProfile(member!!.id, getUpdateMember(member!!)).enqueue(object : Callback<UpdateMemberResponse>{
             override fun onResponse(call: Call<UpdateMemberResponse>, response: Response<UpdateMemberResponse>) {
                 if (response.isSuccessful) {
                     Toast.makeText(context, "비밀번호를 변경했습니다..", Toast.LENGTH_LONG).show()//변경 알림
@@ -174,5 +174,22 @@ class MyPwActivity : AppCompatActivity() {
 
 
 
+    }
+
+    private fun getUpdateMember(member: Member): UpdateMember {
+        return UpdateMember(
+            member.name,
+            member.loginId,
+            member.password,
+            member.age,
+            member.height,
+            member.weight,
+            member.gender,
+            member.drug,
+            member.social,
+            member.family,
+            member.trauma,
+            member.femininity
+        )
     }
 }
