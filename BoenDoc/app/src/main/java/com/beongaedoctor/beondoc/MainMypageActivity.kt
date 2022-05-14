@@ -25,7 +25,7 @@ class MainMypageActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         //유저 정보
-        App.prefs.getMember("memberInfo", "")
+        memberInfo = App.prefs.getMember("memberInfo", "")
         binding.username.text = memberInfo.name
         binding.useremail.text = memberInfo.loginId
 
