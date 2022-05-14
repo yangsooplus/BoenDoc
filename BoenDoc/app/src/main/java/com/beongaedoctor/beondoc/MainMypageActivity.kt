@@ -19,44 +19,42 @@ class MainMypageActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        //뷰바인딩
         mainmpbinding = ActivityMainMypageBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val sp = getSharedPreferences("shared", MODE_PRIVATE)
-        val gson = GsonBuilder().create()
+        //유저 정보
+        memberInfo = App.prefs.getMember("memberInfo", "")
+        binding.username.text = memberInfo.name
+        binding.useremail.text = memberInfo.loginId
 
-        if (sp != null) {
-            val gsonMemberInfo = sp!!.getString("memberInfo","")
-            memberInfo = gson!!.fromJson(gsonMemberInfo, Member::class.java)
-            binding.username.text = memberInfo.name
-            binding.useremail.text = memberInfo.loginId
-        }
-        else {
-            binding.username.text = "사용자X"
-        }
     }
 
     override fun onStart() {
         super.onStart()
 
+        //정보 수정
         binding.inforevisebtn.setOnClickListener {
             val intent = Intent(this, MyInfoActivity::class.java)
             startActivity(intent)
         }
 
+        //비번 수정
         binding.pwrevisebtn.setOnClickListener {
             val intent = Intent(this, MyPwActivity::class.java)
             startActivity(intent)
         }
 
+        //기초문진 수정
         binding.berevisebtn.setOnClickListener {
             val intent = Intent(this, BasicExamActivity::class.java)
             intent.putExtra("member", memberInfo)
             intent.putExtra("isRevise", true)
             startActivity(intent)
-
         }
 
+        //진단 기록
         binding.recordbtn.setOnClickListener {
             val intent = Intent(this, RecordActivity::class.java)
             startActivity(intent)

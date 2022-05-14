@@ -28,10 +28,9 @@ class MyInfoActivity : AppCompatActivity() {
 
     private lateinit var retrofit: Retrofit
     private var memberService : MemberService? = null
-    private var sp : SharedPreferences? = null
-    private var gson : Gson? = null
 
-    var memberInfo : Member? = null
+
+    lateinit var memberInfo : Member
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,26 +38,16 @@ class MyInfoActivity : AppCompatActivity() {
         minfobinding = ActivityMyInfoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //데이터 저장
-        sp = getSharedPreferences("shared",MODE_PRIVATE)
-        gson = GsonBuilder().create()
-
         //서버 연결
         retrofit = RetrofitClass.getInstance()
         memberService = retrofit.create(MemberService::class.java)
 
-
-
-
-
+        //기기에 저장된 유저 정보
+        memberInfo = App.prefs.getMember("memberInfo", "")
     }
 
     override fun onStart() {
         super.onStart()
-
-        //기기에 저장된 유저 정보
-        val gsonMemberInfo = sp!!.getString("memberInfo","")
-        memberInfo = gson!!.fromJson(gsonMemberInfo, Member::class.java)
 
         //성별 선택
         binding.resexSpinner.adapter = ArrayAdapter.createFromResource(
@@ -74,6 +63,7 @@ class MyInfoActivity : AppCompatActivity() {
                 memberInfo!!.gender = -1 //디버깅용
             }
         }
+
         binding.reusername.hint = memberInfo!!.name
         binding.resexSpinner.setSelection(memberInfo!!.gender.toInt())
         binding.reuserage.hint = memberInfo!!.age
@@ -111,14 +101,8 @@ class MyInfoActivity : AppCompatActivity() {
 
     private fun reviseMyInfo(context : Context) {
         //기기에도 정보 저장 - SharedPreferences
-        val memberInfo_ = gson!!.toJson(memberInfo, Member::class.java)
-        val editor : SharedPreferences.Editor = sp!!.edit()
-        editor.putString("memberInfo",memberInfo_)
-        editor.apply()
+        App.prefs.setMember("memberInfo", memberInfo)
 
-        val gsonMemberInfo_ = sp!!.getString("memberInfo","")
-        val test = gson!!.fromJson(gsonMemberInfo_, Member::class.java)
-        println(memberInfo)
 
 
         //DB 정보 수정 요청
@@ -145,6 +129,7 @@ class MyInfoActivity : AppCompatActivity() {
 
     }
 
+    //멤버 정보 수정 통신에는 id가 미포함.
     private fun getUpdateMember(member: Member): UpdateMember {
         return UpdateMember(
             member.name,

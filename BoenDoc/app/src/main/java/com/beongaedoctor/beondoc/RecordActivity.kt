@@ -21,9 +21,6 @@ class RecordActivity : AppCompatActivity() {
     // 매번 null 체크 하지 않도록 바인딩 변수 재선언
     private val binding get() = rbinding!!
 
-    //val disease = Disease(0, "이름","설명", 0, "정형외과")
-    //var DDlist : List<DiagnosisDisease> = listOf(DiagnosisDisease(0, disease))
-
 
     var diagnosisList : DiagnosisList? = null
 
@@ -32,12 +29,10 @@ class RecordActivity : AppCompatActivity() {
         rbinding = ActivityRecordBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //데이터 저장
-        val sp = getSharedPreferences("shared",MODE_PRIVATE)
-        val gson = GsonBuilder().create()
+
+
         //기기에 저장된 유저 정보
-        val gsonMemberInfo = sp!!.getString("memberInfo","")
-        val memberInfo = gson!!.fromJson(gsonMemberInfo, Member::class.java)
+        val memberInfo = App.prefs.getMember("memberInfo", "")
 
 
         //서버 연결
@@ -45,6 +40,7 @@ class RecordActivity : AppCompatActivity() {
         val diagnosisRecordService = retrofit.create(DiagnosisRecordService::class.java)
         binding.mypageRecyclerView.layoutManager = LinearLayoutManager(this)
 
+        //사용자 id -> 해당 사용자의 진단 내역 리스트
         diagnosisRecordService!!.getDiagnosisRecord(memberInfo.id).enqueue(object :
             Callback<DiagnosisList>{
             override fun onResponse(call: Call<DiagnosisList>, response: Response<DiagnosisList>) {
@@ -52,7 +48,7 @@ class RecordActivity : AppCompatActivity() {
                     diagnosisList = response?.body()
                     println(response.body())
 
-
+                    //받아온 내역 리스트를 RecyclerView에 연결해서 표시
                     binding.mypageRecyclerView.adapter = DiagnosisAdapter(diagnosisList!!)
                 }
             }
@@ -62,9 +58,5 @@ class RecordActivity : AppCompatActivity() {
             }
 
         })
-
-
     }
-
-
 }

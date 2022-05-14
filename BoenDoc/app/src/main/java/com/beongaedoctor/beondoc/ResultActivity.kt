@@ -14,6 +14,7 @@ import retrofit2.Retrofit
 
 class ResultActivity : AppCompatActivity() {
 
+    //다른 결과 생길 시 사용.
     var otherResultList = arrayListOf<OtherResult>(
         OtherResult("1번 질병", 0, "응급질병의 경우"),
         OtherResult("2번 질병", 1, "중증질병의 경우"),
@@ -29,10 +30,9 @@ class ResultActivity : AppCompatActivity() {
     private lateinit var diagnosisService : DiagnosisService
     private lateinit var retrofit: Retrofit
 
-    private var sp : SharedPreferences? = null
-    private var gson : Gson? = null
 
-    private var memberInfo : Member? = null
+
+    lateinit var memberInfo : Member
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,14 +44,13 @@ class ResultActivity : AppCompatActivity() {
         diagnosisService = retrofit.create(DiagnosisService::class.java)
 
 
-        //데이터 저장
-        sp = getSharedPreferences("shared",MODE_PRIVATE)
-        gson = GsonBuilder().create()
+
 
         //기기에 저장된 유저 정보
-        val gsonMemberInfo = sp!!.getString("memberInfo","")
-        memberInfo = gson!!.fromJson(gsonMemberInfo, Member::class.java)
 
+        memberInfo = App.prefs.getMember("memberInfo", "")
+
+        //멤버 id + 질병명 -> 질병 id 받아 옴. 음... 이제 오류 안 나니까 굳이 두번 해야할까?
         diagnosisService.searchDiseasebyString(memberInfo!!.id,DN("탈모")).enqueue(object : Callback<DNID> {
             override fun onResponse(
                 call: Call<DNID>,
@@ -62,7 +61,7 @@ class ResultActivity : AppCompatActivity() {
 
                     println("받은 아이디: " + response.body())
                     if ( response.body() != null)
-                        getDiseaseInfo(response.body()!!)
+                        getDiseaseInfo(response.body()!!) //받아온 id로 질병 정보 가져오기
                 }
             }
 
@@ -73,25 +72,26 @@ class ResultActivity : AppCompatActivity() {
         })
 
 
-
+        //다른 결과는 리스트로.
         binding.otherResultList.adapter = OtherResultAdapter(this, otherResultList)
 
+
+        //약국 가는 버튼
         binding.gotoPharmacy.setOnClickListener {
             val mapIntent = Intent(this, MapActivity::class.java)
             mapIntent.putExtra("mapKeyword", "약국")
             startActivity(mapIntent)
         }
 
-
+        //병원 가는 버튼. 검색할 진료과를 putExtra로 보내야 함.
         binding.gotoHospital.setOnClickListener {
             val mapIntent = Intent(this, MapActivity::class.java)
             mapIntent.putExtra("mapKeyword", "정형외과")
             startActivity(mapIntent)
         }
-
-
     }
 
+    //질병id -> 질병 정보
     private fun getDiseaseInfo(dnid : DNID) {
         diagnosisService.getDiseasebyDNID(dnid.id).enqueue(object : Callback<DiagnosisRecord> {
             override fun onResponse(
@@ -100,7 +100,7 @@ class ResultActivity : AppCompatActivity() {
             ) {
                 if (response.isSuccessful) {
                     println(response.body())
-                    setMainDiseaseInfo(response.body())
+                    setMainDiseaseInfo(response.body()) //받아온 정보를 메인 질병에 셋팅
                 }
             }
 
@@ -111,11 +111,12 @@ class ResultActivity : AppCompatActivity() {
         })
     }
 
+    //받아온 정보를 메인 질병에 셋팅
     private fun setMainDiseaseInfo(DR : DiagnosisRecord?) {
         binding.maindiseaseName.text = DR?.name
         binding.mainexplanation.text = DR?.info
 
-        when (DR?.level) {
+        when (DR?.level) { //중증도에 따라 textView 내용과 배경 바꾸기
             0 -> {
                 binding.mainseverity.text = "응급"
                 binding.mainseverity.setBackgroundResource(R.drawable.rectemergency)
