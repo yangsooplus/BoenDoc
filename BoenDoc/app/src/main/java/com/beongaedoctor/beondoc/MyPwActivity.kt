@@ -32,10 +32,8 @@ class MyPwActivity : AppCompatActivity() {
     private lateinit var retrofit: Retrofit
     private var memberService : MemberService? = null
 
-    private var sp : SharedPreferences? = null
-    private var gson : Gson? = null
 
-    private var member: Member? = null
+    lateinit var member: Member
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,20 +45,18 @@ class MyPwActivity : AppCompatActivity() {
         retrofit = RetrofitClass.getInstance()
         memberService = retrofit.create(MemberService::class.java)
 
-        //데이터 저장
-        sp = getSharedPreferences("shared",MODE_PRIVATE);
-        gson = GsonBuilder().create()
+
 
         //기기에 저장된 유저 정보
-        val gsonMemberInfo = sp!!.getString("memberInfo","")
-        member = gson!!.fromJson(gsonMemberInfo, Member::class.java)
+        member = App.prefs.getMember("memberInfo", "")
     }
 
     override fun onStart() {
         super.onStart()
+
+        //newPW에 글자가 바뀔때마다 호출.
         binding.newPW.addTextChangedListener(object : TextWatcher{
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
             }
 
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
@@ -80,17 +76,13 @@ class MyPwActivity : AppCompatActivity() {
             }
 
             override fun afterTextChanged(p0: Editable?) {
-
             }
-
-
         })
 
+        //confirmnewPW 글자가 바뀔때마다 호출.
         binding.confirmnewPW.addTextChangedListener(object : TextWatcher{
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
-
             }
-
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 if (p0!!.isNotEmpty()) {
                     val same = (binding.newPW.text.toString() == binding.confirmnewPW.text.toString())
@@ -106,20 +98,17 @@ class MyPwActivity : AppCompatActivity() {
                     }
                 }
             }
-
             override fun afterTextChanged(p0: Editable?) {
-
             }
-
-
         })
 
+        //수정 누르면 실행
         binding.reviseDone.setOnClickListener {
             if (binding.currentPW.text.isEmpty() || binding.newPW.text.isEmpty() || binding.confirmnewPW.text.isEmpty() ) {
                 Toast.makeText(this, "모든 칸을 입력해주세요", Toast.LENGTH_LONG).show()
             }
             else {
-                if (checkPW()) { //비밀번호 일치
+                if (checkPW()) { //비밀번호 일치하면
                     revisePW(this) //비밀번호 변경
                 }
                 else { //현재 비밀번호가 일치하지 않음
@@ -127,11 +116,10 @@ class MyPwActivity : AppCompatActivity() {
                     binding.currentPW.setText("")
                 }
             }
-
         }
-
     }
 
+    //기존 비밀번호랑 일치하면 true
     fun checkPW() : Boolean{
         //기존 비밀번호의 일치 여부
         println(member!!.password)
@@ -139,22 +127,20 @@ class MyPwActivity : AppCompatActivity() {
         return member!!.password.equals(binding.currentPW.text.toString())
     }
 
+    //비밀번호 수정 요청
     fun revisePW(context: Context) : Unit {
         //비밀번호 변경
         member!!.password = binding.newPW.text.toString()
-
-        //기기에 정보 저장 - SharedPreferences
-        val memberInfo = gson!!.toJson(member, Member::class.java)
-        val editor : SharedPreferences.Editor = sp!!.edit()
-        editor.putString("memberInfo",memberInfo);
-        editor.apply();
 
 
         //DB 비밀번호 수정 요청
         memberService!!.reviseProfile(member!!.id, getUpdateMember(member!!)).enqueue(object : Callback<UpdateMemberResponse>{
             override fun onResponse(call: Call<UpdateMemberResponse>, response: Response<UpdateMemberResponse>) {
                 if (response.isSuccessful) {
-                    Toast.makeText(context, "비밀번호를 변경했습니다..", Toast.LENGTH_LONG).show()//변경 알림
+                    Toast.makeText(context, "비밀번호를 변경했습니다.", Toast.LENGTH_LONG).show()//변경 알림
+
+                    App.prefs.setMember("memberInfo", member) //서버 변경을 성공하면 로컬도 변경.
+
                     val mypageIntent = Intent(context, MainMypageActivity::class.java)
                     startActivity(mypageIntent) //마이페이지 메인으로 이동
                 }
@@ -168,13 +154,9 @@ class MyPwActivity : AppCompatActivity() {
                 val mypageIntent = Intent(context, MainMypageActivity::class.java)
                 startActivity(mypageIntent) //마이페이지 메인으로 이동
             }
-
         })
-
-
-
-
     }
+
 
     private fun getUpdateMember(member: Member): UpdateMember {
         return UpdateMember(

@@ -18,33 +18,26 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        //뷰바인딩
         mainbinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        binding.chatBtn.setOnClickListener {
-            val chatIntent = Intent(this, ChatActivity::class.java)
-            startActivity(chatIntent)
-        }
-
-        val sp = getSharedPreferences("shared", MODE_PRIVATE)
-        val gson = GsonBuilder().create()
-
-        if (sp != null) {
-            val gsonMemberInfo = sp.getString("memberInfo","")
-            val testMemberInfo : Member = gson!!.fromJson(gsonMemberInfo, Member::class.java)
-            binding.username.text = testMemberInfo.name
-        }
-        else {
-            binding.username.text = "사용자X"
-        }
-
-
-
+        //멤버 정보 불러와서 이름 보여주기
+        val memberInfo = App.prefs.getMember("memberInfo", "")
+        binding.username.text = memberInfo.name
     }
 
     override fun onStart() {
         super.onStart()
 
+        //채팅 액티비티로
+        binding.chatBtn.setOnClickListener {
+            val chatIntent = Intent(this, ChatActivity::class.java)
+            startActivity(chatIntent)
+        }
+
+        //마이페이지 액티비티로
         binding.mypageBtn.setOnClickListener {
             val mypageIntent = Intent(this, MainMypageActivity::class.java)
             startActivity(mypageIntent)
