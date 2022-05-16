@@ -56,6 +56,14 @@ class Preference (context: Context) {
     fun getString(key:String, default : String): String? {
         return prefs.getString(key, default)
     }
+
+    fun setBool(key: String, value:Boolean) {
+        prefs.edit().putBoolean(key, value).apply()
+    }
+
+    fun getBool(key: String, default: Boolean) : Boolean {
+        return prefs.getBoolean(key, default)
+    }
 }
 
 //val testMemberInfo = App.prefs.getString("memberInfo", "")

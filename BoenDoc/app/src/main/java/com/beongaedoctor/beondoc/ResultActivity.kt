@@ -30,9 +30,9 @@ class ResultActivity : AppCompatActivity() {
     private lateinit var diagnosisService : DiagnosisService
     private lateinit var retrofit: Retrofit
 
-
-
     lateinit var memberInfo : Member
+
+    private lateinit var predDiseaseInfo : DiagnosisRecord
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,32 +44,14 @@ class ResultActivity : AppCompatActivity() {
         diagnosisService = retrofit.create(DiagnosisService::class.java)
 
 
-
+        val pred_disease = intent.getStringExtra("diseaseName")
+        println(pred_disease)
 
         //기기에 저장된 유저 정보
-
         memberInfo = App.prefs.getMember("memberInfo", "")
 
-        //멤버 id + 질병명 -> 질병 id 받아 옴. 음... 이제 오류 안 나니까 굳이 두번 해야할까?
-        diagnosisService.searchDiseasebyString(memberInfo!!.id,DN("탈모")).enqueue(object : Callback<DNID> {
-            override fun onResponse(
-                call: Call<DNID>,
-                response: Response<DNID>
-            ) {
-                println(response.errorBody()?.string())
-                if (response.isSuccessful) {
-
-                    println("받은 아이디: " + response.body())
-                    if ( response.body() != null)
-                        getDiseaseInfo(response.body()!!) //받아온 id로 질병 정보 가져오기
-                }
-            }
-
-            override fun onFailure(call: Call<DNID>, t: Throwable) {
-                println("실패")
-            }
-
-        })
+        if (pred_disease != null)
+            getDiseaseInfo(DN(pred_disease))
 
 
         //다른 결과는 리스트로.
@@ -86,13 +68,13 @@ class ResultActivity : AppCompatActivity() {
         //병원 가는 버튼. 검색할 진료과를 putExtra로 보내야 함.
         binding.gotoHospital.setOnClickListener {
             val mapIntent = Intent(this, MapActivity::class.java)
-            mapIntent.putExtra("mapKeyword", "정형외과")
+            mapIntent.putExtra("mapKeyword", predDiseaseInfo.department)
             startActivity(mapIntent)
         }
     }
 
     //질병id -> 질병 정보
-    private fun getDiseaseInfo(dnid : DNID) {
+    private fun getDiseaseInfo0(dnid : DNID) {
         diagnosisService.getDiseasebyDNID(dnid.id).enqueue(object : Callback<DiagnosisRecord> {
             override fun onResponse(
                 call: Call<DiagnosisRecord>,
@@ -108,6 +90,26 @@ class ResultActivity : AppCompatActivity() {
                 println(t.message)
             }
 
+        })
+    }
+
+    //질병id -> 질병 정보
+    private fun getDiseaseInfo(dn : DN) {
+        diagnosisService.getDiseasebyString(memberInfo.id, dn).enqueue(object : Callback<DiagnosisRecord> {
+            override fun onResponse(
+                call: Call<DiagnosisRecord>,
+                response: Response<DiagnosisRecord>
+            ) {
+                if (response.isSuccessful) {
+                    println(response.body())
+                    predDiseaseInfo = response.body()!!
+                    setMainDiseaseInfo(response.body()) //받아온 정보를 메인 질병에 셋팅
+                }
+            }
+
+            override fun onFailure(call: Call<DiagnosisRecord>, t: Throwable) {
+                println(t.message)
+            }
         })
     }
 

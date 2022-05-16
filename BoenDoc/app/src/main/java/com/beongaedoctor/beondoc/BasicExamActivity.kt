@@ -172,7 +172,23 @@ class BasicExamActivity : AppCompatActivity() {
 
         et = womanFragment.findViewById(R.id.LeditText)
         if (et.text.isNotBlank()) femininityText += " 생존 ${et.text}명,"
-       member.femininity = femininityText
+        member.femininity = femininityText
+
+        if (member.drug.equals(""))
+            member.drug = "없음"
+
+        if (member.social.equals(""))
+            member.social = "없음"
+
+        if (member.family.equals(""))
+            member.family = "없음"
+
+        if (member.trauma.equals(""))
+            member.trauma = "없음"
+
+        if (member.femininity.equals(""))
+            member.femininity = "없음"
+
     }
 
 
@@ -182,18 +198,34 @@ class BasicExamActivity : AppCompatActivity() {
         val memberService = retrofit.create(MemberService::class.java)
 
         //isRevise인 경우에 PUT으로 정보 수정 추가해야함
-        memberService.setProfile(member_).enqueue(object : Callback<Member> {
-            override fun onResponse(call: Call<Member>, response: Response<Member>) {
-                if (response.isSuccessful) {
-                    //생성 시 id는 0. 서버에 POST로 생성 후 부여 받는 id로 교체
-                    member.id = response.body()!!.id
-                    realConfirm() //id가 수정된 member를 SP에 저장
+        if (isRevise) {
+            memberService.reviseProfile(member_.id, getUpdateMember(member_)).enqueue(object : Callback<UpdateMemberResponse> {
+                override fun onResponse(call: Call<UpdateMemberResponse>, response: Response<UpdateMemberResponse>) {
+                    if (response.isSuccessful) {
+                        realConfirm() //id가 수정된 member를 SP에 저장
+                    }
                 }
-            }
-            override fun onFailure(call: Call<Member>, t: Throwable) {
-                println("그냥 안됨")
-            }
-        })
+                override fun onFailure(call: Call<UpdateMemberResponse>, t: Throwable) {
+                    println("그냥 안됨")
+                }
+            })
+        }
+        else {
+            memberService.setProfile(member_).enqueue(object : Callback<Member> {
+                override fun onResponse(call: Call<Member>, response: Response<Member>) {
+                    if (response.isSuccessful) {
+                        //생성 시 id는 0. 서버에 POST로 생성 후 부여 받는 id로 교체
+                        member.id = response.body()!!.id
+                        realConfirm() //id가 수정된 member를 SP에 저장
+                    }
+                }
+                override fun onFailure(call: Call<Member>, t: Throwable) {
+                    println("그냥 안됨")
+                }
+            })
+        }
+
+
     }
 
     private fun setConfirmDialogue() { //구현 예정
@@ -216,6 +248,23 @@ class BasicExamActivity : AppCompatActivity() {
             startActivity(mainIntent)
         }
 
+    }
+
+    private fun getUpdateMember(member: Member): UpdateMember {
+        return UpdateMember(
+            member.name,
+            member.loginId,
+            member.password,
+            member.age,
+            member.height,
+            member.weight,
+            member.gender,
+            member.drug,
+            member.social,
+            member.family,
+            member.trauma,
+            member.femininity
+        )
     }
 
 }

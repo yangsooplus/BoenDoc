@@ -269,6 +269,22 @@ interface DiagnosisService{
 
     @GET("api/diagnosisInfo/{id}")
     fun getDiseasebyDNID(@Path("id") id:Long) : Call<DiagnosisRecord>
+
+    @POST("api/diagnosis/{id}")
+    fun getDiseasebyString(@Path("id") id:Long, @Body diseaseName: DN) : Call<DiagnosisRecord>
 }
 
+data class ChatResponse(
+    @SerializedName("test")
+    var test : List<String>
+)
 
+data class ModelResult(
+    @SerializedName("diseaseName")
+    var diseaseName: List<String>
+    )
+
+interface chatResponseService{
+    @POST("test")
+    fun sendResponse2Model(@Body test: ChatResponse) : Call<List<String>>
+}

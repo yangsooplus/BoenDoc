@@ -24,7 +24,6 @@ class SignInActivity : AppCompatActivity() {
 
     private lateinit var retrofit: Retrofit
 
-
     var dialog : LoadingDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,7 +32,6 @@ class SignInActivity : AppCompatActivity() {
 
         //서버 연결
         retrofit = RetrofitClass.getInstance()
-        val profileService = retrofit.create(MemberService::class.java)
 
 
         dialog = LoadingDialog(this)
@@ -47,24 +45,25 @@ class SignInActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
 
-        /*
-                if (sp!!.getBoolean("auto", false)) {
+
+        if (App.prefs.getBool("AUTOLOGIN", false)) {
             binding.autologin.isChecked = true
+            val spID = App.prefs.getString("ID", "")
+            val spPW = App.prefs.getString("PW", "")
 
-            val sharedEmail = sp!!.getString("Email", null)
-            val sharedPw = sp!!.getString("Pw", null)
-
-            if (sharedEmail != null && sharedPw != null) {
-                requestLogin(sharedEmail, sharedPw, this)
-            }
+            if (!spID.equals("") && !spPW.equals(""))
+                requestLogin(spID!!, spPW!!, this)
         }
-         */
+
 
 
         //로그인 버튼 누르면
         binding.btnSignin.setOnClickListener {
             val email = binding.editEmail.text.toString()
             val password = binding.editPw.text.toString()
+
+
+
 
             //아이디(이메일), 비밀번호 입력되지 않으면 입력하라고 띄우기
             if (email.isEmpty()) {
@@ -104,7 +103,14 @@ class SignInActivity : AppCompatActivity() {
             override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
 
                 if (response.isSuccessful) {
-                    println("로그인성공")
+                    if (binding.autologin.isChecked) {
+                        App.prefs.setBool("AUTOLOGIN", true)
+
+                        App.prefs.setString("ID", email)
+                        App.prefs.setString("PW", pw)
+                    }
+
+
 
                     //기기에도 정보 저장 - SharedPreferences
                     //받아온 정보를 Member 형식으로 로컬에 저장
@@ -115,15 +121,6 @@ class SignInActivity : AppCompatActivity() {
 
                     //유효하면 메인 액티비티로 이동
                     Toast.makeText(SIAContext, "로그인 성공", Toast.LENGTH_SHORT).show()
-
-/* 자동로그인 킾
-                     if (binding.autologin.isChecked) {
-                        editor.putString("Email", email)
-                        editor.putString("Pw", pw)
-                        editor.putBoolean("auto", true)
-                        editor.commit()
-                    }
- */
 
                     gotoMain(SIAContext) //메인 액티비티로
                 }
