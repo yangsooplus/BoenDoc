@@ -18,10 +18,10 @@ object RetrofitClass {
     // 달콤 주소
     //private const val BASE_URL = "http://172.30.1.18:8080/"
 
-    //private const val BASE_URL = "http://192.168.25.4:5000/"
+    private const val BASE_URL = "http://172.30.1.35:8080/"
 
     // SingleTon
-    fun getInstance(url : String = "http://192.168.0.249:8080/"): Retrofit {
+    fun getInstance(): Retrofit {
         if (instance == null) {
             val interceptor = HttpLoggingInterceptor()
             interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
@@ -32,7 +32,7 @@ object RetrofitClass {
                 .build()
 
             instance = Retrofit.Builder()
-                .baseUrl(url)
+                .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .client(client)
                 .build()

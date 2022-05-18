@@ -186,4 +186,5 @@ class SignUpActivity : AppCompatActivity() {
             return false
         }
     }
+
 }

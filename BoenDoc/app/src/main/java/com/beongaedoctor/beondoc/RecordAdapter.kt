@@ -1,10 +1,13 @@
 package com.beongaedoctor.beondoc
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.beongaedoctor.beondoc.App.Companion.context
 
 
 class DiagnosisViewHolder(v : View) : RecyclerView.ViewHolder(v) {
@@ -24,6 +27,10 @@ class DiagnosisAdapter(val diagnosisList : DiagnosisList) : RecyclerView.Adapter
 
         holder.itemView.setOnClickListener { v ->
             //각 요소 누르면 실행
+            val context = v.context
+            val resultIntent = Intent(context, ResultActivity::class.java)
+            resultIntent.putExtra("diseaseName", diagnosisList.diseaseList[position].name)
+            context.startActivity(resultIntent)
         }
     }
 

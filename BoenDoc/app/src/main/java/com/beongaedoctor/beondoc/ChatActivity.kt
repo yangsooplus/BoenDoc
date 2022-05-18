@@ -103,7 +103,7 @@ class ChatActivity : AppCompatActivity() {
             .build()
 
         val retrofit_f = Retrofit.Builder()
-            .baseUrl("http://192.168.0.218:5000/")
+            .baseUrl("http://172.30.1.50:5000/")
             .addConverterFactory(GsonConverterFactory.create(gson))
             .client(client)
             .build()
@@ -161,5 +161,13 @@ class ChatActivity : AppCompatActivity() {
         val resultIntent = Intent(context, ResultActivity::class.java)
         resultIntent.putExtra("diseaseName", result)
         startActivity(resultIntent)
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val intent = Intent(this, MainActivity::class.java) //지금 액티비티에서 다른 액티비티로 이동하는 인텐트 설정
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP //인텐트 플래그 설정
+        startActivity(intent) //인텐트 이동
+        finish() //현재 액티비티 종료
     }
 }

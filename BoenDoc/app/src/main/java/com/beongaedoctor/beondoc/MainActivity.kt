@@ -1,12 +1,12 @@
 package com.beongaedoctor.beondoc
 
 import android.content.Intent
-import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.beongaedoctor.beondoc.databinding.ActivityChatBinding
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.beongaedoctor.beondoc.databinding.ActivityMainBinding
-import com.google.gson.GsonBuilder
+
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -15,6 +15,9 @@ class MainActivity : AppCompatActivity() {
 
     // 매번 null 체크 하지 않도록 바인딩 변수 재선언
     private val binding get() = mainbinding!!
+
+    //뒤로가기 연속 클릭 대기 시간
+    var mBackWait:Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,5 +47,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
+    override fun onBackPressed() {
+        // 뒤로가기 버튼 클릭
+        if(System.currentTimeMillis() - mBackWait >=2000 ) {
+            mBackWait = System.currentTimeMillis()
+            Toast.makeText(this, "뒤로가기를 한 번 더 눌러 종료", Toast.LENGTH_LONG).show()
+        } else {
+            finishAffinity() //앱 종료
+        }
+    }
 
 }
