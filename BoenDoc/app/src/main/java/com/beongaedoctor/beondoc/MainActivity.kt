@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
 
         //멤버 정보 불러와서 이름 보여주기
         val memberInfo = App.prefs.getMember("memberInfo", "")
-        binding.username.text = memberInfo.name
+        binding.username.text = memberInfo?.name
     }
 
     override fun onStart() {

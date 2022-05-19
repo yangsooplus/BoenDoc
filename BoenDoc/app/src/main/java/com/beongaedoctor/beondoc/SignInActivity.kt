@@ -51,8 +51,12 @@ class SignInActivity : AppCompatActivity() {
             val spID = App.prefs.getString("ID", "")
             val spPW = App.prefs.getString("PW", "")
 
-            if (!spID.equals("") && !spPW.equals(""))
+            if (!spID.equals("") && !spPW.equals("")) {
+                //로딩창
+                dialog!!.show()
                 requestLogin(spID!!, spPW!!, this)
+                Toast.makeText(this, "자동 로그인 성공", Toast.LENGTH_SHORT).show()
+            }
         }
 
 
@@ -108,6 +112,8 @@ class SignInActivity : AppCompatActivity() {
 
                         App.prefs.setString("ID", email)
                         App.prefs.setString("PW", pw)
+
+
                     }
 
 
@@ -133,6 +139,12 @@ class SignInActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                //자동로그인 테스트용. 마지막에는 지워야 함
+                if (binding.autologin.isChecked) {
+                    App.prefs.setBool("AUTOLOGIN", true)
+                    App.prefs.setString("ID", email)
+                    App.prefs.setString("PW", pw)
+                }
                 Toast.makeText(SIAContext, "접속 실패 하지만 넘어가", Toast.LENGTH_LONG).show()
                 val mainIntent = Intent(SIAContext, MainActivity::class.java)
                 startActivity(mainIntent)

@@ -150,10 +150,18 @@ class MapActivity : AppCompatActivity(){
 
         //현재 좌표를 설정한 뒤 키워드 검색 결과를 받아옴
         Handler().postDelayed({
-            searchKeyword(mapKeyword, x!!, y!!)
+            if (mapKeyword.contains(',')) //진료과 여러개가 추천된 경우 {
+            {
+                println("여기????")
+                searchKeyword(splitMapKeyword(mapKeyword), x!!, y!!)
+            }
+
+            else
+                searchKeyword(mapKeyword, x!!, y!!)
         }, 1000)
     }
 
+    private fun splitMapKeyword(keyword: String) : List<String> = keyword.split(',')
 
 
 
@@ -267,6 +275,44 @@ class MapActivity : AppCompatActivity(){
                 Log.w("MainActivity", "통신 실패: ${t.message}")
             }
         })
+    }
+
+    private fun searchKeyword(keywords: List<String>, x:String, y:String, radius:Int = 1000) {
+        val retrofitMap = Retrofit.Builder()   // Retrofit 구성
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        val api = retrofitMap.create(KakaoAPI::class.java)   // 통신 인터페이스를 객체로 생성
+
+        println(keywords)
+
+        for (keyword in keywords) {
+            println("검색 : " + keyword)
+            val call = api.getSearchKeyword(API_KEY, keyword, x, y, radius)   // 검색 조건 입력
+
+            // API 서버에 요청
+            call.enqueue(object: Callback<ResultSearchKeyword> {
+                override fun onResponse(
+                    call: Call<ResultSearchKeyword>,
+                    response: Response<ResultSearchKeyword>
+                ) {
+                    // 통신 성공 (검색 결과는 response.body()에 담겨있음)
+                    Log.d("Test", "Raw: ${response.raw()}")
+                    Log.d("Test", "Body: ${response.body()}")
+
+                    drawMapMarker(response.body()!!) //통신 결과를 마커로 뿌려주기
+
+
+                }
+
+                override fun onFailure(call: Call<ResultSearchKeyword>, t: Throwable) {
+                    // 통신 실패
+                    Log.w("MainActivity", "통신 실패: ${t.message}")
+                }
+            })
+
+        }
+
     }
 
 

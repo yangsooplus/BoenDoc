@@ -46,7 +46,10 @@ class Preference (context: Context) {
 
     fun getMember(key:String, default: String) : Member {
         val gsonMemberInfo = prefs.getString(key, default)
-        return gson.fromJson(gsonMemberInfo, Member::class.java)
+        if (gsonMemberInfo != null)
+            return gson.fromJson(gsonMemberInfo, Member::class.java)
+        else
+            return Member()
     }
 
     fun setString(key:String, value:String) {

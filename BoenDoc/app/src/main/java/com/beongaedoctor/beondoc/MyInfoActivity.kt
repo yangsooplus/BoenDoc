@@ -31,6 +31,9 @@ class MyInfoActivity : AppCompatActivity() {
 
 
     lateinit var memberInfo : Member
+    var autoLogin = false
+
+    lateinit var dialog : LoadingDialog
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,6 +47,9 @@ class MyInfoActivity : AppCompatActivity() {
 
         //기기에 저장된 유저 정보
         memberInfo = App.prefs.getMember("memberInfo", "")
+        autoLogin = App.prefs.getBool("AUTOLOGIN", false)
+
+        dialog = LoadingDialog(this)
     }
 
     override fun onStart() {
@@ -69,6 +75,7 @@ class MyInfoActivity : AppCompatActivity() {
         binding.reuserage.hint = memberInfo!!.age
         binding.reuserheight.hint = memberInfo!!.height
         binding.reuserweight.hint = memberInfo!!.weight
+        binding.autologinCheck.isChecked = autoLogin
 
 
 
@@ -100,9 +107,16 @@ class MyInfoActivity : AppCompatActivity() {
     }
 
     private fun reviseMyInfo(context : Context) {
+
+        dialog!!.show()
+
         //기기에도 정보 저장 - SharedPreferences
         App.prefs.setMember("memberInfo", memberInfo)
 
+        if (binding.autologinCheck.isChecked)
+            App.prefs.setBool("AUTOLOGIN", true)
+        else
+            App.prefs.setBool("AUTOLOGIN", false)
 
 
         //DB 정보 수정 요청
@@ -110,6 +124,7 @@ class MyInfoActivity : AppCompatActivity() {
         ).enqueue(object : Callback<UpdateMemberResponse> {
             override fun onResponse(call: Call<UpdateMemberResponse>, response: Response<UpdateMemberResponse>) {
                 if (response.isSuccessful) {
+                    dialog!!.dismiss()
                     Toast.makeText(context, "회원 정보 수정", Toast.LENGTH_LONG).show()//변경 알림
                     val mypageIntent = Intent(context, MainMypageActivity::class.java)
                     startActivity(mypageIntent) //마이페이지 메인으로 이동
@@ -118,7 +133,7 @@ class MyInfoActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<UpdateMemberResponse>, t: Throwable) {
                 println(t.message)
-
+                dialog!!.dismiss()
                 //나중에 아래 지우기
                 Toast.makeText(context, "로컬은 변경했고, DB는 안됐어", Toast.LENGTH_LONG).show()//변경 알림
                 val mypageIntent = Intent(context, MainMypageActivity::class.java)
@@ -145,5 +160,10 @@ class MyInfoActivity : AppCompatActivity() {
             member.trauma,
             member.femininity
         )
+    }
+
+    //뒤로가기 버튼 눌렀을 때
+    override fun onBackPressed() {
+        reviseMyInfo(this)
     }
 }

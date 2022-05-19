@@ -103,7 +103,7 @@ class ChatActivity : AppCompatActivity() {
             .build()
 
         val retrofit_f = Retrofit.Builder()
-            .baseUrl("http://172.30.1.50:5000/")
+            .baseUrl("http://192.168.200.158:5000/")
             .addConverterFactory(GsonConverterFactory.create(gson))
             .client(client)
             .build()
@@ -140,13 +140,16 @@ class ChatActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<List<String>>, t: Throwable) {
                 println(t.message)
+                dialog.dismiss()
+                gotoResult(context, "서버 연결 에러")
             }
 
         })
     }
 
     private fun combinateChatResponse() : ChatResponse {
-        val memberInfo = App.prefs.getMember("memberInfo", "")
+        val memberInfo = App.prefs.getMember("memberInfo", "")!!
+
         chatResposeList.add(memberInfo.drug)
         chatResposeList.add(memberInfo.social)
         chatResposeList.add(memberInfo.family)
@@ -160,6 +163,7 @@ class ChatActivity : AppCompatActivity() {
     private fun gotoResult(context: Context, result : String?) {
         val resultIntent = Intent(context, ResultActivity::class.java)
         resultIntent.putExtra("diseaseName", result)
+        resultIntent.putExtra("fromChat", true)
         startActivity(resultIntent)
     }
 

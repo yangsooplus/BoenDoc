@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.EditText
+import android.widget.Toast
 import com.beongaedoctor.beondoc.Fragment.*
 import com.beongaedoctor.beondoc.databinding.ActivityBasicExamBinding
 import com.google.gson.GsonBuilder
@@ -220,7 +221,8 @@ class BasicExamActivity : AppCompatActivity() {
                     }
                 }
                 override fun onFailure(call: Call<Member>, t: Throwable) {
-                    println("그냥 안됨")
+                    Toast.makeText(App.context(), "서버 통신 에러", Toast.LENGTH_SHORT).show()
+                    realConfirm() //테스트로 넘어가기 나중에 지워야함~
                 }
             })
         }

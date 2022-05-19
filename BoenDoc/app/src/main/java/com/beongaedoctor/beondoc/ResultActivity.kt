@@ -34,6 +34,8 @@ class ResultActivity : AppCompatActivity() {
 
     private lateinit var predDiseaseInfo : DiagnosisRecord
 
+    var fromChat = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         RABinding = ActivityResultBinding.inflate(layoutInflater)
@@ -45,6 +47,7 @@ class ResultActivity : AppCompatActivity() {
 
 
         val pred_disease = intent.getStringExtra("diseaseName")
+        fromChat = intent.getBooleanExtra("fromChat", false)
         println(pred_disease)
 
         //기기에 저장된 유저 정보
@@ -73,25 +76,7 @@ class ResultActivity : AppCompatActivity() {
         }
     }
 
-    //질병id -> 질병 정보
-    private fun getDiseaseInfo0(dnid : DNID) {
-        diagnosisService.getDiseasebyDNID(dnid.id).enqueue(object : Callback<DiagnosisRecord> {
-            override fun onResponse(
-                call: Call<DiagnosisRecord>,
-                response: Response<DiagnosisRecord>
-            ) {
-                if (response.isSuccessful) {
-                    println(response.body())
-                    setMainDiseaseInfo(response.body()) //받아온 정보를 메인 질병에 셋팅
-                }
-            }
 
-            override fun onFailure(call: Call<DiagnosisRecord>, t: Throwable) {
-                println(t.message)
-            }
-
-        })
-    }
 
     //질병id -> 질병 정보
     private fun getDiseaseInfo(dn : DN) {
@@ -108,6 +93,8 @@ class ResultActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<DiagnosisRecord>, t: Throwable) {
+                predDiseaseInfo = DiagnosisRecord("에러", "서버 연결 실패", 2, "피부과, 이비인후과", "0000-00-00")
+                setMainDiseaseInfo(predDiseaseInfo) //받아온 정보를 메인 질병에 셋팅
                 println(t.message)
             }
         })

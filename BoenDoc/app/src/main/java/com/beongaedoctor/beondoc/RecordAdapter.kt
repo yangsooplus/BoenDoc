@@ -30,6 +30,7 @@ class DiagnosisAdapter(val diagnosisList : DiagnosisList) : RecyclerView.Adapter
             val context = v.context
             val resultIntent = Intent(context, ResultActivity::class.java)
             resultIntent.putExtra("diseaseName", diagnosisList.diseaseList[position].name)
+            resultIntent.putExtra("fromChat", false)
             context.startActivity(resultIntent)
         }
     }

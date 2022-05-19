@@ -35,6 +35,8 @@ class MyPwActivity : AppCompatActivity() {
 
     lateinit var member: Member
 
+    lateinit var dialog : LoadingDialog
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //뷰 바인딩
@@ -45,7 +47,7 @@ class MyPwActivity : AppCompatActivity() {
         retrofit = RetrofitClass.getInstance()
         memberService = retrofit.create(MemberService::class.java)
 
-
+        dialog = LoadingDialog(this)
 
         //기기에 저장된 유저 정보
         member = App.prefs.getMember("memberInfo", "")
@@ -117,10 +119,14 @@ class MyPwActivity : AppCompatActivity() {
                 }
             }
         }
+
+        binding.backbtn.setOnClickListener {
+            super.onBackPressed()
+        }
     }
 
     //기존 비밀번호랑 일치하면 true
-    fun checkPW() : Boolean{
+    private fun checkPW() : Boolean{
         //기존 비밀번호의 일치 여부
         println(member!!.password)
         println(binding.currentPW.text.toString())
@@ -128,7 +134,10 @@ class MyPwActivity : AppCompatActivity() {
     }
 
     //비밀번호 수정 요청
-    fun revisePW(context: Context) : Unit {
+    private fun revisePW(context: Context) : Unit {
+
+        dialog!!.show()
+
         //비밀번호 변경
         member!!.password = binding.newPW.text.toString()
 
@@ -137,6 +146,9 @@ class MyPwActivity : AppCompatActivity() {
         memberService!!.reviseProfile(member!!.id, getUpdateMember(member!!)).enqueue(object : Callback<UpdateMemberResponse>{
             override fun onResponse(call: Call<UpdateMemberResponse>, response: Response<UpdateMemberResponse>) {
                 if (response.isSuccessful) {
+
+                    dialog!!.dismiss()
+
                     Toast.makeText(context, "비밀번호를 변경했습니다.", Toast.LENGTH_LONG).show()//변경 알림
 
                     App.prefs.setMember("memberInfo", member) //서버 변경을 성공하면 로컬도 변경.
@@ -150,6 +162,7 @@ class MyPwActivity : AppCompatActivity() {
                 println(t.message)
 
                 //나중에 아래 지우기
+                dialog!!.dismiss()
                 Toast.makeText(context, "로컬은 변경했고, DB는 안됐어", Toast.LENGTH_LONG).show()//변경 알림
                 val mypageIntent = Intent(context, MainMypageActivity::class.java)
                 startActivity(mypageIntent) //마이페이지 메인으로 이동
@@ -174,4 +187,6 @@ class MyPwActivity : AppCompatActivity() {
             member.femininity
         )
     }
+
+
 }
