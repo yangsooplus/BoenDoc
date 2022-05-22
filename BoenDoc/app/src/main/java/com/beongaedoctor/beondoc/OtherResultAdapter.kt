@@ -25,14 +25,15 @@ class OtherResultAdapter(val context: Context, val ResultList:ArrayList<OtherRes
     override fun getView(position: Int, converView: View?, parent: ViewGroup?): View {
         val view: View = LayoutInflater.from(context).inflate(R.layout.otherresultitem, null)
         val nameTV = view.findViewById<TextView>(R.id.diseasename)
-        val severityTV = view.findViewById<TextView>(R.id.severity)
+        //val severityTV = view.findViewById<TextView>(R.id.severity)
         val explanTV = view.findViewById<TextView>(R.id.explanation)
         val data = ResultList[position]
 
         nameTV.text = data.name
         explanTV.text = data.explanation
 
-        when (data.severity) {
+        /*
+                when (data.severity) {
             0 -> {severityTV.setBackgroundResource(R.drawable.rectemergency)
                 severityTV.text = "응급"}
             1 -> {severityTV.setBackgroundResource(R.drawable.rectserious)
@@ -40,6 +41,8 @@ class OtherResultAdapter(val context: Context, val ResultList:ArrayList<OtherRes
             2 -> {severityTV.setBackgroundResource(R.drawable.rectlight)
                 severityTV.text = "경증"}
         }
+        */
+
 
         return view
     }

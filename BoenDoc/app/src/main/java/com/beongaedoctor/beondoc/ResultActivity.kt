@@ -53,8 +53,13 @@ class ResultActivity : AppCompatActivity() {
         //기기에 저장된 유저 정보
         memberInfo = App.prefs.getMember("memberInfo", "")
 
-        if (pred_disease != null)
-            getDiseaseInfo(DN(pred_disease))
+        if (pred_disease != null) {
+            if (fromChat)
+                getDiseaseInfo(DN(pred_disease), fromChat)
+            else
+                getDiseaseInfo(DN(pred_disease), fromChat) //추가하지 않는 버전으로
+        }
+
 
 
         //다른 결과는 리스트로.
@@ -79,44 +84,69 @@ class ResultActivity : AppCompatActivity() {
 
 
     //질병id -> 질병 정보
-    private fun getDiseaseInfo(dn : DN) {
-        diagnosisService.getDiseasebyString(memberInfo.id, dn).enqueue(object : Callback<DiagnosisRecord> {
-            override fun onResponse(
-                call: Call<DiagnosisRecord>,
-                response: Response<DiagnosisRecord>
-            ) {
-                if (response.isSuccessful) {
-                    println(response.body())
-                    predDiseaseInfo = response.body()!!
-                    setMainDiseaseInfo(response.body()) //받아온 정보를 메인 질병에 셋팅
+    private fun getDiseaseInfo(dn : DN, fromChat: Boolean) {
+        if (fromChat) {
+            diagnosisService.getDiseasebyString1(memberInfo.id, dn).enqueue(object : Callback<DiagnosisRecord> {
+                override fun onResponse(
+                    call: Call<DiagnosisRecord>,
+                    response: Response<DiagnosisRecord>
+                ) {
+                    if (response.isSuccessful) {
+                        println(response.body())
+                        predDiseaseInfo = response.body()!!
+                        setMainDiseaseInfo(response.body()) //받아온 정보를 메인 질병에 셋팅
+                    }
                 }
-            }
 
-            override fun onFailure(call: Call<DiagnosisRecord>, t: Throwable) {
-                predDiseaseInfo = DiagnosisRecord("에러", "서버 연결 실패", 2, "피부과, 이비인후과", "0000-00-00")
-                setMainDiseaseInfo(predDiseaseInfo) //받아온 정보를 메인 질병에 셋팅
-                println(t.message)
-            }
-        })
+                override fun onFailure(call: Call<DiagnosisRecord>, t: Throwable) {
+                    predDiseaseInfo = DiagnosisRecord("에러", "서버 연결 실패", 2, "피부과, 이비인후과", "0000-00-00")
+                    setMainDiseaseInfo(predDiseaseInfo) //받아온 정보를 메인 질병에 셋팅
+                    println(t.message)
+                }
+            })
+        }
+        else {
+            diagnosisService.getDiseasebyString2(memberInfo.id, dn).enqueue(object : Callback<DiagnosisRecord> {
+                override fun onResponse(
+                    call: Call<DiagnosisRecord>,
+                    response: Response<DiagnosisRecord>
+                ) {
+                    if (response.isSuccessful) {
+                        println(response.body())
+                        predDiseaseInfo = response.body()!!
+                        setMainDiseaseInfo(response.body()) //받아온 정보를 메인 질병에 셋팅
+                    }
+                }
+
+                override fun onFailure(call: Call<DiagnosisRecord>, t: Throwable) {
+                    predDiseaseInfo = DiagnosisRecord("에러", "서버 연결 실패", 2, "피부과, 이비인후과", "0000-00-00")
+                    setMainDiseaseInfo(predDiseaseInfo) //받아온 정보를 메인 질병에 셋팅
+                    println(t.message)
+                }
+            })
+
+        }
+
     }
 
     //받아온 정보를 메인 질병에 셋팅
     private fun setMainDiseaseInfo(DR : DiagnosisRecord?) {
         binding.maindiseaseName.text = DR?.name
         binding.mainexplanation.text = DR?.info
+        binding.maindepartment.text = DR?.department
 
         when (DR?.level) { //중증도에 따라 textView 내용과 배경 바꾸기
             0 -> {
-                binding.mainseverity.text = "응급"
-                binding.mainseverity.setBackgroundResource(R.drawable.rectemergency)
+                //binding.mainseverity.text = "응급"
+                //binding.mainseverity.setBackgroundResource(R.drawable.rectemergency)
             }
             1 -> {
-                binding.mainseverity.text = "중증"
-                binding.mainseverity.setBackgroundResource(R.drawable.rectserious)
+                //binding.mainseverity.text = "중증"
+                //binding.mainseverity.setBackgroundResource(R.drawable.rectserious)
             }
             2 -> {
-                binding.mainseverity.text = "경증"
-                binding.mainseverity.setBackgroundResource(R.drawable.rectlight)
+                //binding.mainseverity.text = "경증"
+                //binding.mainseverity.setBackgroundResource(R.drawable.rectlight)
             }
         }
 

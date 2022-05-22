@@ -11,10 +11,6 @@ object RetrofitClass {
     private var instance: Retrofit? = null
     private val gson = GsonBuilder().setLenient().create()
 
-
-
-    // 서버 주소
-    //private const val BASE_URL = "https://jsonplaceholder.typicode.com/"
     // 달콤 주소
     //private const val BASE_URL = "http://172.30.1.18:8080/"
 

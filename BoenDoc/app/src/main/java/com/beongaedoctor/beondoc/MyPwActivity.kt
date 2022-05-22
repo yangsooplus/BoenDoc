@@ -171,11 +171,12 @@ class MyPwActivity : AppCompatActivity() {
     }
 
 
+    //멤버 정보 수정 통신에는 id가 미포함.
     private fun getUpdateMember(member: Member): UpdateMember {
         return UpdateMember(
-            member.name,
             member.loginId,
             member.password,
+            member.name,
             member.age,
             member.height,
             member.weight,

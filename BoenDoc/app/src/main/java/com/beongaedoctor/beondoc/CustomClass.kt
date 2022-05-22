@@ -99,8 +99,7 @@ data class UpdateMemberResponse (
     var trauma : String = "",
     @SerializedName("femininity")
     var femininity : String = ""
-    //@SerializedName("basicExam")
-    //var basicExam: BasicExam? = null
+
 )
 
 data class BasicExam(
@@ -129,12 +128,13 @@ interface MemberService {
     @POST("api/members")
     fun setProfile(@Body profile: Member) : Call<Member>
 
-
-
-
     @PUT("api/members/{id}")
     fun reviseProfile(@Path("id") id : Long
-                      , @Body member: UpdateMember) : Call<UpdateMemberResponse>
+                      ,@Body member: UpdateMember) : Call<UpdateMemberResponse>
+
+    @DELETE("api/member/{id}")
+    fun deleteProfile(@Path("id") id : Long) : Call<Unit>
+
 }
 
 
@@ -270,8 +270,11 @@ interface DiagnosisService{
     @GET("api/diagnosisInfo/{id}")
     fun getDiseasebyDNID(@Path("id") id:Long) : Call<DiagnosisRecord>
 
-    @POST("api/diagnosis/{id}")
-    fun getDiseasebyString(@Path("id") id:Long, @Body diseaseName: DN) : Call<DiagnosisRecord>
+    @POST("api/diagnosis1/{id}")
+    fun getDiseasebyString1(@Path("id") id:Long, @Body diseaseName: DN) : Call<DiagnosisRecord>
+
+    @POST("api/diagnosis2/{id}")
+    fun getDiseasebyString2(@Path("id") id:Long, @Body diseaseName: DN) : Call<DiagnosisRecord>
 }
 
 data class ChatResponse(

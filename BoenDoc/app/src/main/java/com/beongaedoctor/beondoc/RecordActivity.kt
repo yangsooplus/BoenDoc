@@ -41,6 +41,9 @@ class RecordActivity : AppCompatActivity() {
         val diagnosisRecordService = retrofit.create(DiagnosisRecordService::class.java)
         binding.mypageRecyclerView.layoutManager = LinearLayoutManager(this)
 
+
+
+
         //사용자 id -> 해당 사용자의 진단 내역 리스트
         diagnosisRecordService!!.getDiagnosisRecord(memberInfo.id).enqueue(object :
             Callback<DiagnosisList>{
@@ -63,7 +66,7 @@ class RecordActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         super.onBackPressed()
-        val intent = Intent(this, MainActivity::class.java) //지금 액티비티에서 다른 액티비티로 이동하는 인텐트 설정
+        val intent = Intent(this, MainMypageActivity::class.java) //지금 액티비티에서 다른 액티비티로 이동하는 인텐트 설정
         intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP //인텐트 플래그 설정
         startActivity(intent) //인텐트 이동
         finish() //현재 액티비티 종료

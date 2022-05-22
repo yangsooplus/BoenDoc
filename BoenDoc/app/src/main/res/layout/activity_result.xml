@@ -24,51 +24,143 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="20dp"
         android:layout_marginVertical="20dp"
-        android:background="@drawable/semiroundbtng"
         android:orientation="vertical"
         >
 
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="10dp">
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/maindiseaseName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:text="질환 이름"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:fontFamily="@font/spoqahansansneobold"
-                />
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="44dp"
+                android:src="@drawable/beondoc"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/mainseverity"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:background="@drawable/rectemergency"
-                android:text="응급"
-                android:textColor="@color/white"
-                android:textSize="18sp"
-                android:gravity="center"
-                android:fontFamily="@font/spoqahansansneobold"
-                />
 
-        </LinearLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="240dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="24dp"
+                android:padding="10dp"
+                android:background="@drawable/result"
+                app:layout_constraintStart_toEndOf="@+id/imageView2"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/textView12"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:fontFamily="@font/spoqahansansneobold"
+                    android:text="00%"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="@font/spoqahansansneolight"
+                    android:text="의 확률로"
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toEndOf="@+id/textView12"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/maindiseaseName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:fontFamily="@font/spoqahansansneobold"
+                    android:text="질환이름"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView12" />
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="@font/spoqahansansneolight"
+                    android:text="이(가) 의심됩니다."
+                    android:textColor="@color/black"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/maindiseaseName" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/spoqahansansneolight"
+            android:text="문진 데이터를 기반으로 한 번개닥터AI가 예상한 결과이며, 반드시 의료기관에 방문하여 전문의에게 진료를 받으시기 바랍니다."
+            android:textColor="@color/red"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/spoqahansansneomedium"
+            android:text="설명"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/mainexplanation"
-            android:layout_width="wrap_content"
+            android:background="@drawable/semiroundbtng"
+            android:padding="16dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="어디가 어떻게 아픈 질환입니다. 질환 설명이 들어갑니다 어쩌구저쩌구 설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명설명설"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
+            android:text=""
             android:textColor="@color/black"
             android:textSize="14sp"
             android:fontFamily="@font/spoqahansansneolight"
             />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/spoqahansansneomedium"
+            android:text="진료과"
+            android:textColor="@color/black"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/maindepartment"
+            android:background="@drawable/semiroundbtng"
+            android:padding="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
+            android:text=""
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:fontFamily="@font/spoqahansansneolight"
+            />
+
 
 
     </LinearLayout>
@@ -80,31 +172,13 @@
         android:layout_marginHorizontal="20dp"
         android:fillViewport="true">
 
-        <LinearLayout
+        <ListView
+            android:id="@+id/otherResultList"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="뭔가 추가 컨텐츠가 있으면 이 곳에 들어갑니다. 질환 이름은 고정된 채 이부분부터 아래 버튼까지의 공간이 스크롤 됩니다." />
-
-
-
-            <ListView
-                android:id="@+id/otherResultList"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:dividerHeight="5dp"
-                android:divider="@color/white"
-                />
-
-
-        </LinearLayout>
-
-
+            android:layout_height="wrap_content"
+            android:dividerHeight="5dp"
+            android:divider="@color/white"
+            />
     </ScrollView>
 
     <LinearLayout

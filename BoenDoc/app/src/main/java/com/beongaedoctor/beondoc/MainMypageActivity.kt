@@ -3,8 +3,13 @@ package com.beongaedoctor.beondoc
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
+import com.beongaedoctor.beondoc.App.Companion.context
 import com.beongaedoctor.beondoc.databinding.ActivityMainMypageBinding
-import com.google.gson.GsonBuilder
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+
 
 class MainMypageActivity : AppCompatActivity() {
 
@@ -59,6 +64,10 @@ class MainMypageActivity : AppCompatActivity() {
             val intent = Intent(this, RecordActivity::class.java)
             startActivity(intent)
         }
+
+        binding.leavebtn.setOnClickListener {
+            leaveBeonDoc()
+        }
     }
 
     //뒤로가기 버튼 눌렀을 때
@@ -69,4 +78,29 @@ class MainMypageActivity : AppCompatActivity() {
         startActivity(intent) //인텐트 이동
         finish() //현재 액티비티 종료
     }
+
+    private fun leaveBeonDoc() {
+        val retrofit = RetrofitClass.getInstance()
+        val memberService = retrofit.create(MemberService::class.java)
+
+        memberService!!.deleteProfile(memberInfo.id).enqueue(object : Callback<Unit>
+        {
+            override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
+                goToSignIn()
+                Toast.makeText(context(), "탈퇴되었습니다.", Toast.LENGTH_SHORT).show()//변경 알림
+            }
+
+            override fun onFailure(call: Call<Unit>, t: Throwable) {
+
+            }
+
+        })
+    }
+
+    private fun goToSignIn() {
+        val intent = Intent(this, SignInActivity::class.java) //지금 액티비티에서 다른 액티비티로 이동하는 인텐트 설정
+        startActivity(intent) //인텐트 이동
+    }
 }
+
+
