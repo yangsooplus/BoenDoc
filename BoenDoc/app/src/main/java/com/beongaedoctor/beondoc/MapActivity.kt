@@ -2,15 +2,13 @@ package com.beongaedoctor.beondoc
 
 
 import android.Manifest
-import android.annotation.SuppressLint
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -24,7 +22,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.content.ContextCompat.startActivity
 import com.beongaedoctor.beondoc.databinding.ActivityMapBinding
 import com.google.android.gms.location.*
@@ -148,6 +145,10 @@ class MapActivity : AppCompatActivity(){
         x = location.longitude.toString() //현재 x좌표
         y = location.latitude.toString() //현재 y좌표
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            startTrackingOn31()
+        }
+
         //현재 좌표를 설정한 뒤 키워드 검색 결과를 받아옴
         Handler().postDelayed({
             if (mapKeyword.contains(',')) //진료과 여러개가 추천된 경우 {
@@ -169,14 +170,16 @@ class MapActivity : AppCompatActivity(){
     private fun permissionCheck() {
         val preference = getPreferences(MODE_PRIVATE)
         val isFirstCheck = preference.getBoolean("isFirstPermissionCheck", true)
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+            && ActivityCompat.checkSelfPermission(this,Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+         {
             // 권한이 없는 상태
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
                 // 권한 거절 (다시 한 번 물어봄)
                 val builder = AlertDialog.Builder(this)
                 builder.setMessage("현재 위치를 확인하시려면 위치 권한을 허용해주세요.")
                 builder.setPositiveButton("확인") { dialog, which ->
-                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), ACCESS_FINE_LOCATION)
+                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), ACCESS_FINE_LOCATION)
                 }
                 builder.setNegativeButton("취소") { dialog, which ->
 
@@ -186,7 +189,8 @@ class MapActivity : AppCompatActivity(){
                 if (isFirstCheck) {
                     // 최초 권한 요청
                     preference.edit().putBoolean("isFirstPermissionCheck", false).apply()
-                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), ACCESS_FINE_LOCATION)
+                    ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), ACCESS_FINE_LOCATION)
+
                 } else {
                     // 다시 묻지 않음 클릭 (앱 정보 화면으로 이동)
                     val builder = AlertDialog.Builder(this)
@@ -201,11 +205,34 @@ class MapActivity : AppCompatActivity(){
                     builder.show()
                 }
             }
-        } else {
+        }
+        else {
             // 권한이 있는 상태
-            startTracking() //카카오맵 위치 트래킹 시작
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                Toast.makeText(this, "31이상은 다른 방법으로",Toast.LENGTH_LONG).show()
+                //startTrackingOn31()
+            }
+            else {
+                startTracking() //카카오맵 위치 트래킹 시작
+                }
+
 
         }
+    }
+
+    private fun startTrackingOn31() {
+        mapView!!.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(y!!.toDouble(), x!!.toDouble()), true)
+
+
+
+        val marker = MapPOIItem()
+        marker.apply{
+            itemName = "현위치"
+            mapPoint = MapPoint.mapPointWithGeoCoord(y!!.toDouble(), x!!.toDouble())
+            marker.markerType = MapPOIItem.MarkerType.RedPin
+            marker.selectedMarkerType = MapPOIItem.MarkerType.RedPin
+        }
+        mapView!!.addPOIItem(marker)
     }
 
     // 권한 요청 후 행동
@@ -363,10 +390,18 @@ class MapActivity : AppCompatActivity(){
 
         override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
             //마커 클릭시 나오는 말풍선
-            val ballonInfo :BallonInfo = poiItem?.userObject as BallonInfo
-            name.text = poiItem?.itemName
-            phone.text = ballonInfo.phone
-            address.text = ballonInfo.address
+            if (poiItem?.userObject != null) {
+                val ballonInfo :BallonInfo = poiItem?.userObject as BallonInfo
+                name.text = poiItem?.itemName
+                phone.text = ballonInfo.phone
+                address.text = ballonInfo.address
+            }
+            else {
+                name.text = poiItem?.itemName
+                phone.text = ""
+                address.text = ""
+            }
+
             return mCalloutBalloon
         }
 
@@ -394,11 +429,13 @@ class MapActivity : AppCompatActivity(){
         }
 
         override fun onCalloutBalloonOfPOIItemTouched(mapView: MapView?, poiItem: MapPOIItem?, buttonType: MapPOIItem.CalloutBalloonButtonType?) {
+            if (poiItem?.userObject != null) {
+                val ballonInfo :BallonInfo = poiItem?.userObject as BallonInfo
+                val urladdress = "https://place.map.kakao.com/" + ballonInfo.id
+                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(urladdress))
+                startActivity(context, intent, null)
 
-            val ballonInfo :BallonInfo = poiItem?.userObject as BallonInfo
-            val urladdress = "https://place.map.kakao.com/" + ballonInfo.id
-            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(urladdress))
-            startActivity(context, intent, null)
+            }
         }
 
         override fun onDraggablePOIItemMoved(p0: MapView?, p1: MapPOIItem?, p2: MapPoint?) {

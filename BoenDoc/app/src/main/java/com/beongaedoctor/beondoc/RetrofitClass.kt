@@ -18,7 +18,8 @@ object RetrofitClass {
     // 달콤 주소
     //private const val BASE_URL = "http://172.30.1.18:8080/"
 
-    private const val BASE_URL = "http://172.30.1.35:8080/"
+    //AWS 주소
+    private const val BASE_URL = "http://34.236.164.138:8080/"
 
     // SingleTon
     fun getInstance(): Retrofit {
