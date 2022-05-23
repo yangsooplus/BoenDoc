@@ -148,10 +148,10 @@ data class Login(
 
 interface LoginService {
     @POST("api/login")
-    fun requestLogin(@Body data: Login) : Call<LoginResponse>
+    fun requestLogin(@retrofit2.http.Body data: Login) : Call<LoginResponse>
 
     @POST("api/loginV2")
-    fun requestLogin2(@Body data: Login) : Call<Member>
+    fun requestLogin2(@retrofit2.http.Body data: Login) : Call<Member>
 
 }
 
@@ -265,16 +265,16 @@ data class DNID(
 
 interface DiagnosisService{
     @POST("api/diagnosis/{id}")
-    fun searchDiseasebyString(@Path("id") id:Long, @Body diseaseName:DN) : Call<DNID>
+    fun searchDiseasebyString(@Path("id") id:Long, @retrofit2.http.Body diseaseName:DN) : Call<DNID>
 
     @GET("api/diagnosisInfo/{id}")
     fun getDiseasebyDNID(@Path("id") id:Long) : Call<DiagnosisRecord>
 
     @POST("api/diagnosis1/{id}")
-    fun getDiseasebyString1(@Path("id") id:Long, @Body diseaseName: DN) : Call<DiagnosisRecord>
+    fun getDiseasebyString1(@Path("id") id:Long, @retrofit2.http.Body diseaseName: DN) : Call<DiagnosisRecord>
 
     @POST("api/diagnosis2/{id}")
-    fun getDiseasebyString2(@Path("id") id:Long, @Body diseaseName: DN) : Call<DiagnosisRecord>
+    fun getDiseasebyString2(@Path("id") id:Long, @retrofit2.http.Body diseaseName: DN) : Call<DiagnosisRecord>
 }
 
 data class ChatResponse(
@@ -289,5 +289,5 @@ data class ModelResult(
 
 interface chatResponseService{
     @POST("test")
-    fun sendResponse2Model(@Body test: ChatResponse) : Call<List<String>>
+    fun sendResponse2Model(@retrofit2.http.Body test: ChatResponse) : Call<List<String>>
 }

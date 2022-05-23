@@ -26,6 +26,8 @@ import androidx.core.content.ContextCompat.startActivity
 import com.beongaedoctor.beondoc.databinding.ActivityMapBinding
 import com.google.android.gms.location.*
 import com.google.android.gms.location.LocationServices
+import com.tickaroo.tikxml.TikXml
+import com.tickaroo.tikxml.retrofit.TikXmlConverterFactory
 import net.daum.mf.map.api.CalloutBalloonAdapter
 import net.daum.mf.map.api.MapPOIItem
 import net.daum.mf.map.api.MapPoint
@@ -35,6 +37,10 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import okhttp3.OkHttpClient
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 //말풍선에 붙일 클래스
@@ -61,6 +67,8 @@ class MapActivity : AppCompatActivity(){
     companion object {
         const val BASE_URL = "https://dapi.kakao.com/"
         const val API_KEY = "KakaoAK 592c80e46b016a87334cf9531a369a6a" // REST API 키
+        const val HKEY = "DFKY0ENCJZDVdxX4ulcZ8QSKuf1IYa6pG3TASfba0vk8Nv9DnW19C/nEftvSsZJAIwGWcSEXfP/pdXmNkKQJBQ=="
+
     }
 
     private var mFusedLocationProviderClient: FusedLocationProviderClient? = null // 현재 위치를 가져오기 위한 변수
@@ -73,6 +81,10 @@ class MapActivity : AppCompatActivity(){
     private val eventListener = MarkerEventListener(this)   // 마커 클릭 이벤트 리스너
 
     lateinit var mapKeyword : String
+
+    var currentTime : Int = 0
+    var currentDay : String = ""
+    var nearHospitalList = mutableListOf<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,13 +107,23 @@ class MapActivity : AppCompatActivity(){
         mapView!!.setCalloutBalloonAdapter(CustomBallonAdapter(layoutInflater, this))
         mapView!!.setPOIItemEventListener(eventListener)  // 마커 클릭 이벤트 리스너 등록
 
+        val curTime = System.currentTimeMillis() // ms로 반환
+        val timeFormat = SimpleDateFormat("HHmm") // 시(0~23) 분 초
+        val eFormat = SimpleDateFormat("E", Locale("ko", "KR"))
+        currentTime = timeFormat.format(curTime).toInt()
+        currentDay = eFormat.format(curTime)
+        println(currentTime)
+        println(currentDay)
+
+
+
     }
 
 
 
     override fun onStart() {
         super.onStart()
-        binding.mapText.text = "가까운 $mapKeyword 를 추천해드릴게요"
+        binding.mapText.text = "가까운 $mapKeyword 입니다.\n실제 접수 마감 시간과는 차이가 있을 수 있으니 방문 전에 해당 기관에 문의하시기 바랍니다."
 
         if (checkLocationService()) { // GPS가 켜져있을 경우
 
@@ -153,7 +175,8 @@ class MapActivity : AppCompatActivity(){
         Handler().postDelayed({
             if (mapKeyword.contains(',')) //진료과 여러개가 추천된 경우 {
             {
-                println("여기????")
+
+                //getHospital()
                 searchKeyword(splitMapKeyword(mapKeyword), x!!, y!!)
             }
 
@@ -292,7 +315,7 @@ class MapActivity : AppCompatActivity(){
                 Log.d("Test", "Raw: ${response.raw()}")
                 Log.d("Test", "Body: ${response.body()}")
 
-                drawMapMarker(response.body()!!) //통신 결과를 마커로 뿌려주기
+                //drawMapMarker(response.body()!!) //통신 결과를 마커로 뿌려주기
 
 
             }
@@ -327,8 +350,8 @@ class MapActivity : AppCompatActivity(){
                     Log.d("Test", "Raw: ${response.raw()}")
                     Log.d("Test", "Body: ${response.body()}")
 
-                    drawMapMarker(response.body()!!) //통신 결과를 마커로 뿌려주기
-
+                    //drawMapMarker(response.body()!!) //통신 결과를 마커로 뿌려주기
+                    getHospital(response.body()!!.documents)
 
                 }
 
@@ -342,9 +365,117 @@ class MapActivity : AppCompatActivity(){
 
     }
 
+    fun getHospital(searchResult : List<Place>) {
+        // timeout setting 해주기
+        // timeout setting 해주기
+        val okHttpClient = OkHttpClient().newBuilder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .build()
+
+
+        val parser = TikXml.Builder().exceptionOnUnreadXml(false).build()
+        val retrofit_h = Retrofit.Builder()
+            .baseUrl("http://apis.data.go.kr/B552657/HsptlAsembySearchService/")
+            .client(okHttpClient)
+            .addConverterFactory(TikXmlConverterFactory.create(parser))
+            .build()
+
+        val hospitalAPI = retrofit_h.create(HospitalAPI::class.java)
+
+        for (place in searchResult) {
+            val placeSplit = place.address_name.split(" ")
+            var Q0 = ""
+            for (split in placeSplit) {
+                if (split.contains("시")) {
+                    Q0 = split
+                    println(Q0)
+                    break
+                }
+            }
+
+            hospitalAPI!!.getHospitalInfobyName(Q0, place.place_name,1, 10, HKEY).enqueue(object : Callback<Hospital>{
+                override fun onResponse(call: Call<Hospital>, response: Response<Hospital>) {
+                    if (response.isSuccessful) {
+
+                        drawMapMarker2(place, response.body()!!.body.items.item.get(0))
+
+                    }
+
+                }
+
+                override fun onFailure(call: Call<Hospital>, t: Throwable) {
+                    println(t.message)
+                }
+            })
+        }
+
+
+
+
+
+    }
+
 
     private fun drawMapMarker(response: ResultSearchKeyword) {
         for (place in response.documents) {
+            val marker = MapPOIItem()
+
+
+            if (mapKeyword.equals("약국")) {
+                marker.apply {
+                    itemName = place.place_name
+                    mapPoint = MapPoint.mapPointWithGeoCoord(place.y.toDouble(), place.x.toDouble())
+                    markerType = MapPOIItem.MarkerType.CustomImage
+                    customImageResourceId = R.drawable.markerpharm
+                    selectedMarkerType = MapPOIItem.MarkerType.CustomImage  // 클릭 시 마커 모양
+                    customSelectedImageResourceId = R.drawable.markerpharmsele       // 클릭 시 커스텀 마커 이미지
+                    isCustomImageAutoscale = false      // 커스텀 마커 이미지 크기 자동 조정
+                    setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
+                    userObject = BallonInfo(place.id ,place.phone, place.road_address_name) //커스텀 오브젝트 붙여주기
+                }
+            }
+            else {
+                if (place.place_name in nearHospitalList) {
+                    marker.apply {
+                        itemName = place.place_name
+                        mapPoint = MapPoint.mapPointWithGeoCoord(place.y.toDouble(), place.x.toDouble())
+                        markerType = MapPOIItem.MarkerType.CustomImage
+                        customImageResourceId = R.drawable.markerhos
+                        selectedMarkerType = MapPOIItem.MarkerType.CustomImage  // 클릭 시 마커 모양
+                        customSelectedImageResourceId = R.drawable.markerhosele       // 클릭 시 커스텀 마커 이미지
+                        isCustomImageAutoscale = false      // 커스텀 마커 이미지 크기 자동 조정
+                        setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
+                        userObject = BallonInfo(place.id ,place.phone, place.road_address_name) //커스텀 오브젝트 붙여주기
+                    }
+                }
+                else {
+                    marker.apply {
+                        itemName = place.place_name
+                        mapPoint = MapPoint.mapPointWithGeoCoord(place.y.toDouble(), place.x.toDouble())
+                        markerType = MapPOIItem.MarkerType.CustomImage
+                        customImageResourceId = R.drawable.markerhosele
+                        selectedMarkerType = MapPOIItem.MarkerType.CustomImage  // 클릭 시 마커 모양
+                        customSelectedImageResourceId = R.drawable.markerhos       // 클릭 시 커스텀 마커 이미지
+                        isCustomImageAutoscale = false      // 커스텀 마커 이미지 크기 자동 조정
+                        setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
+                        userObject = BallonInfo(place.id ,place.phone, place.road_address_name) //커스텀 오브젝트 붙여주기
+                    }
+                }
+
+
+            }
+
+            mapView!!.addPOIItem(marker)
+        }
+
+
+
+    }
+
+
+    private fun drawMapMarker2(place: Place, hitem: HItem2?) {
             val marker = MapPOIItem()
 
             if (mapKeyword.equals("약국")) {
@@ -361,20 +492,65 @@ class MapActivity : AppCompatActivity(){
                 }
             }
             else {
-                marker.apply {
-                    itemName = place.place_name
-                    mapPoint = MapPoint.mapPointWithGeoCoord(place.y.toDouble(), place.x.toDouble())
-                    markerType = MapPOIItem.MarkerType.CustomImage
-                    customImageResourceId = R.drawable.markerhos
-                    selectedMarkerType = MapPOIItem.MarkerType.CustomImage  // 클릭 시 마커 모양
-                    customSelectedImageResourceId = R.drawable.markerhosele       // 클릭 시 커스텀 마커 이미지
-                    isCustomImageAutoscale = false      // 커스텀 마커 이미지 크기 자동 조정
-                    setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
-                    userObject = BallonInfo(place.id ,place.phone, place.road_address_name) //커스텀 오브젝트 붙여주기
+
+                if (hitem != null && isOperate(hitem)) {
+                    marker.apply {
+                        itemName = place.place_name
+                        mapPoint = MapPoint.mapPointWithGeoCoord(place.y.toDouble(), place.x.toDouble())
+                        markerType = MapPOIItem.MarkerType.CustomImage
+                        customImageResourceId = R.drawable.markerhos
+                        selectedMarkerType = MapPOIItem.MarkerType.CustomImage  // 클릭 시 마커 모양
+                        customSelectedImageResourceId = R.drawable.markerhosele       // 클릭 시 커스텀 마커 이미지
+                        isCustomImageAutoscale = false      // 커스텀 마커 이미지 크기 자동 조정
+                        setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
+                        userObject = BallonInfo(place.id ,place.phone, place.road_address_name) //커스텀 오브젝트 붙여주기
+                    }
                 }
+                else {
+                    marker.apply {
+                        itemName = place.place_name
+                        mapPoint = MapPoint.mapPointWithGeoCoord(place.y.toDouble(), place.x.toDouble())
+                        markerType = MapPOIItem.MarkerType.CustomImage
+                        customImageResourceId = R.drawable.disablemarker
+                        selectedMarkerType = MapPOIItem.MarkerType.CustomImage  // 클릭 시 마커 모양
+                        customSelectedImageResourceId = R.drawable.markerhosele       // 클릭 시 커스텀 마커 이미지
+                        isCustomImageAutoscale = false      // 커스텀 마커 이미지 크기 자동 조정
+                        setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
+                        userObject = BallonInfo(place.id ,place.phone, place.road_address_name) //커스텀 오브젝트 붙여주기
+                    }
+                }
+
+
             }
 
             mapView!!.addPOIItem(marker)
+
+    }
+
+    private fun isOperate(hitem: HItem2) : Boolean {
+        when(currentDay) {
+            "월" -> {
+                return currentTime >= hitem.dutyTime1s!! && currentTime <= hitem.dutyTime1c!!
+            }
+            "화" -> {
+                return currentTime >= hitem.dutyTime2s!! && currentTime <= hitem.dutyTime2c!!
+            }
+            "수" -> {
+                return currentTime >= hitem.dutyTime3s!! && currentTime <= hitem.dutyTime3c!!
+            }
+            "목" -> {
+                return currentTime >= hitem.dutyTime4s!! && currentTime <= hitem.dutyTime4c!!
+            }
+            "금" -> {
+                return currentTime >= hitem.dutyTime5s!! && currentTime <= hitem.dutyTime5c!!
+            }
+            "토" -> {
+                return currentTime >= hitem.dutyTime6s!! && currentTime <= hitem.dutyTime6c!!
+            }
+            "일" -> {
+                return currentTime >= hitem.dutyTime7s!! && currentTime <= hitem.dutyTime7c!!
+            }
+            else -> return false
         }
     }
 
@@ -392,6 +568,8 @@ class MapActivity : AppCompatActivity(){
             //마커 클릭시 나오는 말풍선
             if (poiItem?.userObject != null) {
                 val ballonInfo :BallonInfo = poiItem?.userObject as BallonInfo
+                //val hospital = getHospital(ballonInfo.x, ballonInfo.y)
+
                 name.text = poiItem?.itemName
                 phone.text = ballonInfo.phone
                 address.text = ballonInfo.address
@@ -416,6 +594,9 @@ class MapActivity : AppCompatActivity(){
 
             return mCalloutBalloon
         }
+
+
+
     }
 
 
@@ -442,4 +623,6 @@ class MapActivity : AppCompatActivity(){
 
         }
     }
+
+
 }
