@@ -270,8 +270,8 @@ interface DiagnosisService{
     @GET("api/diagnosisInfo/{id}")
     fun getDiseasebyDNID(@Path("id") id:Long) : Call<DiagnosisRecord>
 
-    @POST("api/diagnosis1/{id}")
-    fun getDiseasebyString1(@Path("id") id:Long, @retrofit2.http.Body diseaseName: DN) : Call<DiagnosisRecord>
+    @POST("api/diagnosis/{id}")
+    fun getDiseasebyString1(@Path("id") id:Long, @Body diseaseName: DN) : Call<DiagnosisRecord>
 
     @POST("api/diagnosis2/{id}")
     fun getDiseasebyString2(@Path("id") id:Long, @retrofit2.http.Body diseaseName: DN) : Call<DiagnosisRecord>
