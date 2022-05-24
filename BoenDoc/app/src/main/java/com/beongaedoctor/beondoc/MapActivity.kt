@@ -238,15 +238,11 @@ class MapActivity : AppCompatActivity(){
             else {
                 startTracking() //카카오맵 위치 트래킹 시작
                 }
-
-
         }
     }
 
     private fun startTrackingOn31() {
         mapView!!.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(y!!.toDouble(), x!!.toDouble()), true)
-
-
 
         val marker = MapPOIItem()
         marker.apply{
@@ -316,7 +312,7 @@ class MapActivity : AppCompatActivity(){
                 Log.d("Test", "Body: ${response.body()}")
 
                 //drawMapMarker(response.body()!!) //통신 결과를 마커로 뿌려주기
-
+                getHospital(response.body()!!.documents)
 
             }
 
@@ -470,8 +466,6 @@ class MapActivity : AppCompatActivity(){
             mapView!!.addPOIItem(marker)
         }
 
-
-
     }
 
 
@@ -522,10 +516,9 @@ class MapActivity : AppCompatActivity(){
 
 
             }
-
             mapView!!.addPOIItem(marker)
-
     }
+
 
     private fun isOperate(hitem: HItem2) : Boolean {
         when(currentDay) {
@@ -561,15 +554,11 @@ class MapActivity : AppCompatActivity(){
         val phone: TextView = mCalloutBalloon.findViewById(R.id.placephone)
         val address: TextView = mCalloutBalloon.findViewById(R.id.placeaddress)
 
-        val mapContext = context
-
 
         override fun getCalloutBalloon(poiItem: MapPOIItem?): View {
             //마커 클릭시 나오는 말풍선
             if (poiItem?.userObject != null) {
                 val ballonInfo :BallonInfo = poiItem?.userObject as BallonInfo
-                //val hospital = getHospital(ballonInfo.x, ballonInfo.y)
-
                 name.text = poiItem?.itemName
                 phone.text = ballonInfo.phone
                 address.text = ballonInfo.address
@@ -585,13 +574,6 @@ class MapActivity : AppCompatActivity(){
 
         override fun getPressedCalloutBalloon(poiItem: MapPOIItem?): View {
             //말풍선 클릭 시 실행됨
-
-
-            //val ballonInfo :BallonInfo = poiItem?.userObject as BallonInfo
-            //val urladdress = "https://map.kakao.com/link/to/" + ballonInfo.id
-            //val intent = Intent(Intent.ACTION_VIEW, Uri.parse(urladdress))
-            //startActivity(mapContext, intent, null)
-
             return mCalloutBalloon
         }
 
