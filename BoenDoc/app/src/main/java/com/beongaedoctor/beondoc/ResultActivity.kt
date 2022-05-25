@@ -1,12 +1,9 @@
 package com.beongaedoctor.beondoc
 
 import android.content.Intent
-import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.beongaedoctor.beondoc.databinding.ActivityResultBinding
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -32,7 +29,7 @@ class ResultActivity : AppCompatActivity() {
 
     lateinit var memberInfo : Member
 
-    private lateinit var predDiseaseInfo : DiagnosisRecord
+    private lateinit var predDiseaseInfo : DiagnosisRecord2
 
     var fromChat = false
 
@@ -55,9 +52,9 @@ class ResultActivity : AppCompatActivity() {
 
         if (pred_disease != null) {
             if (fromChat)
-                getDiseaseInfo(DN(pred_disease), fromChat)
+                getDiseaseInfo(DN3(pred_disease, pred_disease, pred_disease), fromChat)
             else
-                getDiseaseInfo(DN(pred_disease), fromChat) //추가하지 않는 버전으로
+                getDiseaseInfo(DN3(pred_disease, pred_disease, pred_disease), fromChat) //추가하지 않는 버전으로
         }
 
 
@@ -84,8 +81,27 @@ class ResultActivity : AppCompatActivity() {
 
 
     //질병id -> 질병 정보
-    private fun getDiseaseInfo(dn : DN, fromChat: Boolean) {
+    private fun getDiseaseInfo(dn : DN3, fromChat: Boolean) {
         if (fromChat) {
+            diagnosisService.getDisease3byString(memberInfo.id, dn).enqueue(object : Callback<DR2List> {
+                override fun onResponse(
+                    call: Call<DR2List>,
+                    response: Response<DR2List>
+                ) {
+                    if (response.isSuccessful) {
+                        setMainDiseaseInfo(response.body()?.DRList?.get(0))
+                        predDiseaseInfo = response.body()!!.DRList.get(0)
+                    }
+
+                }
+
+                override fun onFailure(call: Call<DR2List>, t: Throwable) {
+                    println(t.message)
+                }
+
+            })
+
+            /*
             diagnosisService.getDiseasebyString1(memberInfo.id, dn).enqueue(object : Callback<DiagnosisRecord> {
                 override fun onResponse(
                     call: Call<DiagnosisRecord>,
@@ -104,6 +120,8 @@ class ResultActivity : AppCompatActivity() {
                     println(t.message)
                 }
             })
+
+             */
         }
         else {
             diagnosisService.getDiseasebyString2(memberInfo.id, dn).enqueue(object : Callback<DiagnosisRecord> {
@@ -113,14 +131,14 @@ class ResultActivity : AppCompatActivity() {
                 ) {
                     if (response.isSuccessful) {
                         println(response.body())
-                        predDiseaseInfo = response.body()!!
-                        setMainDiseaseInfo(response.body()) //받아온 정보를 메인 질병에 셋팅
+                        //predDiseaseInfo = response.body()!!
+                        //setMainDiseaseInfo(response.body()) //받아온 정보를 메인 질병에 셋팅
                     }
                 }
 
                 override fun onFailure(call: Call<DiagnosisRecord>, t: Throwable) {
-                    predDiseaseInfo = DiagnosisRecord("에러", "서버 연결 실패", "피부과, 이비인후과", "원인입니다.", "증상은 이래요","0000-00-00")
-                    setMainDiseaseInfo(predDiseaseInfo) //받아온 정보를 메인 질병에 셋팅
+                    //predDiseaseInfo = DiagnosisRecord("에러", "서버 연결 실패", "피부과, 이비인후과", "원인입니다.", "증상은 이래요","0000-00-00")
+                    //setMainDiseaseInfo(predDiseaseInfo) //받아온 정보를 메인 질병에 셋팅
                     println(t.message)
                 }
             })
@@ -130,10 +148,11 @@ class ResultActivity : AppCompatActivity() {
     }
 
     //받아온 정보를 메인 질병에 셋팅
-    private fun setMainDiseaseInfo(DR : DiagnosisRecord?) {
+    private fun setMainDiseaseInfo(DR: DiagnosisRecord2?) {
         binding.maindiseaseName.text = DR?.name
         binding.mainexplanation.text = DR?.info
         binding.maindepartment.text = DR?.department
-
+        binding.maincause.text = DR?.cause
+        binding.mainsymptom.text = DR?.symptom
     }
 }

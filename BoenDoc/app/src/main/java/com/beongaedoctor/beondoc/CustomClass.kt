@@ -264,16 +264,20 @@ data class DiagnosisRecord2(
     var symptom : String
 )
 
+data class DR2List(
+    @SerializedName("diagnosisDTOV2List")
+    var DRList : List<DiagnosisRecord2>
+)
 
 interface DiagnosisService{
     @POST("api/diagnosis/{id}")
     fun getDiseasebyString1(@Path("id") id:Long, @Body diseaseName: DN) : Call<DiagnosisRecord>
 
     @POST("api/diagnosis2/{id}")
-    fun getDiseasebyString2(@Path("id") id:Long, @Body diseaseName: DN) : Call<DiagnosisRecord>
+    fun getDiseasebyString2(@Path("id") id:Long, @Body diseaseName: DN3) : Call<DiagnosisRecord>
 
     @POST("api/diagnosis/{id}")
-    fun getDisease3byString(@Path("id") id:Long, @Body DR2 : List<DiagnosisRecord2> )
+    fun getDisease3byString(@Path("id") id:Long, @Body dn : DN3 ) : Call<DR2List>
 }
 
 data class ChatResponse(
