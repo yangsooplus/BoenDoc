@@ -254,9 +254,8 @@ class BasicExamActivity : AppCompatActivity() {
 
     private fun getUpdateMember(member: Member): UpdateMember {
         return UpdateMember(
-            member.name,
             member.loginId,
-            member.password,
+            member.name,
             member.age,
             member.height,
             member.weight,

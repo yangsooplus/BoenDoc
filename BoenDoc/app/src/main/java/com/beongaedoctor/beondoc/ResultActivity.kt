@@ -99,7 +99,7 @@ class ResultActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<DiagnosisRecord>, t: Throwable) {
-                    predDiseaseInfo = DiagnosisRecord("에러", "서버 연결 실패", 2, "피부과, 이비인후과", "0000-00-00")
+                    predDiseaseInfo = DiagnosisRecord("에러", "서버 연결 실패", "피부과, 이비인후과", "원인입니다.", "증상은 이래요","0000-00-00")
                     setMainDiseaseInfo(predDiseaseInfo) //받아온 정보를 메인 질병에 셋팅
                     println(t.message)
                 }
@@ -119,7 +119,7 @@ class ResultActivity : AppCompatActivity() {
                 }
 
                 override fun onFailure(call: Call<DiagnosisRecord>, t: Throwable) {
-                    predDiseaseInfo = DiagnosisRecord("에러", "서버 연결 실패", 2, "피부과, 이비인후과", "0000-00-00")
+                    predDiseaseInfo = DiagnosisRecord("에러", "서버 연결 실패", "피부과, 이비인후과", "원인입니다.", "증상은 이래요","0000-00-00")
                     setMainDiseaseInfo(predDiseaseInfo) //받아온 정보를 메인 질병에 셋팅
                     println(t.message)
                 }
@@ -134,21 +134,6 @@ class ResultActivity : AppCompatActivity() {
         binding.maindiseaseName.text = DR?.name
         binding.mainexplanation.text = DR?.info
         binding.maindepartment.text = DR?.department
-
-        when (DR?.level) { //중증도에 따라 textView 내용과 배경 바꾸기
-            0 -> {
-                //binding.mainseverity.text = "응급"
-                //binding.mainseverity.setBackgroundResource(R.drawable.rectemergency)
-            }
-            1 -> {
-                //binding.mainseverity.text = "중증"
-                //binding.mainseverity.setBackgroundResource(R.drawable.rectserious)
-            }
-            2 -> {
-                //binding.mainseverity.text = "경증"
-                //binding.mainseverity.setBackgroundResource(R.drawable.rectlight)
-            }
-        }
 
     }
 }

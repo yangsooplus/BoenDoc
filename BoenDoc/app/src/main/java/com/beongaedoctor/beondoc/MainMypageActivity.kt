@@ -66,7 +66,14 @@ class MainMypageActivity : AppCompatActivity() {
         }
 
         binding.leavebtn.setOnClickListener {
-            leaveBeonDoc()
+            val customDialog = CustomDialog(this)
+            customDialog.showCustomDialog("정말로 탈퇴하시겠습니까?")
+            customDialog.setOnClickListener(object : CustomDialog.ButtonClickListener{
+                override fun onClicked(yes: Boolean) {
+                    if (yes)
+                        leaveBeonDoc()
+                }
+            })
         }
     }
 

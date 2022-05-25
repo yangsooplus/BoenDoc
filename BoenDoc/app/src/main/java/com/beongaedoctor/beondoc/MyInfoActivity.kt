@@ -148,7 +148,6 @@ class MyInfoActivity : AppCompatActivity() {
     private fun getUpdateMember(member: Member): UpdateMember {
         return UpdateMember(
             member.loginId,
-            member.password,
             member.name,
             member.age,
             member.height,

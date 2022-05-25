@@ -120,7 +120,7 @@ class SignInActivity : AppCompatActivity() {
 
                     //기기에도 정보 저장 - SharedPreferences
                     //받아온 정보를 Member 형식으로 로컬에 저장
-                    App.prefs.setMember("memberInfo", saveMember(response.body()!!))
+                    App.prefs.setMember("memberInfo", saveMember(response.body()!!, pw))
 
                     //로딩창 종료
                     dialog!!.dismiss()
@@ -159,11 +159,11 @@ class SignInActivity : AppCompatActivity() {
     }
 
     //로그인 리스폰스를 멤버 클래스로 변경
-    fun saveMember(body: LoginResponse): Member {
+    fun saveMember(body: LoginResponse, pw: String): Member {
         return Member(
             body.id,
             body.loginId,
-            body.password,
+            pw,
             body.name,
             body.age,
             body.height,
