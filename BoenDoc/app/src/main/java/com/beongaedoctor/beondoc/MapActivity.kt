@@ -86,13 +86,15 @@ class MapActivity : AppCompatActivity(){
     var currentDay : String = ""
     var nearHospitalList = mutableListOf<String>()
 
+    var dialog : LoadingDialog? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mapbinding = ActivityMapBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         mapKeyword = intent.getStringExtra("mapKeyword").toString()
-
+        dialog = LoadingDialog(this)
 
         mapView = MapView(this) //맵 뷰 생성
         binding.mapview.addView(mapView)
@@ -173,10 +175,12 @@ class MapActivity : AppCompatActivity(){
 
         //현재 좌표를 설정한 뒤 키워드 검색 결과를 받아옴
         Handler().postDelayed({
+            //dialog?.show()
             if (mapKeyword.contains(',')) //진료과 여러개가 추천된 경우 {
             {
 
                 //getHospital()
+
                 searchKeyword(splitMapKeyword(mapKeyword), x!!, y!!)
             }
 
@@ -293,7 +297,7 @@ class MapActivity : AppCompatActivity(){
 
 
     //https://mechacat.tistory.com/15?category=449793
-    private fun searchKeyword(keyword: String, x:String, y:String, radius:Int = 1000) {
+    private fun searchKeyword(keyword: String, x:String, y:String, radius:Int = 1500) {
         val retrofitMap = Retrofit.Builder()   // Retrofit 구성
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
@@ -307,12 +311,13 @@ class MapActivity : AppCompatActivity(){
                 call: Call<ResultSearchKeyword>,
                 response: Response<ResultSearchKeyword>
             ) {
-                // 통신 성공 (검색 결과는 response.body()에 담겨있음)
-                Log.d("Test", "Raw: ${response.raw()}")
-                Log.d("Test", "Body: ${response.body()}")
-
+                println("단일 진료과 검색")
                 //drawMapMarker(response.body()!!) //통신 결과를 마커로 뿌려주기
-                getHospital(response.body()!!.documents)
+                if (response.body()!!.meta.total_count > 0) {
+                    getHospital(response.body()!!.documents)
+                    dialog!!.dismiss()
+                }
+
 
             }
 
@@ -342,12 +347,10 @@ class MapActivity : AppCompatActivity(){
                     call: Call<ResultSearchKeyword>,
                     response: Response<ResultSearchKeyword>
                 ) {
-                    // 통신 성공 (검색 결과는 response.body()에 담겨있음)
-                    Log.d("Test", "Raw: ${response.raw()}")
-                    Log.d("Test", "Body: ${response.body()}")
-
+                    println("여러 진료과 검색")
                     //drawMapMarker(response.body()!!) //통신 결과를 마커로 뿌려주기
-                    getHospital(response.body()!!.documents)
+                    if (response.body()!!.meta.total_count > 0)
+                        getHospital(response.body()!!.documents)
 
                 }
 
@@ -396,7 +399,7 @@ class MapActivity : AppCompatActivity(){
                     if (response.isSuccessful) {
 
                         drawMapMarker2(place, response.body()!!.body.items.item.get(0))
-
+                        dialog?.dismiss()
                     }
 
                 }

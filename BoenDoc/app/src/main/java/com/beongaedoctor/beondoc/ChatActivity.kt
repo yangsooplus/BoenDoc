@@ -103,7 +103,7 @@ class ChatActivity : AppCompatActivity() {
             .build()
 
         val retrofit_f = Retrofit.Builder()
-            .baseUrl("http://192.168.0.4:5000/")
+            .baseUrl("http://192.168.200.127:5000/")
             .addConverterFactory(GsonConverterFactory.create(gson))
             .client(client)
             .build()
