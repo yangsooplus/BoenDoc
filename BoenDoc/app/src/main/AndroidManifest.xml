@@ -19,10 +19,14 @@
         android:theme="@style/Theme.BeonDoc"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".DInfoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".DResultActivity"
+            android:exported="false" />
+        <activity
             android:name=".TestActivity"
-            android:exported="true">
-
-        </activity>
+            android:exported="true" />
         <activity
             android:name=".BasicExamActivity"
             android:exported="false" />
