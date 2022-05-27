@@ -23,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
+import com.beongaedoctor.beondoc.App.Companion.context
 import com.beongaedoctor.beondoc.databinding.ActivityMapBinding
 import com.google.android.gms.location.*
 import com.google.android.gms.location.LocationServices
@@ -118,14 +119,14 @@ class MapActivity : AppCompatActivity(){
         println(currentDay)
 
 
-
+        dialog!!.show()
     }
 
 
 
     override fun onStart() {
         super.onStart()
-        binding.mapText.text = "가까운 $mapKeyword 입니다.\n실제 접수 마감 시간과는 차이가 있을 수 있으니 방문 전에 해당 기관에 문의하시기 바랍니다."
+        binding.mapText.text = "가까운 $mapKeyword 입니다."
 
         if (checkLocationService()) { // GPS가 켜져있을 경우
 
@@ -136,6 +137,14 @@ class MapActivity : AppCompatActivity(){
             Toast.makeText(this, "GPS를 켜주세요", Toast.LENGTH_SHORT).show()
         }
 
+
+        binding.causion.setOnClickListener {
+            AlertDialog.Builder(this)
+                .setTitle("주의사항")
+                .setMessage("반경 2km 이내 진료기관 검색 결과입니다. 실제 접수 마감 시간과는 차이가 있을 수 있으니 방문 전에 해당 기관에 문의하시기 바랍니다.")
+                .create()
+                .show()
+        }
 
         binding.gotoMain.setOnClickListener {
             val mainIntent = Intent(this, MainActivity::class.java)
@@ -235,13 +244,9 @@ class MapActivity : AppCompatActivity(){
         }
         else {
             // 권한이 있는 상태
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                Toast.makeText(this, "31이상은 다른 방법으로",Toast.LENGTH_LONG).show()
-                //startTrackingOn31()
-            }
-            else {
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
                 startTracking() //카카오맵 위치 트래킹 시작
-                }
+            }
         }
     }
 
@@ -297,7 +302,7 @@ class MapActivity : AppCompatActivity(){
 
 
     //https://mechacat.tistory.com/15?category=449793
-    private fun searchKeyword(keyword: String, x:String, y:String, radius:Int = 1500) {
+    private fun searchKeyword(keyword: String, x:String, y:String, radius:Int = 2000) {
         val retrofitMap = Retrofit.Builder()   // Retrofit 구성
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
@@ -314,8 +319,19 @@ class MapActivity : AppCompatActivity(){
                 println("단일 진료과 검색")
                 //drawMapMarker(response.body()!!) //통신 결과를 마커로 뿌려주기
                 if (response.body()!!.meta.total_count > 0) {
-                    getHospital(response.body()!!.documents)
-                    dialog!!.dismiss()
+                    if (mapKeyword == "약국") {
+                        for (ele in response.body()!!.documents) {
+                            drawMapMarker2(ele, null)
+                        }
+                    }
+                    else {
+                        getHospital(response.body()!!.documents)
+                    }
+
+                }
+                else {
+
+                    Toast.makeText(context(), "반경 2km 이내 검색결과가 없습니다.", Toast.LENGTH_LONG).show()
                 }
 
 
@@ -326,9 +342,11 @@ class MapActivity : AppCompatActivity(){
                 Log.w("MainActivity", "통신 실패: ${t.message}")
             }
         })
+
+        dialog!!.dismiss()
     }
 
-    private fun searchKeyword(keywords: List<String>, x:String, y:String, radius:Int = 1000) {
+    private fun searchKeyword(keywords: List<String>, x:String, y:String, radius:Int = 2000) {
         val retrofitMap = Retrofit.Builder()   // Retrofit 구성
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
@@ -336,7 +354,7 @@ class MapActivity : AppCompatActivity(){
         val api = retrofitMap.create(KakaoAPI::class.java)   // 통신 인터페이스를 객체로 생성
 
         println(keywords)
-
+        var total_cnt = 0
         for (keyword in keywords) {
             println("검색 : " + keyword)
             val call = api.getSearchKeyword(API_KEY, keyword, x, y, radius)   // 검색 조건 입력
@@ -348,6 +366,7 @@ class MapActivity : AppCompatActivity(){
                     response: Response<ResultSearchKeyword>
                 ) {
                     println("여러 진료과 검색")
+                    total_cnt += response.body()!!.meta.total_count
                     //drawMapMarker(response.body()!!) //통신 결과를 마커로 뿌려주기
                     if (response.body()!!.meta.total_count > 0)
                         getHospital(response.body()!!.documents)
@@ -361,6 +380,14 @@ class MapActivity : AppCompatActivity(){
             })
 
         }
+
+
+
+        if (total_cnt <= 0) {
+            Toast.makeText(context(), "반경 2km 이내 검색결과가 없습니다.", Toast.LENGTH_LONG).show()
+            dialog!!.dismiss()
+        }
+
 
     }
 

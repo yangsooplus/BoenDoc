@@ -1,5 +1,6 @@
 package com.beongaedoctor.beondoc
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.beongaedoctor.beondoc.databinding.ActivityDinfoBinding
@@ -19,6 +20,8 @@ class DInfoActivity : AppCompatActivity() {
     private lateinit var retrofit: Retrofit
     private lateinit var diseaseService : DiseaseService
 
+    var mapKeyword : String = ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         DIBinding = ActivityDinfoBinding.inflate(layoutInflater)
@@ -35,6 +38,22 @@ class DInfoActivity : AppCompatActivity() {
             getDiseaseInfo(dn!!)
         else
             getDiseaseInfo(did)
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        binding.gotoHospital.setOnClickListener {
+            val intent = Intent(this, MapActivity::class.java)
+            intent.putExtra("mapKeyword", mapKeyword)
+            startActivity(intent)
+        }
+
+        binding.gotoPharmacy.setOnClickListener {
+            val intent = Intent(this, MapActivity::class.java)
+            intent.putExtra("mapKeyword", "약국")
+            startActivity(intent)
+        }
     }
 
     private fun getDiseaseInfo(searchFlag : String) {
@@ -54,8 +73,11 @@ class DInfoActivity : AppCompatActivity() {
     private fun getDiseaseInfo(searchFlag : Long) {
         diseaseService.getDiseasebyID(searchFlag).enqueue(object : Callback<Disease> {
             override fun onResponse(call: Call<Disease>, response: Response<Disease>) {
-                if (response.isSuccessful)
+                if (response.isSuccessful) {
+                    mapKeyword = response.body()!!.department
                     setUI(response.body()!!)
+                }
+
             }
 
             override fun onFailure(call: Call<Disease>, t: Throwable) {
