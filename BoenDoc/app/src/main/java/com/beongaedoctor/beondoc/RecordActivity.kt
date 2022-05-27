@@ -23,12 +23,12 @@ class RecordActivity : AppCompatActivity() {
     private val binding get() = rbinding!!
 
 
-    var diagnosisList : DiagnosisList? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         rbinding = ActivityRecordBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
 
 
 
@@ -38,9 +38,12 @@ class RecordActivity : AppCompatActivity() {
 
         //서버 연결
         val retrofit = RetrofitClass.getInstance()
-        val diagnosisRecordService = retrofit.create(DiagnosisRecordService::class.java)
-        binding.mypageRecyclerView.layoutManager = LinearLayoutManager(this)
+        val diagnosisRecordService = retrofit.create(DiagnosisService::class.java)
 
+        var diaList = arrayListOf<List<Diagnosis>>()
+        var dAdpater = DiagnosisAdapter(diaList)
+        binding.mypageRecyclerView.layoutManager = LinearLayoutManager(this)
+        binding.mypageRecyclerView.adapter = dAdpater
 
 
 
@@ -49,11 +52,15 @@ class RecordActivity : AppCompatActivity() {
             Callback<DiagnosisList>{
             override fun onResponse(call: Call<DiagnosisList>, response: Response<DiagnosisList>) {
                 if (response.isSuccessful) {
-                    diagnosisList = response?.body()
-                    println(response.body())
+
+                    for (dia in response.body()!!.diagnosisList) {
+                        diaList.add(dia)
+                    }
+
+                    dAdpater.notifyDataSetChanged()
 
                     //받아온 내역 리스트를 RecyclerView에 연결해서 표시
-                    binding.mypageRecyclerView.adapter = DiagnosisAdapter(diagnosisList!!)
+                    //binding.mypageRecyclerView.adapter = DiagnosisAdapter(diagnosisList)
                 }
             }
 

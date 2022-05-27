@@ -108,7 +108,7 @@ class ChatActivity : AppCompatActivity() {
             .client(client)
             .build()
 
-        val chatResponseService = retrofit_f.create(chatResponseService::class.java)
+        val chatResponseService = retrofit_f.create(ChatResponseService::class.java)
 
         val test : List<String> = listOf("배가 아파요",
         "칼로 찢기는 듯한 통증, NRS 8점, 방사통 : 등으로 퍼짐",
@@ -161,7 +161,7 @@ class ChatActivity : AppCompatActivity() {
     }
 
     private fun gotoResult(context: Context, result : String?) {
-        val resultIntent = Intent(context, ResultActivity::class.java)
+        val resultIntent = Intent(context, DResultActivity::class.java)
         resultIntent.putExtra("diseaseName", result)
         resultIntent.putExtra("fromChat", true)
         startActivity(resultIntent)

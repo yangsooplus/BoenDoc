@@ -22,55 +22,133 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView13">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginStart="28dp"
-            android:layout_marginTop="48dp"
-            android:src="@drawable/beondoc2"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/textView13">
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginStart="28dp"
+                android:layout_marginTop="48dp"
+                android:src="@drawable/beondoc2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="240dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/result"
+                android:fontFamily="@font/spoqahansansneolight"
+                android:gravity="center"
+                android:paddingHorizontal="20dp"
+                android:text="본 결과는 문진 데이터를 기반으로 번개닥터 AI가 예상한 결과이며,\n반드시 의료기관에 방문하여 전문의에게 진료를 받으시기 바랍니다."
+                android:textColor="@color/black"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/imageView2"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginHorizontal="24dp"
+            android:background="@color/lightgray"/>
+
 
         <TextView
-            android:layout_width="240dp"
+            android:id="@+id/predD1Text"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginBottom="24dp"
-            android:paddingHorizontal="20dp"
+            android:layout_marginTop="35dp"
+            android:layout_marginHorizontal="16dp"
+            android:layout_gravity="center"
+            android:background="@drawable/selectlarge"
+            android:text="질병명 00.00%"
+            android:fontFamily="@font/spoqahansansneobold"
+            android:textSize="24sp"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMaxTextSize="24sp"
+            android:textColor="@color/black"
+            android:padding="20dp"
+            android:gravity="center_vertical"
+
+            />
+
+        <TextView
+            android:id="@+id/predD2Text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="16dp"
+            android:background="@drawable/selectlarge"
+            android:text="질병명 00.00%"
+            android:fontFamily="@font/spoqahansansneobold"
+            android:textSize="24sp"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMaxTextSize="24sp"
+            android:textColor="@color/black"
+            android:padding="20dp"
+            android:gravity="center_vertical"
+            />
+
+        <TextView
+            android:id="@+id/predD3Text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginHorizontal="16dp"
+            android:background="@drawable/selectlarge"
+            android:text="질병명 00.00%"
+            android:fontFamily="@font/spoqahansansneobold"
+            android:textSize="24sp"
+            android:autoSizeTextType="uniform"
+            android:autoSizeMaxTextSize="24sp"
+            android:textColor="@color/black"
+            android:padding="20dp"
+            android:gravity="center_vertical"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:gravity="center"
-            android:background="@drawable/result"
             android:fontFamily="@font/spoqahansansneolight"
             android:textColor="@color/black"
-            android:text="본 결과는 문진 데이터를 기반으로 번개닥터 AI가 예상한 결과이며,\n반드시 의료기관에 방문하여 전문의에게 진료를 받으시기 바랍니다."
+            android:text="위 확률은 번개닥터AI 내에서의 정확도 지표이며,\n질병의 발병확률이 아님을 밝힙니다."
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imageView2" />
 
+    </LinearLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    <View
+    <Button
+        android:id="@+id/gotoMain"
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginHorizontal="24dp"
-        android:background="@color/lightgray"/>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="30dp"
-        android:background="@drawable/select"
-        />
-
+        android:layout_height="56dp"
+        android:background="@drawable/semiroundbtn"
+        android:fontFamily="@font/spoqahansansneobold"
+        android:gravity="center"
+        android:text="메인메뉴로"
+        android:textColor="@color/white"
+        android:textSize="18sp" />
 
 
 </LinearLayout>
