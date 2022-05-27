@@ -7,11 +7,6 @@ import retrofit2.http.*
 import java.io.Serializable
 import java.time.LocalDateTime
 
-data class MemberList(
-    @SerializedName("data")
-    val memberList : List<Member>
-)
-
 
 data class Member (
     @SerializedName("id")
@@ -100,15 +95,6 @@ data class UpdateMemberResponse (
 
 
 interface MemberService {
-    @GET("api/members")
-    fun getProfile() : Call<Member>
-
-    @GET("api/members")
-    fun getAllProfile() : Call<MemberList>
-
-    @GET("api/members/{id}")
-    fun getProfile(@Path("id") id : Long) : Call<Member>
-
     @POST("api/members")
     fun setProfile(@Body profile: Member) : Call<Member>
 
@@ -130,12 +116,6 @@ data class Login(
 )
 
 
-interface LoginService {
-    @POST("api/login")
-    fun requestLogin(@retrofit2.http.Body data: Login) : Call<LoginResponse>
-
-
-}
 
 data class LoginResponse(
     @SerializedName("id")
@@ -164,77 +144,72 @@ data class LoginResponse(
     var femininity : String = ""
     )
 
+interface LoginService {
+    @POST("api/login")
+    fun requestLogin(@retrofit2.http.Body data: Login) : Call<LoginResponse>
+}
 
-data class Disease(
-    @SerializedName("id")
-    var id: Long,
-    @SerializedName("name")
-    var name : String,
-    @SerializedName("info")
-    var info : String,
-    @SerializedName("level")
-    var level : Int,
-    @SerializedName("department")
-    var department : String
-)
-
-data class DiagnosisDisease(
-    @SerializedName("id")
-    var id : Long,
-    @SerializedName("Disease")
-    var Disease : Disease
-)
 
 data class Diagnosis(
     @SerializedName("id")
     var id: Long,
-    @SerializedName("Member")
-    var Member : Member,
-    @SerializedName("DiagnosisDiseases")
-    var DiagnosisDiseases : List<DiagnosisDisease>,
-    @SerializedName("DiagnosisDate")
-    var DiagnosisDate : LocalDateTime,
-    @SerializedName("gender")
-    var gender: Long
+    @SerializedName("diseaseName")
+    var diseaseName : String,
+    @SerializedName("percent")
+    var percent : String, //통짜 확률
+    @SerializedName("localDate")
+    var localDate : String
 )
 
 data class DiagnosisList(
     @SerializedName("data")
-    val diseaseList : List<DiagnosisRecord>
+    val diagnosisList : List<List<Diagnosis>>
 )
 
-data class DiagnosisRecord(
-    @SerializedName("name")
-    var name : String,
-    @SerializedName("info")
-    var info : String,
-    @SerializedName("department")
-    var department : String,
-    @SerializedName("cause")
-    var cause : String,
-    @SerializedName("symptom")
-    var symptom : String,
-    @SerializedName("diagnosisTime")
-    var diagnosisTime : String
+data class Diagnosis2DB(
+    @SerializedName("diseaseName1")
+    var diseaseName1: String?,
+    @SerializedName("diseaseName2")
+    var diseaseName2: String?,
+    @SerializedName("diseaseName3")
+    var diseaseName3: String?,
+    @SerializedName("percent")
+    var percent: String?
 )
 
+data class DiagnosisNotID(
+    @SerializedName("diseaseId")
+    var diseaseId : Long,
+    @SerializedName("diseaseName")
+    var diseaseName : String,
+    @SerializedName("percent")
+    var percent : String //단일 확률
+)
 
-
-data class DiagnosisResponse(
-    @SerializedName("id")
-    var id : Long,
-    @SerializedName("name")
-    var name : String,
-    @SerializedName("disease1")
-    var disease1 : String,
-    @SerializedName("info1")
-    var info1 : String
+data class DiagnosisNotIDList(
+    @SerializedName("data")
+    val diseaseList : List<DiagnosisNotID>
 )
 
 
-interface DiagnosisRecordService{
+
+interface DiagnosisService{
+    //모든 진단 기록 조회
     @GET("api/diagnosisList/{id}")
     fun getDiagnosisRecord(@Path("id") id:Long) : Call<DiagnosisList>
+
+    //DB에 저장됨 (초회 진단 결과)
+    @POST("api/diagnosis/{id}")
+    fun recordDiagnosis2DB(@Path("id") id:Long, @Body D2DB : Diagnosis2DB) : Call<DiseaseList>
+
+
+    //DB에 저장 안 됨 (진단 기록 조회 시)
+    @POST("api/diagnosis2/{id}")
+    fun accessDiagnosis2DB(@Path("id") id:Long, @Body D2DB : Diagnosis2DB) : Call<DiseaseList>
+
+    @GET("api/diagnosisByOne/{id}")
+    fun getDiagnosisByOne(@Path("id") id:Long) : Call<List<DiagnosisNotID>>
+
 }
 
 data class DN(
@@ -242,16 +217,7 @@ data class DN(
     var diseaseName: String
 )
 
-data class DN3(
-    @SerializedName("diseaseName1")
-    var diseaseName1: String,
-    @SerializedName("diseaseName2")
-    var diseaseName2: String,
-    @SerializedName("diseaseName3")
-    var diseaseName3: String
-)
-
-data class DiagnosisRecord2(
+data class Disease(
     @SerializedName("name")
     var name : String,
     @SerializedName("info")
@@ -264,20 +230,19 @@ data class DiagnosisRecord2(
     var symptom : String
 )
 
-data class DR2List(
+data class DiseaseList(
     @SerializedName("diagnosisDTOV2List")
-    var DRList : List<DiagnosisRecord2>
+    var diseaseList : List<Disease>
 )
 
-interface DiagnosisService{
-    @POST("api/diagnosis/{id}")
-    fun getDiseasebyString1(@Path("id") id:Long, @Body diseaseName: DN) : Call<DiagnosisRecord>
 
-    @POST("api/diagnosis2/{id}")
-    fun getDiseasebyString2(@Path("id") id:Long, @Body diseaseName: DN3) : Call<DiagnosisRecord>
 
-    @POST("api/diagnosis/{id}")
-    fun getDisease3byString(@Path("id") id:Long, @Body dn : DN3 ) : Call<DR2List>
+interface DiseaseService{
+    @GET("api/disease/{id}")
+    fun getDiseasebyID(@Path("id") diseaseid : Long) : Call<Disease>
+
+    @POST("api/disease/byString")
+    fun getDiseasebyString(@Body diseaseName: DN) : Call<Disease>
 }
 
 data class ChatResponse(
@@ -285,12 +250,7 @@ data class ChatResponse(
     var test : List<String>
 )
 
-data class ModelResult(
-    @SerializedName("diseaseName")
-    var diseaseName: List<String>
-    )
-
-interface chatResponseService{
+interface ChatResponseService{
     @POST("test")
     fun sendResponse2Model(@Body test: ChatResponse) : Call<List<String>>
 }
