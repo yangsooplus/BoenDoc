@@ -158,7 +158,7 @@ data class Diagnosis(
     @SerializedName("percent")
     var percent : String, //통짜 확률
     @SerializedName("localDate")
-    var localDate : LocalDateTime
+    var localDate : String
 )
 
 data class DiagnosisList(
@@ -208,7 +208,7 @@ interface DiagnosisService{
     fun accessDiagnosis2DB(@Path("id") id:Long, @Body D2DB : Diagnosis2DB) : Call<DiseaseList>
 
     @GET("api/diagnosisByOne/{id}")
-    fun getDiagnosisByOne(@Path("id") id:Long) : Call<DiagnosisNotIDList>
+    fun getDiagnosisByOne(@Path("id") id:Long) : Call<List<DiagnosisNotID>>
 
 }
 

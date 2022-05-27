@@ -162,7 +162,7 @@ class ChatActivity : AppCompatActivity() {
 
     private fun gotoResult(context: Context, result : String?) {
         val resultIntent = Intent(context, DResultActivity::class.java)
-        resultIntent.putExtra("diseaseName", result)
+        resultIntent.putExtra("diseaseName1", result)
         resultIntent.putExtra("fromChat", true)
         startActivity(resultIntent)
     }

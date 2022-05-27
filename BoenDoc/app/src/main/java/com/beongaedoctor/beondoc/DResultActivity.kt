@@ -49,7 +49,7 @@ class DResultActivity : AppCompatActivity() {
         diagnosisService = retrofit.create(DiagnosisService::class.java)
 
         fromChat = intent.getBooleanExtra("fromChat", false)
-
+        println(fromChat)
 
 
         //기기에 저장된 유저 정보
@@ -58,11 +58,14 @@ class DResultActivity : AppCompatActivity() {
         if (fromChat) {
 
             //모델 업데이트 전까지는 동일한거 3개
-            diseaseName1 = "근근막 통증 증후군"
+            //diseaseName1 = "근근막 통증 증후군"
+            //diseaseName2 = diseaseName1
+            //diseaseName3 = diseaseName1
+
+            diseaseName1 = intent.getStringExtra("diseaseName1")
             diseaseName2 = diseaseName1
             diseaseName3 = diseaseName1
 
-            //diseaseName1 = intent.getStringExtra("diseaseName1")
             //diseaseName2 = intent.getStringExtra("diseaseName2")
             //diseaseName3 = intent.getStringExtra("diseaseName3")
 
@@ -126,13 +129,15 @@ class DResultActivity : AppCompatActivity() {
 
 
     private fun getDiagnosis(diagnosisID : Long) {
-        diagnosisService.getDiagnosisByOne(diagnosisID).enqueue(object : Callback<DiagnosisNotIDList> {
+        diagnosisService.getDiagnosisByOne(diagnosisID).enqueue(object : Callback<List<DiagnosisNotID>> {
             override fun onResponse(
-                call: Call<DiagnosisNotIDList>,
-                response: Response<DiagnosisNotIDList>
+                call: Call<List<DiagnosisNotID>>,
+                response: Response<List<DiagnosisNotID>>
             ) {
                 if (response.isSuccessful) {
-                    val dList = response.body()!!.diseaseList
+                    val dList = response.body()!!
+
+                    println(dList)
                     diseaseID1 = dList[0].diseaseId
                     diseaseName1 = dList[0].diseaseName
                     diseaseProb1 = dList[0].percent.toDouble()
@@ -150,7 +155,7 @@ class DResultActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onFailure(call: Call<DiagnosisNotIDList>, t: Throwable) {
+            override fun onFailure(call: Call<List<DiagnosisNotID>>, t: Throwable) {
                 println(t.message)
             }
 
@@ -167,7 +172,7 @@ class DResultActivity : AppCompatActivity() {
         val dInfoIntent = Intent(context, DInfoActivity::class.java)
 
         if (dId != null)
-            dInfoIntent.putExtra("diseaseId", dId)
+            dInfoIntent.putExtra("diseaseID", dId)
         else if (dName != null)
             dInfoIntent.putExtra("diseaseName", dName)
         else

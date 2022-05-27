@@ -24,7 +24,7 @@ class DiagnosisAdapter(val diagnosisList : ArrayList<List<Diagnosis>>) : Recycle
 
     override fun onBindViewHolder(holder: DiagnosisViewHolder, position: Int) {
         if (diagnosisList != null) {
-            holder.dateNtime.text = diagnosisList[position][0].localDate.toString()
+            holder.dateNtime.text = diagnosisList[position][0].localDate
         }
         if (diagnosisList != null) {
             holder.diseaseName.text = diagnosisList[position][0].diseaseName
@@ -43,7 +43,7 @@ class DiagnosisAdapter(val diagnosisList : ArrayList<List<Diagnosis>>) : Recycle
     }
 
     override fun getItemCount(): Int {
-        return diagnosisList?.size ?: 0
+        return diagnosisList?.size
     }
 
 }
