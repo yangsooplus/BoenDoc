@@ -136,21 +136,14 @@ class SignInActivity : AppCompatActivity() {
                 else {
                     //로딩창 종료
                     dialog!!.dismiss()
-                    //println("로그인 연결은 성공, 근데 통신은 안됨")
-                    println(response.errorBody()!!.string())
+                    Toast.makeText(SIAContext, "이메일과 비밀번호를 다시 확인해주세요", Toast.LENGTH_LONG).show()
                 }
             }
 
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                //자동로그인 테스트용. 마지막에는 지워야 함
-                if (binding.autologin.isChecked) {
-                    App.prefs.setBool("AUTOLOGIN", true)
-                    App.prefs.setString("ID", email)
-                    App.prefs.setString("PW", pw)
-                }
-                Toast.makeText(SIAContext, "접속 실패 하지만 넘어가", Toast.LENGTH_LONG).show()
-                val mainIntent = Intent(SIAContext, MainActivity::class.java)
-                startActivity(mainIntent)
+
+                Toast.makeText(SIAContext, "로그인 오류", Toast.LENGTH_LONG).show()
+
             }
         })
     }
