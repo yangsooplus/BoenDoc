@@ -40,26 +40,62 @@
                 android:textColor="@color/black"
                 android:textSize="14sp" />
 
-            <EditText
-                android:id="@+id/email"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:weightSum="6"
+                android:orientation="horizontal">
+
+                <EditText
+                    android:id="@+id/email"
+                    android:layout_width="0dp"
+                    android:layout_weight="4"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="60dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@drawable/semiroundbtng"
+                    android:fontFamily="@font/spoqahansansneolight"
+                    android:hint="    이메일"
+                    android:imeOptions="actionDone"
+                    android:padding="5dp"
+                    android:privateImeOptions="defaultInputmode=english"
+                    android:singleLine="true"
+                    android:textSize="14sp" />
+
+                <Button
+                    android:id="@+id/id_samebtn"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="30dp"
+                    android:layout_gravity="bottom"
+                    android:layout_marginStart="5dp"
+                    android:text="중복확인"
+                    android:fontFamily="@font/spoqahansansneomedium"
+                    android:textSize="10sp"
+                    android:background="@drawable/semiroundbtn"
+                    android:textColor="@color/white"
+                    />
+
+            </LinearLayout>
+
+
+
+
+            <TextView
+                android:id="@+id/id_same"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginHorizontal="60dp"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/semiroundbtng"
                 android:fontFamily="@font/spoqahansansneolight"
-                android:hint="    이메일"
-                android:imeOptions="actionDone"
-                android:padding="5dp"
-                android:privateImeOptions="defaultInputmode=english"
-                android:singleLine="true"
-                android:textSize="14sp" />
+                android:text="이메일 중복확인을 해주세요."
+                android:textColor="#FF0000"
+                android:textSize="12sp" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="60dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="15dp"
                 android:fontFamily="@font/spoqahansansneomedium"
                 android:text="비밀번호"
                 android:textColor="@color/black"

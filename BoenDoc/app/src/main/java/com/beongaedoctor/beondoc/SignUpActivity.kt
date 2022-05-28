@@ -12,14 +12,12 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import com.beongaedoctor.beondoc.App.Companion.context
 import com.beongaedoctor.beondoc.databinding.ActivitySignInBinding
 import com.beongaedoctor.beondoc.databinding.ActivitySignUpBinding
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
+import retrofit2.*
 import java.util.regex.Pattern
 
 class SignUpActivity : AppCompatActivity() {
@@ -37,6 +35,9 @@ class SignUpActivity : AppCompatActivity() {
 
     //이메일 형식 유효성
     var emailValidation = false
+
+    //이메일 중복 검사
+    var emailnotAlreadyExist = false
 
 
 
@@ -138,9 +139,14 @@ class SignUpActivity : AppCompatActivity() {
         }
 
 
+        binding.idSamebtn.setOnClickListener {
+            checkIDNotExist(binding.email.text.toString())
+        }
+
+
         binding.singupNextBtn.setOnClickListener {
             //제한 조건을 충족하면 User data class에 값 넣기
-            if (passwordAccord && emailValidation) {
+            if (passwordAccord && emailValidation && emailnotAlreadyExist) {
                 saveUser()
 
                 //문제 없을 시 로그인 화면으로 이동 (혹은 자동 로그인 후 메인으로 이동)
@@ -148,6 +154,15 @@ class SignUpActivity : AppCompatActivity() {
                 BEIntent.putExtra("member", member)
                 BEIntent.putExtra("isRevise", false)
                 startActivity(BEIntent)
+            }
+            else if (!passwordAccord) {
+                Toast.makeText(this, "새 비밀번호가 일치하지 않습니다.", Toast.LENGTH_LONG).show()
+            }
+            else if (!emailValidation) {
+                Toast.makeText(this, "이메일 형식을 확인해주세요.", Toast.LENGTH_LONG).show()
+            }
+            else if (!emailnotAlreadyExist) {
+                Toast.makeText(this, "이메일 증복검사를 해주세요.", Toast.LENGTH_LONG).show()
             }
 
 
@@ -185,6 +200,33 @@ class SignUpActivity : AppCompatActivity() {
             binding.email.setTextColor(Color.parseColor("#FF0000"))
             return false
         }
+    }
+
+    private fun checkIDNotExist(email : String) {
+        val retrofit = RetrofitClass.getInstance()
+        val memberService = retrofit.create(MemberService::class.java)
+
+        memberService!!.checkAlreadyID(Emailcheck(email)).enqueue(object : Callback<Int> {
+            override fun onResponse(call: Call<Int>, response: Response<Int>) {
+                if (response.isSuccessful) {
+                    if (response.body() == 0) {
+                        emailnotAlreadyExist = true
+                        binding.idSame.text = "사용 가능한 이메일입니다."
+                        binding.idSame.setTextColor(Color.parseColor("#72E5E5"))
+                    }
+                    else {
+                        emailnotAlreadyExist = false
+                        binding.idSame.text = "이미 존재하는 이메일입니다."
+                        binding.idSame.setTextColor(Color.parseColor("#FF0000"))
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<Int>, t: Throwable) {
+                Toast.makeText(context(), "서버 통신 에러", Toast.LENGTH_SHORT).show()
+            }
+        })
+
     }
 
 }

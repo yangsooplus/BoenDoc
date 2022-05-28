@@ -110,13 +110,7 @@ class MyPwActivity : AppCompatActivity() {
                 Toast.makeText(this, "모든 칸을 입력해주세요", Toast.LENGTH_LONG).show()
             }
             else {
-                if (checkPW()) { //비밀번호 일치하면
-                    revisePW(this) //비밀번호 변경
-                }
-                else { //현재 비밀번호가 일치하지 않음
-                    Toast.makeText(this, "현재 비밀번호가 일치하지 않습니다.", Toast.LENGTH_LONG).show()
-                    binding.currentPW.setText("")
-                }
+                checkPW(this)
             }
         }
 
@@ -126,15 +120,33 @@ class MyPwActivity : AppCompatActivity() {
     }
 
     //기존 비밀번호랑 일치하면 true
-    private fun checkPW() : Boolean{
+    private fun checkPW(context: Context){
         //기존 비밀번호의 일치 여부
-        println(member!!.password)
-        println(binding.currentPW.text.toString())
-        return member!!.password.equals(binding.currentPW.text.toString())
+
+        dialog!!.show()
+
+        memberService!!.passwordCheck(member.id, PWcheck(binding.currentPW.text.toString())).enqueue(object : Callback<Int> {
+            override fun onResponse(call: Call<Int>, response: Response<Int>) {
+                if (response.isSuccessful) {
+                    dialog!!.dismiss()
+                    if (response.body() == 0)
+                        revisePW(context)
+                    else {
+                        Toast.makeText(context, "현재 비밀번호가 일치하지 않습니다.", Toast.LENGTH_LONG).show()
+                        binding.currentPW.setText("")
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<Int>, t: Throwable) {
+                dialog!!.dismiss()
+                Toast.makeText(context, "서버 통신 오류", Toast.LENGTH_SHORT).show()
+            }
+        })
     }
 
     //비밀번호 수정 요청
-    private fun revisePW(context: Context) : Unit {
+    private fun revisePW(context: Context)  {
 
         dialog!!.show()
 
@@ -143,8 +155,8 @@ class MyPwActivity : AppCompatActivity() {
 
 
         //DB 비밀번호 수정 요청
-        memberService!!.reviseProfile(member!!.id, getUpdateMember(member!!)).enqueue(object : Callback<UpdateMemberResponse>{
-            override fun onResponse(call: Call<UpdateMemberResponse>, response: Response<UpdateMemberResponse>) {
+        memberService!!.passwordUpdate(member!!.id, PWcheck(member!!.password)).enqueue(object : Callback<Unit>{
+            override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
                 if (response.isSuccessful) {
 
                     dialog!!.dismiss()
@@ -158,34 +170,16 @@ class MyPwActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onFailure(call: Call<UpdateMemberResponse>, t: Throwable) {
+            override fun onFailure(call: Call<Unit>, t: Throwable) {
                 println(t.message)
 
                 //나중에 아래 지우기
                 dialog!!.dismiss()
-                Toast.makeText(context, "로컬은 변경했고, DB는 안됐어", Toast.LENGTH_LONG).show()//변경 알림
+                Toast.makeText(context, "서버 통신 오류", Toast.LENGTH_SHORT).show()//변경 알림
                 val mypageIntent = Intent(context, MainMypageActivity::class.java)
                 startActivity(mypageIntent) //마이페이지 메인으로 이동
             }
         })
-    }
-
-
-    //멤버 정보 수정 통신에는 id가 미포함.
-    private fun getUpdateMember(member: Member): UpdateMember {
-        return UpdateMember(
-            member.loginId,
-            member.name,
-            member.age,
-            member.height,
-            member.weight,
-            member.gender,
-            member.drug,
-            member.social,
-            member.family,
-            member.trauma,
-            member.femininity
-        )
     }
 
 

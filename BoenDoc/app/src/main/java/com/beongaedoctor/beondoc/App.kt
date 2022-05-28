@@ -52,6 +52,10 @@ class Preference (context: Context) {
             return Member()
     }
 
+    fun deleteByKey(key: String) {
+        prefs.edit().remove(key).apply()
+    }
+
     fun setString(key:String, value:String) {
         prefs.edit().putString(key, value).apply()
     }

@@ -93,6 +93,15 @@ data class UpdateMemberResponse (
     var femininity : String = ""
 )
 
+data class Emailcheck(
+    @SerializedName("loginId")
+    var loginId: String
+)
+
+data class PWcheck(
+    @SerializedName("password")
+    var password: String
+)
 
 interface MemberService {
     @POST("api/members")
@@ -104,6 +113,16 @@ interface MemberService {
 
     @DELETE("api/members/{id}")
     fun deleteProfile(@Path("id") id : Long) : Call<Unit>
+
+    @POST("api/members/loginIdCheck/")
+    fun checkAlreadyID(@Body loginId: Emailcheck) : Call<Int> //이미 있으면 1, 없으면 0
+
+    @POST("api/members/pwcheck/{id}")
+    fun passwordCheck(@Path("id") id: Long, @Body password: PWcheck) : Call<Int> //같으면 0, 다르면 1 ... 반대로 해야하는거 아냐?
+
+
+    @PUT("api/members/pwupdate/{id}")
+    fun passwordUpdate(@Path("id") id: Long, @Body password: PWcheck) : Call<Unit>
 
 }
 

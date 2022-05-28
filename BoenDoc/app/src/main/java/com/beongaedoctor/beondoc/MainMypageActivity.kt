@@ -75,6 +75,10 @@ class MainMypageActivity : AppCompatActivity() {
                 }
             })
         }
+
+        binding.signoutbtn.setOnClickListener {
+            goToSignIn()
+        }
     }
 
     //뒤로가기 버튼 눌렀을 때
@@ -93,6 +97,7 @@ class MainMypageActivity : AppCompatActivity() {
         memberService!!.deleteProfile(memberInfo.id).enqueue(object : Callback<Unit>
         {
             override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
+
                 goToSignIn()
                 Toast.makeText(context(), "탈퇴되었습니다.", Toast.LENGTH_SHORT).show()//변경 알림
             }
@@ -105,6 +110,8 @@ class MainMypageActivity : AppCompatActivity() {
     }
 
     private fun goToSignIn() {
+        App.prefs.deleteByKey("memberInfo")
+        App.prefs.deleteByKey("AUTOLOGIN")
         val intent = Intent(this, SignInActivity::class.java) //지금 액티비티에서 다른 액티비티로 이동하는 인텐트 설정
         startActivity(intent) //인텐트 이동
     }
