@@ -45,6 +45,12 @@ class MainActivity : AppCompatActivity() {
             val mypageIntent = Intent(this, MainMypageActivity::class.java)
             startActivity(mypageIntent)
         }
+
+        binding.egyBtn.setOnClickListener {
+            val intent = Intent(this, MapActivity::class.java)
+            intent.putExtra("mapKeyword", "응급실")
+            startActivity(intent)
+        }
     }
 
 

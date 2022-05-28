@@ -26,6 +26,9 @@ class SignInActivity : AppCompatActivity() {
 
     var dialog : LoadingDialog? = null
 
+    //뒤로가기 연속 클릭 대기 시간
+    var mBackWait:Long = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -175,6 +178,16 @@ class SignInActivity : AppCompatActivity() {
             body.trauma,
             body.femininity
         )
+    }
+
+    override fun onBackPressed() {
+        // 뒤로가기 버튼 클릭
+        if(System.currentTimeMillis() - mBackWait >=2000 ) {
+            mBackWait = System.currentTimeMillis()
+            Toast.makeText(this, "뒤로가기를 한 번 더 눌러 종료", Toast.LENGTH_LONG).show()
+        } else {
+            finishAffinity() //앱 종료
+        }
     }
 }
 

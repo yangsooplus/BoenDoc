@@ -85,4 +85,21 @@
         android:textColor="@color/white"
         />
 
+    <Button
+        android:id="@+id/egyBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="40dp"
+        android:layout_marginVertical="10dp"
+        android:background="@drawable/semiroundbtnr"
+        android:fontFamily="@font/spoqahansansneobold"
+        android:gravity="left"
+        android:paddingBottom="30dp"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:text="응급실 찾기"
+        android:textSize="30sp"
+        android:textColor="@color/white"
+        />
+
 </LinearLayout>

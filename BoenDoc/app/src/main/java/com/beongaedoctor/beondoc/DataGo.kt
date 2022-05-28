@@ -165,3 +165,119 @@ interface HospitalAPI {
         @Query("ServiceKey") ServiceKey : String
     ) : Call<Hospital>
 }
+
+
+
+
+@Xml(name = "response")
+data class Emergency(
+    @Element(name = "body")
+    val body : EBody,
+    @Element(name = "header")
+    val header: EHeader
+)
+
+@Xml(name="header")
+data class EHeader(
+    @PropertyElement(name="resultCode")
+    val resultCode: Int,
+    @PropertyElement(name="resultMsg")
+    val resultMsg: String
+)
+
+@Xml(name = "body")
+data class EBody(
+    @Element(name="items")
+    val items: EItems,
+    @PropertyElement(name="numOfRows")
+    val numOfRows: Int,
+    @PropertyElement(name="pageNo")
+    val pageNo: Int,
+    @PropertyElement(name="totalCount")
+    val totalCount: Int
+)
+
+
+@Xml(name= "items")
+data class EItems(
+    @Element(name="item")
+    val item: List<EItem>
+)
+
+@Xml
+data class EItem(
+    @PropertyElement(name = "rnum")
+    var rnum : Int?,
+    @PropertyElement(name = "hpid")
+    var hpid : String?,
+    @PropertyElement(name = "phpid")
+    var phpid : String?,
+    @PropertyElement(name = "hvidate")
+    var hvidate : String?,
+    @PropertyElement(name = "hvdnm")
+    var hvdnm : String?,
+    @PropertyElement(name = "hvctayn")
+    var hvctayn : String?,
+    @PropertyElement(name = "hvmriayn")
+    var hvmriayn : String?,
+    @PropertyElement(name = "hvangioayn")
+    var hvangioayn : String?,
+    @PropertyElement(name = "hvventiayn")
+    var hvventiayn : String?,
+    @PropertyElement(name = "hvamyn")
+    var hvamyn : String?,
+    @PropertyElement(name = "hv1")
+    var hv1 : String?,
+    @PropertyElement(name = "hv2")
+    var hv2 : String?,
+    @PropertyElement(name = "hv3")
+    var hv3 : String?,
+    @PropertyElement(name = "hv4")
+    var hv4 : String?,
+    @PropertyElement(name = "hv5")
+    var hv5 : String?,
+    @PropertyElement(name = "hv6")
+    var hv6 : String?,
+    @PropertyElement(name = "hv7")
+    var hv7 : String?,
+    @PropertyElement(name = "hv8")
+    var hv8 : String?,
+    @PropertyElement(name = "hv9")
+    var hv9 : String?,
+    @PropertyElement(name = "hv10")
+    var hv10 : String?,
+    @PropertyElement(name = "hv11")
+    var hv11 : String?,
+    @PropertyElement(name = "hv12")
+    var hv12 : String?,
+    @PropertyElement(name = "hvec")
+    var hvec : Int?,
+    @PropertyElement(name = "hvoc")
+    var hvoc : Int?,
+    @PropertyElement(name = "hvcc")
+    var hvcc : Int?,
+    @PropertyElement(name = "hvncc")
+    var hvncc : Int?,
+    @PropertyElement(name = "hvccc")
+    var hvccc : Int?,
+    @PropertyElement(name = "hvicc")
+    var hvicc : Int?,
+    @PropertyElement(name = "hvgc")
+    var hvgc : Int?,
+    @PropertyElement(name = "dutyName")
+    var dutyName : String?,
+    @PropertyElement(name = "dutytel3")
+    var dutytel3 : String?
+
+)
+
+interface EmergencyAPI {
+    @GET("getEmrrmRltmUsefulSckbdInfoInqire")
+    fun getEgybyAddress(
+        @Query("STAGE1") STAGE1 : String,
+        @Query("STAGE2") STAGE2 : String,
+        @Query("pageNo") pageNo: Int,
+        @Query("numOfRows") numOfRows: Int,
+        @Query("ServiceKey") ServiceKey : String
+    ) : Call<Emergency>
+}
