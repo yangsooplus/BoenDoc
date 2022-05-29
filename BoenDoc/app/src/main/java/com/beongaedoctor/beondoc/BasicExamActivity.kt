@@ -239,7 +239,7 @@ class BasicExamActivity : AppCompatActivity() {
     private fun realConfirm() { //찐찐 확인
         //기기에 정보 저장 - SharedPreferences
         App.prefs.setMember("memberInfo", member)
-
+        App.noMember = false
 
         if (isRevise) { //수정 모드면 마이페이지 메인으로 이동
             val mainIntent = Intent(this, MainMypageActivity::class.java)

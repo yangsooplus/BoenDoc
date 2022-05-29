@@ -53,7 +53,8 @@ class DResultActivity : AppCompatActivity() {
 
 
         //기기에 저장된 유저 정보
-        memberInfo = App.prefs.getMember("memberInfo", "")
+        if (!App.noMember)
+            memberInfo = App.prefs.getMember("memberInfo", "")
 
         if (fromChat) {
 
@@ -78,7 +79,10 @@ class DResultActivity : AppCompatActivity() {
             diseaseProb3 = probs[2].toDouble()
 
             //Flask에서 가져온거를 Spring에 넣기
-            recordD2DB(Diagnosis2DB(diseaseName1, diseaseName2, diseaseName3, probability))
+            if (!App.noMember)
+                recordD2DB(Diagnosis2DB(diseaseName1, diseaseName2, diseaseName3, probability))
+            else
+                setUI()
         }
         else {
             //Spring에서 가져오기

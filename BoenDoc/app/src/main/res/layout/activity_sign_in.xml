@@ -113,5 +113,16 @@
         android:backgroundTint="@color/yellow"
         android:gravity="center"/>
 
+    <Button
+        android:id="@+id/btn_NoMember"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="60dp"
+        android:layout_marginTop="5dp"
+        android:text="비회원 1회 진료"
+        android:textColor="@color/black"
+        android:backgroundTint="@color/lightgray"
+        android:gravity="center"/>
+
 
 </LinearLayout>

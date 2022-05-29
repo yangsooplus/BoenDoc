@@ -24,6 +24,8 @@ class App : Application() {
         fun context() : Context {
             return instance!!.applicationContext
         }
+
+        var noMember = false
     }
 
     override fun onCreate() {

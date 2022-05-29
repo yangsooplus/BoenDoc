@@ -2,6 +2,7 @@ package com.beongaedoctor.beondoc
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.beongaedoctor.beondoc.databinding.ActivityMainBinding
@@ -26,9 +27,17 @@ class MainActivity : AppCompatActivity() {
         mainbinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //멤버 정보 불러와서 이름 보여주기
-        val memberInfo = App.prefs.getMember("memberInfo", "")
-        binding.username.text = memberInfo?.name
+        if (App.noMember) {
+            binding.mypageBtn.visibility = View.GONE
+            binding.username.text = "비회원"
+        }
+        else {
+            //멤버 정보 불러와서 이름 보여주기
+            val memberInfo = App.prefs.getMember("memberInfo", "")
+            binding.username.text = memberInfo?.name
+        }
+
+
     }
 
     override fun onStart() {

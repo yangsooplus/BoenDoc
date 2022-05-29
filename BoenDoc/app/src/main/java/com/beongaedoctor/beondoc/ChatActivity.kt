@@ -26,14 +26,31 @@ class ChatActivity : AppCompatActivity() {
     private val binding get() = chatbinding!!
 
     private val chatItemList = arrayListOf<ChatItem>()
-    private val chatItemTestList = arrayListOf(
 
+    lateinit var chatItemTestList : ArrayList<ChatItem>
+    private val MemberchatItemList = arrayListOf(
+        ChatItem(ChatItem.TYPE_LEFT, "언제부터 증상이 나타났나요?"),
+        ChatItem(ChatItem.TYPE_LEFT, "증상이 있는 부위가 어디인가요?"),
+        ChatItem(ChatItem.TYPE_LEFT, "증상이 얼마나 지속되었나요?"),
+        ChatItem(ChatItem.TYPE_LEFT, "증상의 양상이 어떤가요?"),
+        ChatItem(ChatItem.TYPE_LEFT, "이전에도 같은 증상을 경험한 적이 있나요? 혹은 처음 겪는 증상인가요?"),
+        ChatItem(ChatItem.TYPE_LEFT, "증상이 괜찮아지는 상황이 있다면 얘기해주세요.")
+    )
+
+    private val NoMemberchatItemList = arrayListOf(
         ChatItem(ChatItem.TYPE_LEFT, "언제부터 증상이 나타났나요?"),
         ChatItem(ChatItem.TYPE_LEFT, "증상이 있는 부위가 어디인가요?"),
         ChatItem(ChatItem.TYPE_LEFT, "증상이 얼마나 지속되었나요?"),
         ChatItem(ChatItem.TYPE_LEFT, "증상의 양상이 어떤가요?"),
         ChatItem(ChatItem.TYPE_LEFT, "이전에도 같은 증상을 경험한 적이 있나요? 혹은 처음 겪는 증상인가요?"),
         ChatItem(ChatItem.TYPE_LEFT, "증상이 괜찮아지는 상황이 있다면 얘기해주세요."),
+        ChatItem(ChatItem.TYPE_LEFT, "복용하시는 약물이 있으면 얘기해주세요."),
+        ChatItem(ChatItem.TYPE_LEFT, "술, 담배, 커피, 직업 등 사회력을 알려주세요."),
+        ChatItem(ChatItem.TYPE_LEFT, "가족력이 있다면 얘기해주세요"),
+        ChatItem(ChatItem.TYPE_LEFT, "과거 앓았던 질병이나 수술 경험이 있다면 알려주세요."),
+        ChatItem(ChatItem.TYPE_LEFT, "개수 맞추기용"),
+        ChatItem(ChatItem.TYPE_LEFT, "개수 맞추기용")
+        //ChatItem(ChatItem.TYPE_LEFT, "여성분이실 경우 임신, 유산, ") 일단 미사용
     )
 
     private var chatResposeList = arrayListOf<String>()
@@ -47,6 +64,11 @@ class ChatActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         dialog = LoadingDialog(this)
+
+        chatItemTestList = if (App.noMember)
+            NoMemberchatItemList
+        else
+            MemberchatItemList
 
         //리사이클러뷰 수직 드래그 가능
         binding.chatRecyclerView.layoutManager = LinearLayoutManager(this)
@@ -75,7 +97,15 @@ class ChatActivity : AppCompatActivity() {
 
             if (chatItemTestList.size == 0) { //모든 질문에 응답하면 결과 창으로 이동. 여기서 통신해서 로딩하다가 넘어가도록 수정 해야 함.
                 dialog.show()
-                Predict(this)
+
+                if (App.noMember) {
+                    Predict(this, ChatResponse(chatResposeList))
+                }
+                else {
+                    val chatResponse = combinateChatResponse()
+                    Predict(this, chatResponse)
+                }
+
             }
             else if (chatItemTestList.size > 0) { //질문 남아 있으면 제일 앞거 출력과 동시에 지워버리기
                 chatItemList.add(chatItemTestList[0])
@@ -92,7 +122,7 @@ class ChatActivity : AppCompatActivity() {
     }
 
 
-    private fun Predict(context: Context) {
+    private fun Predict(context: Context, chatResponse: ChatResponse) {
         val gson = GsonBuilder().setLenient().create()
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
@@ -128,7 +158,7 @@ class ChatActivity : AppCompatActivity() {
 
         //원래: combinateChatResponse()
         //소화성궤양: ChatResponse(test)
-        chatResponseService.sendResponse2Model(combinateChatResponse()).enqueue(object :
+        chatResponseService.sendResponse2Model(chatResponse).enqueue(object :
             Callback<List<String>> {
             override fun onResponse(call: Call<List<String>>, response: Response<List<String>>) {
                 if (response.isSuccessful) {

@@ -96,6 +96,12 @@ class SignInActivity : AppCompatActivity() {
 
 
 
+        binding.btnNoMember.setOnClickListener {
+            App.noMember = true
+            val mainIntent = Intent(this, MainActivity::class.java)
+            startActivity(mainIntent)
+        }
+
 
     }
 
@@ -130,7 +136,7 @@ class SignInActivity : AppCompatActivity() {
 
                     //유효하면 메인 액티비티로 이동
                     Toast.makeText(SIAContext, "로그인 성공", Toast.LENGTH_SHORT).show()
-
+                    App.noMember = false
                     gotoMain(SIAContext) //메인 액티비티로
                 }
                 else {
