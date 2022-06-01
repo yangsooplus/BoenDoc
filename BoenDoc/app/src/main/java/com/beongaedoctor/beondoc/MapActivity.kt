@@ -10,10 +10,7 @@ import android.location.Geocoder
 import android.location.Location
 import android.location.LocationManager
 import android.net.Uri
-import android.os.Build
-import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
+import android.os.*
 import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
@@ -41,7 +38,6 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -141,7 +137,7 @@ class MapActivity : AppCompatActivity(){
         binding.mapText.text = "가까운 $mapKeyword 입니다."
 
         if (checkLocationService()) { // GPS가 켜져있을 경우
-            startLocationUpdates() //사용자 현재 위치 추적
+            //startLocationUpdates() //사용자 현재 위치 추적
             permissionCheck() //위치 권한 체크
 
         } else { // GPS가 꺼져있을 경우
@@ -163,6 +159,7 @@ class MapActivity : AppCompatActivity(){
     }
 
     private fun startLocationUpdates() {
+        Log.d("MAP", "startLocationUpdate: 기기 위치 업데이트")
 
         //FusedLocationProviderClient의 인스턴스를 생성.
         mFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
@@ -185,6 +182,8 @@ class MapActivity : AppCompatActivity(){
 
 
     private fun getLastLocation(location: Location) { //주소 값 반환
+        Log.d("MAP", "getLastLocation: 기기 위치를 x, y에")
+
         x = location.longitude.toString() //현재 x좌표
         y = location.latitude.toString() //현재 y좌표
 
@@ -216,6 +215,7 @@ class MapActivity : AppCompatActivity(){
 
     // 위치 권한 확인
     private fun permissionCheck() {
+        Log.d("MAP", "permissionCheck: 권한 체크")
         val preference = getPreferences(MODE_PRIVATE)
         val isFirstCheck = preference.getBoolean("isFirstPermissionCheck", true)
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
@@ -228,6 +228,7 @@ class MapActivity : AppCompatActivity(){
                 builder.setMessage("현재 위치를 확인하시려면 위치 권한을 허용해주세요.")
                 builder.setPositiveButton("확인") { dialog, which ->
                     ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION), ACCESS_FINE_LOCATION)
+                    startLocationUpdates() //사용자 현재 위치 추적
                 }
                 builder.setNegativeButton("취소") { dialog, which ->
 
@@ -258,11 +259,13 @@ class MapActivity : AppCompatActivity(){
             // 권한이 있는 상태
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
                 startTracking() //카카오맵 위치 트래킹 시작
+                startLocationUpdates() //사용자 현재 위치 추적
             }
         }
     }
 
     private fun startTrackingOn31() {
+        Log.d("MAP", "startTrackingOn31: SDK 31 이상")
         mapView!!.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(y!!.toDouble(), x!!.toDouble()), true)
 
         val marker = MapPOIItem()
@@ -277,13 +280,15 @@ class MapActivity : AppCompatActivity(){
 
     // 권한 요청 후 행동
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        Log.d("MAP", "onRequestPermissionsResult: 위치 권한 요청 후 결과에 따라 행동")
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == ACCESS_FINE_LOCATION) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // 권한 요청 후 승인됨 (추적 시작)
                 Toast.makeText(this, "위치 권한이 승인되었습니다", Toast.LENGTH_SHORT).show()
-                //setCurrLocation()
+
                 startTracking()
+                startLocationUpdates() //사용자 현재 위치 추적
             } else {
                 // 권한 요청 후 거절됨 (다시 요청 or 토스트)
                 Toast.makeText(this, "위치 권한이 거절되었습니다", Toast.LENGTH_SHORT).show()
@@ -294,12 +299,14 @@ class MapActivity : AppCompatActivity(){
 
     // GPS가 켜져있는지 확인
     private fun checkLocationService(): Boolean {
+        Log.d("MAP", "checkLocationService: GPS 켜져 있는지 확인")
         val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
     }
 
     // 위치추적 시작
     private fun startTracking() {
+        Log.d("MAP", "startTracking: 트래킹중")
         mapView!!.currentLocationTrackingMode = MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading
     }
 
@@ -315,6 +322,7 @@ class MapActivity : AppCompatActivity(){
 
     //https://mechacat.tistory.com/15?category=449793
     private fun searchKeyword(keyword: String, x:String, y:String) {
+        Log.d("MAP", "searchKeyword: 검색")
         val retrofitMap = Retrofit.Builder()   // Retrofit 구성
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
@@ -370,6 +378,7 @@ class MapActivity : AppCompatActivity(){
 
 
     private fun searchKeyword(keywords: List<String>, x:String, y:String, radius:Int = 2000) {
+        Log.d("MAP", "searchKeyword: 검색")
         val retrofitMap = Retrofit.Builder()   // Retrofit 구성
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
@@ -457,6 +466,7 @@ class MapActivity : AppCompatActivity(){
 
 
     fun getHospital(searchResult : List<Place>) {
+        Log.d("MAP", "getHospital: 병원 정보 api")
         // timeout setting 해주기
         val okHttpClient = OkHttpClient().newBuilder()
             .connectTimeout(30, TimeUnit.SECONDS)
@@ -506,6 +516,7 @@ class MapActivity : AppCompatActivity(){
 
 
     private fun drawMapMarker(place: Place, hitem: HItem2?) {
+        Log.d("MAP", "drawMapMarker: 마커 찍기")
             val marker = MapPOIItem()
 
             if (mapKeyword.equals("약국")) {
