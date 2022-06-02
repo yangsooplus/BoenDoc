@@ -26,6 +26,7 @@ import com.beongaedoctor.beondoc.App.Companion.context
 import com.beongaedoctor.beondoc.databinding.ActivityMapBinding
 import com.google.android.gms.location.*
 import com.google.android.gms.location.LocationServices
+import com.sothree.slidinguppanel.SlidingUpPanelLayout
 import com.tickaroo.tikxml.TikXml
 import com.tickaroo.tikxml.retrofit.TikXmlConverterFactory
 import net.daum.mf.map.api.CalloutBalloonAdapter
@@ -49,7 +50,8 @@ class BallonInfo (
     val type : String,
     val id : String,
     val phone : String,
-    val address : String
+    val address : String,
+    var eItem2: EItem2?
         )
 
 
@@ -80,7 +82,8 @@ class MapActivity : AppCompatActivity(){
     private var x : String? = null //현재 위치 x좌표.
     private var y : String? = null //현재 위치 y좌표. null인 경우는 못 불러온 경우임.
 
-    private val eventListener = MarkerEventListener(this)   // 마커 클릭 이벤트 리스너
+    //private val eventListener = MarkerEventListener(this)   // 마커 클릭 이벤트 리스너
+    lateinit var eventListener : MarkerEventListener   // 마커 클릭 이벤트 리스너
 
     lateinit var mapKeyword : String
 
@@ -94,6 +97,8 @@ class MapActivity : AppCompatActivity(){
     lateinit var currAddress: List<Address>
     var STAGE1 = ""
     var STAGE2 = ""
+
+    lateinit var slidePanel : SlidingUpPanelLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -112,6 +117,11 @@ class MapActivity : AppCompatActivity(){
         mLocationRequest =  LocationRequest.create().apply {
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
+
+        slidePanel = binding.mainFrame
+        slidePanel.addPanelSlideListener(PanelEventListener())
+
+        eventListener = MarkerEventListener(this, slidePanel)
 
         //커스텀 말풍선 등록
         mapView!!.setCalloutBalloonAdapter(CustomBallonAdapter(layoutInflater, this))
@@ -447,11 +457,26 @@ class MapActivity : AppCompatActivity(){
         emergencyAPI!!.getEmergencybyAdd(STAGE1, STAGE2, EKEY).enqueue(object : Callback<Emergency1> {
             override fun onResponse(call: Call<Emergency1>, response: Response<Emergency1>) {
                 if (response.isSuccessful) {
-                    for (egy in response.body()!!.body.items.item)
-                        drawMapMarker(egy)
+                    for (egy in response.body()!!.body.items.item) {
+                        emergencyAPI!!.getEmergencybyID(egy.hpid!!, EKEY).enqueue(object : Callback<Emergency2> {
+                            override fun onResponse(
+                                call: Call<Emergency2>,
+                                response: Response<Emergency2>
+                            ) {
+                                if (response.isSuccessful) {
+                                    drawMapMarker(egy, response.body()?.body?.items?.item?.get(0))
+                                }
+                                dialog?.dismiss()
+                            }
 
+                            override fun onFailure(call: Call<Emergency2>, t: Throwable) {
+                               println("실패띠~")
+                                dialog?.dismiss()
+                            }
+                        })
+                    }
                 }
-                dialog?.dismiss()
+
             }
 
             override fun onFailure(call: Call<Emergency1>, t: Throwable) {
@@ -518,7 +543,7 @@ class MapActivity : AppCompatActivity(){
                     customSelectedImageResourceId = R.drawable.markerpharmsele       // 클릭 시 커스텀 마커 이미지
                     isCustomImageAutoscale = false      // 커스텀 마커 이미지 크기 자동 조정
                     setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
-                    userObject = BallonInfo("Pharm", place.id ,place.phone, place.road_address_name) //커스텀 오브젝트 붙여주기
+                    userObject = BallonInfo("Pharm", place.id ,place.phone, place.road_address_name, null) //커스텀 오브젝트 붙여주기
                 }
             }
             else {
@@ -532,7 +557,7 @@ class MapActivity : AppCompatActivity(){
                         customSelectedImageResourceId = R.drawable.markerhosele       // 클릭 시 커스텀 마커 이미지
                         isCustomImageAutoscale = false      // 커스텀 마커 이미지 크기 자동 조정
                         setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
-                        userObject = BallonInfo("Hos",place.id ,place.phone, place.road_address_name) //커스텀 오브젝트 붙여주기
+                        userObject = BallonInfo("Hos",place.id ,place.phone, place.road_address_name, null) //커스텀 오브젝트 붙여주기
                     }
                 }
                 else {
@@ -545,29 +570,29 @@ class MapActivity : AppCompatActivity(){
                         customSelectedImageResourceId = R.drawable.markerhosele       // 클릭 시 커스텀 마커 이미지
                         isCustomImageAutoscale = false      // 커스텀 마커 이미지 크기 자동 조정
                         setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
-                        userObject = BallonInfo("Hos", place.id ,place.phone, place.road_address_name) //커스텀 오브젝트 붙여주기
+                        userObject = BallonInfo("Hos", place.id ,place.phone, place.road_address_name, null) //커스텀 오브젝트 붙여주기
                     }
                 }
             }
             mapView!!.addPOIItem(marker)
     }
 
-    private fun drawMapMarker(eItem: EItem1) {
+    private fun drawMapMarker(eItem1: EItem1, eItem2: EItem2?) {
         Log.d("MAP", "drawMapMarker: 마커 찍기")
         val marker = MapPOIItem()
 
 
 
         marker.apply {
-            itemName = eItem.dutyName
-            mapPoint = MapPoint.mapPointWithGeoCoord(eItem.wgs84Lat!!.toDouble(), eItem.wgs84Lon!!.toDouble())
+            itemName = eItem1.dutyName
+            mapPoint = MapPoint.mapPointWithGeoCoord(eItem1.wgs84Lat!!.toDouble(), eItem1.wgs84Lon!!.toDouble())
             markerType = MapPOIItem.MarkerType.CustomImage
             customImageResourceId = R.drawable.markerhos
             selectedMarkerType = MapPOIItem.MarkerType.CustomImage  // 클릭 시 마커 모양
             customSelectedImageResourceId = R.drawable.markerhosele       // 클릭 시 커스텀 마커 이미지
             isCustomImageAutoscale = false      // 커스텀 마커 이미지 크기 자동 조정
             setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
-            userObject = BallonInfo("Egy", eItem.hpid!!, eItem.dutyTel1!!, eItem.dutyAddr!!) //커스텀 오브젝트 붙여주기
+            userObject = BallonInfo("Egy", eItem1.hpid!!, eItem1.dutyTel1!!, eItem1.dutyAddr!!, eItem2) //커스텀 오브젝트 붙여주기
         }
 
         mapView!!.addPOIItem(marker)
@@ -601,6 +626,8 @@ class MapActivity : AppCompatActivity(){
             else -> return false
         }
     }
+
+
 
 
     class CustomBallonAdapter(inflater: LayoutInflater, context: Context): CalloutBalloonAdapter {
@@ -637,7 +664,7 @@ class MapActivity : AppCompatActivity(){
     }
 
 
-    class MarkerEventListener(val context: Context): MapView.POIItemEventListener {
+    class MarkerEventListener(val context: Context, val slidePanel: SlidingUpPanelLayout): MapView.POIItemEventListener {
         override fun onPOIItemSelected(p0: MapView?, p1: MapPOIItem?) {
 
         }
@@ -655,7 +682,14 @@ class MapActivity : AppCompatActivity(){
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(urladdress))
                     startActivity(context, intent, null)
                 }
+                else {
+                    slidePanel.findViewById<TextView>(R.id.testText).text = ballonInfo.eItem2!!.dutyName
 
+                    if (slidePanel.panelState == SlidingUpPanelLayout.PanelState.COLLAPSED)
+                        slidePanel.panelState = SlidingUpPanelLayout.PanelState.ANCHORED
+                    else if (slidePanel.panelState == SlidingUpPanelLayout.PanelState.EXPANDED)
+                        slidePanel.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
+                }
 
             }
         }
@@ -663,8 +697,22 @@ class MapActivity : AppCompatActivity(){
         override fun onDraggablePOIItemMoved(p0: MapView?, p1: MapPOIItem?, p2: MapPoint?) {
 
         }
+
+
     }
 
+    inner class PanelEventListener : SlidingUpPanelLayout.PanelSlideListener {
+        override fun onPanelSlide(panel: View?, slideOffset: Float) {
+            //패널 슬라이드 중
+        }
 
+        override fun onPanelStateChanged(
+            panel: View?,
+            previousState: SlidingUpPanelLayout.PanelState?,
+            newState: SlidingUpPanelLayout.PanelState?
+        ) {
+            //패널 상태가 변했을 때
+        }
+    }
 
 }
