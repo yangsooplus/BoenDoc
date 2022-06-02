@@ -38,6 +38,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -45,6 +46,7 @@ import java.util.concurrent.TimeUnit
 
 //말풍선에 붙일 클래스
 class BallonInfo (
+    val type : String,
     val id : String,
     val phone : String,
     val address : String
@@ -69,7 +71,6 @@ class MapActivity : AppCompatActivity(){
         const val API_KEY = "KakaoAK 592c80e46b016a87334cf9531a369a6a" // REST API 키
         const val HKEY = "DFKY0ENCJZDVdxX4ulcZ8QSKuf1IYa6pG3TASfba0vk8Nv9DnW19C/nEftvSsZJAIwGWcSEXfP/pdXmNkKQJBQ=="
         const val EKEY = "DFKY0ENCJZDVdxX4ulcZ8QSKuf1IYa6pG3TASfba0vk8Nv9DnW19C/nEftvSsZJAIwGWcSEXfP/pdXmNkKQJBQ=="
-
     }
 
     private var mFusedLocationProviderClient: FusedLocationProviderClient? = null // 현재 위치를 가져오기 위한 변수
@@ -85,14 +86,14 @@ class MapActivity : AppCompatActivity(){
 
     var currentTime : Int = 0
     var currentDay : String = ""
-    var nearHospitalList = mutableListOf<String>()
+
 
     var dialog : LoadingDialog? = null
 
 
-    //lateinit var currAddress: List<Address>
-    //var STAGE1 = ""
-    //var STAGE2 = ""
+    lateinit var currAddress: List<Address>
+    var STAGE1 = ""
+    var STAGE2 = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -100,6 +101,7 @@ class MapActivity : AppCompatActivity(){
         setContentView(binding.root)
 
         mapKeyword = intent.getStringExtra("mapKeyword").toString()
+        println(mapKeyword)
         dialog = LoadingDialog(this)
 
         mapView = MapView(this) //맵 뷰 생성
@@ -115,7 +117,7 @@ class MapActivity : AppCompatActivity(){
         mapView!!.setCalloutBalloonAdapter(CustomBallonAdapter(layoutInflater, this))
         mapView!!.setPOIItemEventListener(eventListener)  // 마커 클릭 이벤트 리스너 등록
 
-        if (mapKeyword == "약국" || mapKeyword == "응급실") {
+        if (mapKeyword == "Pharm" || mapKeyword == "Egy") {
             binding.infoConstraint.visibility = View.GONE
         }
 
@@ -187,10 +189,13 @@ class MapActivity : AppCompatActivity(){
         x = location.longitude.toString() //현재 x좌표
         y = location.latitude.toString() //현재 y좌표
 
-        //val geoCoder = Geocoder(context())
-        //currAddress = geoCoder.getFromLocation(location.latitude, location.longitude, 3)
-        //STAGE1 = currAddress.get(0).adminArea
-        //STAGE2 = currAddress.get(0).subLocality
+
+        val geoCoder = Geocoder(context())
+        currAddress = geoCoder.getFromLocation(location.latitude, location.longitude, 3)
+        STAGE1 = currAddress[0].adminArea
+        STAGE2 = currAddress[0].subLocality
+
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             startTrackingOn31()
@@ -198,15 +203,20 @@ class MapActivity : AppCompatActivity(){
 
         //현재 좌표를 설정한 뒤 키워드 검색 결과를 받아옴
         Handler().postDelayed({
-            if (mapKeyword.contains(',')) //진료과 여러개가 추천된 경우 {
-            {
-                searchKeyword(splitMapKeyword(mapKeyword), x!!, y!!)
+
+            when (mapKeyword) {
+                "Pharm" -> searchKeyword("약국", x!!, y!!)
+                "Egy" -> getEmergency()//응급실
+                else -> {
+                    if (mapKeyword.contains(',')) //진료과 여러개가 추천된 경우 {
+                    {
+                        searchKeyword(splitMapKeyword(mapKeyword), x!!, y!!)
+                    }
+                    else
+                        searchKeyword(mapKeyword, x!!, y!!)
+                }
             }
-            else
-                searchKeyword(mapKeyword, x!!, y!!)
-
-
-        }, 1000)
+        }, 2000)
     }
 
     private fun splitMapKeyword(keyword: String) : List<String> = keyword.split(',')
@@ -330,8 +340,6 @@ class MapActivity : AppCompatActivity(){
         val api = retrofitMap.create(KakaoAPI::class.java)   // 통신 인터페이스를 객체로 생성
 
         var radius = 2000
-        if (mapKeyword == "응급실")
-            radius = 5000
 
         val call = api.getSearchKeyword(API_KEY, keyword, x, y, radius)   // 검색 조건 입력
 
@@ -342,37 +350,25 @@ class MapActivity : AppCompatActivity(){
                 response: Response<ResultSearchKeyword>
             ) {
                 println(response.body())
-                if (response.body()!!.meta.total_count > 0) {
-                    if (mapKeyword == "약국") {
-                        for (ele in response.body()!!.documents) {
-                            drawMapMarker(ele, null)
-                        }
-                    }
-                    else if (mapKeyword == "응급실") {
-                        for (ele in response.body()!!.documents) {
-                            if (ele.category_group_code == "HP8" || ele.category_name.contains("병원"))
+
+                if (response.isSuccessful) {
+                    if (response.body()!!.meta.total_count > 0) {
+                        if (mapKeyword == "약국")
+                            for (ele in response.body()!!.documents)
                                 drawMapMarker(ele, null)
-                        }
+
+                        else getHospital(response.body()!!.documents)
+
                     }
-                    else {
-                        getHospital(response.body()!!.documents)
-                    }
-
+                    else
+                        Toast.makeText(context(), "반경 2km 이내 검색결과가 없습니다.", Toast.LENGTH_LONG).show()
                 }
-                else {
-
-                    Toast.makeText(context(), "반경 2km 이내 검색결과가 없습니다.", Toast.LENGTH_LONG).show()
-                }
-
-
             }
-
             override fun onFailure(call: Call<ResultSearchKeyword>, t: Throwable) {
                 // 통신 실패
                 Log.w("MainActivity", "통신 실패: ${t.message}")
             }
         })
-
         dialog!!.dismiss()
     }
 
@@ -385,7 +381,7 @@ class MapActivity : AppCompatActivity(){
             .build()
         val api = retrofitMap.create(KakaoAPI::class.java)   // 통신 인터페이스를 객체로 생성
 
-        println(keywords)
+        Log.w("SSSSSSSSSSSSSSS", "keywords: $keywords")
         var total_cnt = 0
         for (keyword in keywords) {
             println("검색 : " + keyword)
@@ -399,7 +395,7 @@ class MapActivity : AppCompatActivity(){
                 ) {
                     println("여러 진료과 검색")
                     total_cnt += response.body()!!.meta.total_count
-                    //drawMapMarker(response.body()!!) //통신 결과를 마커로 뿌려주기
+
                     if (response.body()!!.meta.total_count > 0)
                         getHospital(response.body()!!.documents)
 
@@ -423,7 +419,7 @@ class MapActivity : AppCompatActivity(){
 
     }
 
-    /*
+
     fun getEmergency() {
 
         val interceptor = HttpLoggingInterceptor()
@@ -448,21 +444,25 @@ class MapActivity : AppCompatActivity(){
 
         val emergencyAPI = retrofit_e.create(EmergencyAPI::class.java)
 
-        emergencyAPI!!.getEgybyAddress(STAGE1, STAGE2, 1, 10, EKEY).enqueue(object : Callback<Emergency> {
-            override fun onResponse(call: Call<Emergency>, response: Response<Emergency>) {
+        emergencyAPI!!.getEmergencybyAdd(STAGE1, STAGE2, EKEY).enqueue(object : Callback<Emergency1> {
+            override fun onResponse(call: Call<Emergency1>, response: Response<Emergency1>) {
                 if (response.isSuccessful) {
-                    println(response.body())
+                    for (egy in response.body()!!.body.items.item)
+                        drawMapMarker(egy)
+
                 }
+                dialog?.dismiss()
             }
 
-            override fun onFailure(call: Call<Emergency>, t: Throwable) {
+            override fun onFailure(call: Call<Emergency1>, t: Throwable) {
                 println(t.message)
                 Toast.makeText(context(), "오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
+                dialog?.dismiss()
             }
 
         })
     }
-*/
+
 
 
     fun getHospital(searchResult : List<Place>) {
@@ -485,28 +485,17 @@ class MapActivity : AppCompatActivity(){
         val hospitalAPI = retrofit_h.create(HospitalAPI::class.java)
 
         for (place in searchResult) {
-            val placeSplit = place.address_name.split(" ")
-            var Q0 = ""
-            for (split in placeSplit) {
-                if (split.contains("시")) {
-                    Q0 = split
-                    println(Q0)
-                    break
-                }
-            }
 
-            hospitalAPI!!.getHospitalInfobyName(Q0, place.place_name,1, 10, HKEY).enqueue(object : Callback<Hospital>{
+            hospitalAPI!!.getHospitalInfobyName(STAGE2, place.place_name,1, 10, HKEY).enqueue(object : Callback<Hospital>{
                 override fun onResponse(call: Call<Hospital>, response: Response<Hospital>) {
                     if (response.isSuccessful) {
-
                         drawMapMarker(place, response.body()!!.body.items.item.get(0))
-                        dialog?.dismiss()
                     }
-
+                    dialog?.dismiss()
                 }
-
                 override fun onFailure(call: Call<Hospital>, t: Throwable) {
                     println(t.message)
+                    dialog?.dismiss()
                 }
             })
         }
@@ -515,11 +504,11 @@ class MapActivity : AppCompatActivity(){
 
 
 
-    private fun drawMapMarker(place: Place, hitem: HItem2?) {
+    private fun drawMapMarker(place: Place, hitem: HItem?) {
         Log.d("MAP", "drawMapMarker: 마커 찍기")
             val marker = MapPOIItem()
 
-            if (mapKeyword.equals("약국")) {
+            if (mapKeyword.equals("Pharm")) {
                 marker.apply {
                     itemName = place.place_name
                     mapPoint = MapPoint.mapPointWithGeoCoord(place.y.toDouble(), place.x.toDouble())
@@ -529,24 +518,10 @@ class MapActivity : AppCompatActivity(){
                     customSelectedImageResourceId = R.drawable.markerpharmsele       // 클릭 시 커스텀 마커 이미지
                     isCustomImageAutoscale = false      // 커스텀 마커 이미지 크기 자동 조정
                     setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
-                    userObject = BallonInfo(place.id ,place.phone, place.road_address_name) //커스텀 오브젝트 붙여주기
-                }
-            }
-            else if (mapKeyword.equals("응급실")) {
-                marker.apply {
-                    itemName = place.place_name
-                    mapPoint = MapPoint.mapPointWithGeoCoord(place.y.toDouble(), place.x.toDouble())
-                    markerType = MapPOIItem.MarkerType.CustomImage
-                    customImageResourceId = R.drawable.markerhos
-                    selectedMarkerType = MapPOIItem.MarkerType.CustomImage  // 클릭 시 마커 모양
-                    customSelectedImageResourceId = R.drawable.markerhosele       // 클릭 시 커스텀 마커 이미지
-                    isCustomImageAutoscale = false      // 커스텀 마커 이미지 크기 자동 조정
-                    setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
-                    userObject = BallonInfo(place.id ,place.phone, place.road_address_name) //커스텀 오브젝트 붙여주기
+                    userObject = BallonInfo("Pharm", place.id ,place.phone, place.road_address_name) //커스텀 오브젝트 붙여주기
                 }
             }
             else {
-
                 if (hitem != null && isOperate(hitem)) {
                     marker.apply {
                         itemName = place.place_name
@@ -557,7 +532,7 @@ class MapActivity : AppCompatActivity(){
                         customSelectedImageResourceId = R.drawable.markerhosele       // 클릭 시 커스텀 마커 이미지
                         isCustomImageAutoscale = false      // 커스텀 마커 이미지 크기 자동 조정
                         setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
-                        userObject = BallonInfo(place.id ,place.phone, place.road_address_name) //커스텀 오브젝트 붙여주기
+                        userObject = BallonInfo("Hos",place.id ,place.phone, place.road_address_name) //커스텀 오브젝트 붙여주기
                     }
                 }
                 else {
@@ -570,17 +545,37 @@ class MapActivity : AppCompatActivity(){
                         customSelectedImageResourceId = R.drawable.markerhosele       // 클릭 시 커스텀 마커 이미지
                         isCustomImageAutoscale = false      // 커스텀 마커 이미지 크기 자동 조정
                         setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
-                        userObject = BallonInfo(place.id ,place.phone, place.road_address_name) //커스텀 오브젝트 붙여주기
+                        userObject = BallonInfo("Hos", place.id ,place.phone, place.road_address_name) //커스텀 오브젝트 붙여주기
                     }
                 }
-
-
             }
             mapView!!.addPOIItem(marker)
     }
 
+    private fun drawMapMarker(eItem: EItem1) {
+        Log.d("MAP", "drawMapMarker: 마커 찍기")
+        val marker = MapPOIItem()
 
-    private fun isOperate(hitem: HItem2) : Boolean {
+
+
+        marker.apply {
+            itemName = eItem.dutyName
+            mapPoint = MapPoint.mapPointWithGeoCoord(eItem.wgs84Lat!!.toDouble(), eItem.wgs84Lon!!.toDouble())
+            markerType = MapPOIItem.MarkerType.CustomImage
+            customImageResourceId = R.drawable.markerhos
+            selectedMarkerType = MapPOIItem.MarkerType.CustomImage  // 클릭 시 마커 모양
+            customSelectedImageResourceId = R.drawable.markerhosele       // 클릭 시 커스텀 마커 이미지
+            isCustomImageAutoscale = false      // 커스텀 마커 이미지 크기 자동 조정
+            setCustomImageAnchor(0.5f, 1.0f)    // 마커 이미지 기준점
+            userObject = BallonInfo("Egy", eItem.hpid!!, eItem.dutyTel1!!, eItem.dutyAddr!!) //커스텀 오브젝트 붙여주기
+        }
+
+        mapView!!.addPOIItem(marker)
+    }
+
+
+
+    private fun isOperate(hitem: HItem) : Boolean {
         when(currentDay) {
             "월" -> {
                 return currentTime >= hitem.dutyTime1s!! && currentTime <= hitem.dutyTime1c!!
@@ -654,9 +649,13 @@ class MapActivity : AppCompatActivity(){
         override fun onCalloutBalloonOfPOIItemTouched(mapView: MapView?, poiItem: MapPOIItem?, buttonType: MapPOIItem.CalloutBalloonButtonType?) {
             if (poiItem?.userObject != null) {
                 val ballonInfo :BallonInfo = poiItem?.userObject as BallonInfo
-                val urladdress = "https://place.map.kakao.com/" + ballonInfo.id
-                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(urladdress))
-                startActivity(context, intent, null)
+
+                if (ballonInfo.type != "Egy") {
+                    val urladdress = "https://place.map.kakao.com/" + ballonInfo.id
+                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(urladdress))
+                    startActivity(context, intent, null)
+                }
+
 
             }
         }

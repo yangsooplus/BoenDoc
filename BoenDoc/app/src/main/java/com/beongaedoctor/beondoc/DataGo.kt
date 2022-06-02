@@ -39,45 +39,11 @@ data class HBody(
 @Xml(name= "items")
 data class HItems(
     @Element(name="item")
-    val item: List<HItem2>
+    val item: List<HItem>
 )
 
 @Xml
 data class HItem(
-    @PropertyElement(name = "rnum")
-    var rnum : Int?,
-    @PropertyElement(name = "distance")
-    var distance : Double?,
-    @PropertyElement(name = "dutyAddr")
-    var dutyAddr : String?,
-    @PropertyElement(name = "dutyDiv")
-    var dutyDiv : String?,
-    @PropertyElement(name = "dutyDivName")
-    var dutyDivName : String?,
-    @PropertyElement(name = "dutyEmcls")
-    var dutyEmcls : String?,
-    @PropertyElement(name = "dutyLvkl")
-    var dutyLvkl : Int?,
-    @PropertyElement(name = "dutyName")
-    var dutyName : String?,
-    @PropertyElement(name = "dutyTel1")
-    var dutyTel1 : String?,
-    @PropertyElement(name = "endTime")
-    var endTime : Int?,
-    @PropertyElement(name = "hpid")
-    var hpid : String?,
-    @PropertyElement(name = "latitude")
-    var latitude : Double?,
-    @PropertyElement(name = "longitude")
-    var longitude : Double?,
-    @PropertyElement(name = "startTime")
-    var startTime : Int?,
-    @PropertyElement(name = "cnt")
-    var cnt : Int?
-)
-
-@Xml
-data class HItem2(
     @PropertyElement(name = "rnum")
     var rnum : Int?,
     @PropertyElement(name = "dutyAddr")
@@ -169,10 +135,11 @@ interface HospitalAPI {
 
 
 
+
 @Xml(name = "response")
-data class Emergency(
+data class Emergency1(
     @Element(name = "body")
-    val body : EBody,
+    val body : EBody1,
     @Element(name = "header")
     val header: EHeader
 )
@@ -186,9 +153,9 @@ data class EHeader(
 )
 
 @Xml(name = "body")
-data class EBody(
+data class EBody1(
     @Element(name="items")
-    val items: EItems,
+    val items: EItems1,
     @PropertyElement(name="numOfRows")
     val numOfRows: Int,
     @PropertyElement(name="pageNo")
@@ -199,85 +166,108 @@ data class EBody(
 
 
 @Xml(name= "items")
-data class EItems(
+data class EItems1(
     @Element(name="item")
-    val item: List<EItem>
+    val item: List<EItem1>
 )
 
 @Xml
-data class EItem(
-    @PropertyElement(name = "rnum")
-    var rnum : Int?,
-    @PropertyElement(name = "hpid")
-    var hpid : String?,
-    @PropertyElement(name = "phpid")
-    var phpid : String?,
-    @PropertyElement(name = "hvidate")
-    var hvidate : String?,
-    @PropertyElement(name = "hvdnm")
-    var hvdnm : String?,
-    @PropertyElement(name = "hvctayn")
-    var hvctayn : String?,
-    @PropertyElement(name = "hvmriayn")
-    var hvmriayn : String?,
-    @PropertyElement(name = "hvangioayn")
-    var hvangioayn : String?,
-    @PropertyElement(name = "hvventiayn")
-    var hvventiayn : String?,
-    @PropertyElement(name = "hvamyn")
-    var hvamyn : String?,
-    @PropertyElement(name = "hv1")
-    var hv1 : String?,
-    @PropertyElement(name = "hv2")
-    var hv2 : String?,
-    @PropertyElement(name = "hv3")
-    var hv3 : String?,
-    @PropertyElement(name = "hv4")
-    var hv4 : String?,
-    @PropertyElement(name = "hv5")
-    var hv5 : String?,
-    @PropertyElement(name = "hv6")
-    var hv6 : String?,
-    @PropertyElement(name = "hv7")
-    var hv7 : String?,
-    @PropertyElement(name = "hv8")
-    var hv8 : String?,
-    @PropertyElement(name = "hv9")
-    var hv9 : String?,
-    @PropertyElement(name = "hv10")
-    var hv10 : String?,
-    @PropertyElement(name = "hv11")
-    var hv11 : String?,
-    @PropertyElement(name = "hv12")
-    var hv12 : String?,
-    @PropertyElement(name = "hvec")
-    var hvec : Int?,
-    @PropertyElement(name = "hvoc")
-    var hvoc : Int?,
-    @PropertyElement(name = "hvcc")
-    var hvcc : Int?,
-    @PropertyElement(name = "hvncc")
-    var hvncc : Int?,
-    @PropertyElement(name = "hvccc")
-    var hvccc : Int?,
-    @PropertyElement(name = "hvicc")
-    var hvicc : Int?,
-    @PropertyElement(name = "hvgc")
-    var hvgc : Int?,
-    @PropertyElement(name = "dutyName")
-    var dutyName : String?,
-    @PropertyElement(name = "dutytel3")
-    var dutytel3 : String?
+data class EItem1(
+    @PropertyElement(name = "rnum") var rnum : Int?,
+    @PropertyElement(name = "hpid") var hpid : String?,
+    @PropertyElement(name = "phpid") var phpid : String?,
+    @PropertyElement(name = "dutyEmcls") var dutyEmcls : String?,
+    @PropertyElement(name = "dutyEmclsName") var dutyEmclsName : String?,
+    @PropertyElement(name = "dutyAddr") var dutyAddr : String?,
+    @PropertyElement(name = "dutyName") var dutyName : String?,
+    @PropertyElement(name = "dutyTel1") var dutyTel1 : String?,
+    @PropertyElement(name = "dutyTel3") var dutyTel3 : String?,
+    @PropertyElement(name = "wgs84Lon") var wgs84Lon : String?,
+    @PropertyElement(name = "wgs84Lat") var wgs84Lat : String?
+)
 
+
+@Xml(name = "response")
+data class Emergency2(
+    @Element(name = "body")
+    val body : EBody2,
+    @Element(name = "header")
+    val header: EHeader
+)
+
+
+@Xml(name = "body")
+data class EBody2(
+    @Element(name="items")
+    val items: EItems2,
+    @PropertyElement(name="numOfRows")
+    val numOfRows: Int,
+    @PropertyElement(name="pageNo")
+    val pageNo: Int,
+    @PropertyElement(name="totalCount")
+    val totalCount: Int
+)
+
+
+@Xml(name= "items")
+data class EItems2(
+    @Element(name="item")
+    val item: List<EItem2>
+)
+
+
+@Xml
+data class EItem2(
+    @PropertyElement(name = "hpid") var hpid : String?,
+    @PropertyElement(name = "dutyName") var dutyName : String?,
+
+
+
+    @PropertyElement(name = "postCdn1") var postCdn1 : String?,
+    @PropertyElement(name = "postCdn2") var postCdn2 : String?,
+    @PropertyElement(name = "dutyAddr") var dutyAddr : String?,
+    @PropertyElement(name = "dutyTel1") var dutyTel1 : String?,
+    @PropertyElement(name = "dutyTel3") var dutyTel3 : String?,
+
+    @PropertyElement(name = "dutyHayn") var dutyHayn : Int?,
+    @PropertyElement(name = "dutyEryn") var dutyEryn : Int?,
+
+    @PropertyElement(name = "MKioskTy25") var MKioskTy25 : String?,
+    @PropertyElement(name = "MKioskTy1") var MKioskTy1 : String?,
+    @PropertyElement(name = "MKioskTy2") var MKioskTy2 : String?,
+    @PropertyElement(name = "MKioskTy3") var MKioskTy3 : String?,
+    @PropertyElement(name = "MKioskTy4") var MKioskTy4 : String?,
+    @PropertyElement(name = "MKioskTy5") var MKioskTy5 : String?,
+    @PropertyElement(name = "MKioskTy6") var MKioskTy6 : String?,
+    @PropertyElement(name = "MKioskTy7") var MKioskTy7 : String?,
+    @PropertyElement(name = "MKioskTy8") var MKioskTy8 : String?,
+    @PropertyElement(name = "MKioskTy9") var MKioskTy9 : String?,
+    @PropertyElement(name = "MKioskTy10") var MKioskTy10 : String?,
+    @PropertyElement(name = "MKioskTy11") var MKioskTy11 : String?,
+    @PropertyElement(name = "wgs84Lon") var wgs84Lon : Double?,
+    @PropertyElement(name = "wgs84Lat") var wgs84Lat : Double?,
+    @PropertyElement(name = "dgidIdName") var dgidIdName : String?,
+    @PropertyElement(name = "hpbdn") var hpbdn : String?,
+    @PropertyElement(name = "hpccuyn") var hpccuyn : String?,
+    @PropertyElement(name = "hpcuyn") var hpcuyn : String?,
+    @PropertyElement(name = "hperyn") var hperyn : String?,
+    @PropertyElement(name = "hpgryn") var hpgryn : String?,
+    @PropertyElement(name = "hpicuyn") var hpicuyn : String?,
+    @PropertyElement(name = "hpnicuyn") var hpnicuyn : String?,
+    @PropertyElement(name = "hpopyn") var hpopyn : String?
 )
 
 interface EmergencyAPI {
-    @GET("getEmrrmRltmUsefulSckbdInfoInqire")
-    fun getEgybyAddress(
-        @Query("STAGE1") STAGE1 : String,
-        @Query("STAGE2") STAGE2 : String,
-        @Query("pageNo") pageNo: Int,
-        @Query("numOfRows") numOfRows: Int,
+    @GET("getEgytListInfoInqire")
+    fun getEmergencybyAdd(
+        @Query("Q0") Q0 : String,
+        @Query("Q1") Q1 : String,
         @Query("ServiceKey") ServiceKey : String
-    ) : Call<Emergency>
+    ) : Call<Emergency1>
+
+    @GET("getEgytBassInfoInqire")
+    fun getEmergencybyID(
+        @Query("HPID") HPID : String,
+        @Query("ServiceKey") ServiceKey : String
+    ) : Call<Emergency2>
 }
