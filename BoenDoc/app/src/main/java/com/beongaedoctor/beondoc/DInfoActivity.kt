@@ -51,7 +51,7 @@ class DInfoActivity : AppCompatActivity() {
 
         binding.gotoPharmacy.setOnClickListener {
             val intent = Intent(this, MapActivity::class.java)
-            intent.putExtra("mapKeyword", "약국")
+            intent.putExtra("mapKeyword", "Pharm")
             startActivity(intent)
         }
     }
@@ -82,6 +82,7 @@ class DInfoActivity : AppCompatActivity() {
 
             override fun onFailure(call: Call<Disease>, t: Throwable) {
                 println(t.message)
+
             }
 
         })

@@ -147,7 +147,8 @@ class SignInActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-
+                dialog!!.dismiss()
+                println(t.message)
                 Toast.makeText(SIAContext, "로그인 오류", Toast.LENGTH_LONG).show()
 
             }

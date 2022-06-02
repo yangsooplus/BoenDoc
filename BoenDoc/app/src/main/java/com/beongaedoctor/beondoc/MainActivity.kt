@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.egyBtn.setOnClickListener {
             val intent = Intent(this, MapActivity::class.java)
-            intent.putExtra("mapKeyword", "응급실")
+            intent.putExtra("mapKeyword", "Egy")
             startActivity(intent)
         }
     }
