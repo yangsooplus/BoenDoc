@@ -15,6 +15,7 @@ import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -683,12 +684,38 @@ class MapActivity : AppCompatActivity(){
                     startActivity(context, intent, null)
                 }
                 else {
-                    slidePanel.findViewById<TextView>(R.id.testText).text = ballonInfo.eItem2!!.dutyName
+                    slidePanel.findViewById<TextView>(R.id.dutyName).text = ballonInfo.eItem2!!.dutyName
+                    slidePanel.findViewById<TextView>(R.id.dutyAddr).text = ballonInfo.eItem2!!.dutyAddr
+                    slidePanel.findViewById<TextView>(R.id.dutyTel1).text = ballonInfo.eItem2!!.dutyTel1
+                    slidePanel.findViewById<TextView>(R.id.dutyTel3).text = ballonInfo.eItem2!!.dutyTel3
+                    slidePanel.findViewById<TextView>(R.id.dgidIdName).text = ballonInfo.eItem2!!.dgidIdName!!.replace(",", ", ")
+                    slidePanel.findViewById<TextView>(R.id.hpbdn).text = ballonInfo.eItem2!!.hpbdn
+                    slidePanel.findViewById<TextView>(R.id.hpccuyn).text = ballonInfo.eItem2!!.hpccuyn
+                    slidePanel.findViewById<TextView>(R.id.hpcuyn).text = ballonInfo.eItem2!!.hpcuyn
+                    slidePanel.findViewById<TextView>(R.id.hperyn).text = ballonInfo.eItem2!!.hperyn
+                    slidePanel.findViewById<TextView>(R.id.hpgryn).text = ballonInfo.eItem2!!.hpgryn
+                    slidePanel.findViewById<TextView>(R.id.hpicuyn).text = ballonInfo.eItem2!!.hpicuyn
+                    slidePanel.findViewById<TextView>(R.id.hpnicuyn).text = ballonInfo.eItem2!!.hpnicuyn
+                    slidePanel.findViewById<TextView>(R.id.hpopyn).text = ballonInfo.eItem2!!.hpopyn
+                    slidePanel.findViewById<TextView>(R.id.MKlist).text = combineMKList(ballonInfo.eItem2!!)
+
+                    if (ballonInfo.eItem2!!.dutyHayn == 1) slidePanel.findViewById<TextView>(R.id.dutyHayn).text = "가능"
+                    else slidePanel.findViewById<TextView>(R.id.dutyHayn).text = "불가"
+
+                    if (ballonInfo.eItem2!!.dutyEryn == 1) slidePanel.findViewById<TextView>(R.id.dutyEryn).text = "가능"
+                    else slidePanel.findViewById<TextView>(R.id.dutyEryn).text = "불가"
+
 
                     if (slidePanel.panelState == SlidingUpPanelLayout.PanelState.COLLAPSED)
                         slidePanel.panelState = SlidingUpPanelLayout.PanelState.ANCHORED
                     else if (slidePanel.panelState == SlidingUpPanelLayout.PanelState.EXPANDED)
                         slidePanel.panelState = SlidingUpPanelLayout.PanelState.COLLAPSED
+
+                    slidePanel.findViewById<ImageView>(R.id.callbtn).setOnClickListener {
+                        val phonenum = Uri.parse("tel:${ballonInfo.eItem2!!.dutyTel1}")
+                        var intent = Intent(Intent.ACTION_VIEW, phonenum)
+                        startActivity(context, intent, null)
+                    }
                 }
 
             }
@@ -698,6 +725,24 @@ class MapActivity : AppCompatActivity(){
 
         }
 
+        private fun combineMKList(eItem2: EItem2) : String {
+            var result = ""
+
+            if (eItem2.MKioskTy25 == "Y") result += "응급실, "
+            if (eItem2.MKioskTy1 == "Y") result += "뇌출혈수술, "
+            if (eItem2.MKioskTy2 == "Y") result += "뇌경색의재관류, "
+            if (eItem2.MKioskTy3 == "Y") result += "심근경색의재관류, "
+            if (eItem2.MKioskTy4 == "Y") result += "복부손상의수술, "
+            if (eItem2.MKioskTy5 == "Y") result += "사지접합의수술, "
+            if (eItem2.MKioskTy6 == "Y") result += "응급내시경, "
+            if (eItem2.MKioskTy7 == "Y") result += "응급투석, "
+            if (eItem2.MKioskTy8 == "Y") result += "조산산모, "
+            if (eItem2.MKioskTy9 == "Y") result += "정신질환자, "
+            if (eItem2.MKioskTy10 == "Y") result += "신생아, "
+            if (eItem2.MKioskTy11 == "Y") result += "중증화상"
+
+            return result
+        }
 
     }
 

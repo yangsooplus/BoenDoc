@@ -133,9 +133,6 @@
     </FrameLayout>
 
 
-
-
-
     <Button
         android:id="@+id/gotoMain"
         android:layout_width="match_parent"
@@ -149,22 +146,384 @@
 
     </LinearLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/slidelayout"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="@color/lightgray"
-        >
 
-        <TextView
-            android:id="@+id/testText"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/slidelayout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="test/"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:paddingHorizontal="40dp"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:gravity="center"
+            >
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="40dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/dutyName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="병원이름"
+                    android:fontFamily="@font/spoqahansansneobold"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    />
+
+                <ImageView
+                    android:id="@+id/callbtn"
+                    android:layout_marginLeft="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/call"/>
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/dutyTel1"
+                android:layout_marginTop="5dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="대표전화: 00-0000-0000"
+                android:fontFamily="@font/spoqahansansneomedium"
+                android:textSize="14sp"
+                />
+
+            <TextView
+                android:id="@+id/dutyTel3"
+                android:layout_marginTop="2dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="응급실전화: 00-0000-0000"
+                android:fontFamily="@font/spoqahansansneomedium"
+                android:textSize="14sp"
+                />
+
+            <TextView
+                android:id="@+id/dutyAddr"
+                android:layout_marginTop="2dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="서울특별시 광진구 어디어디 세종대학교"
+                android:fontFamily="@font/spoqahansansneomedium"
+                android:textSize="14sp"
+                />
+
+            <View
+                android:layout_marginTop="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/skyblue"
+                />
+
+            <LinearLayout
+                android:layout_marginTop="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="입원실 가용여부: "
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/spoqahansansneomedium"
+                    android:textSize="14sp"
+                    />
+
+                <TextView
+                    android:id="@+id/dutyHayn"
+                    android:layout_marginStart="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:fontFamily="@font/spoqahansansneomedium"
+                    android:textSize="14sp"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="2dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="응급실 가용여부: "
+                    android:textColor="@color/black"
+                    android:fontFamily="@font/spoqahansansneomedium"
+                    android:textSize="14sp"
+                    />
+
+                <TextView
+                    android:id="@+id/dutyEryn"
+                    android:layout_marginStart="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=""
+                    android:fontFamily="@font/spoqahansansneomedium"
+                    android:textSize="14sp"
+                    />
+            </LinearLayout>
+
+            <View
+                android:layout_marginTop="12dp"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/skyblue"
+                />
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="진료과목"
+                android:textColor="@color/black"
+                android:fontFamily="@font/spoqahansansneomedium"
+                android:textSize="14sp"
+                />
+
+            <TextView
+                android:id="@+id/dgidIdName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text=""
+                android:textColor="@color/black"
+                android:fontFamily="@font/spoqahansansneolight"
+                android:textSize="14sp"
+                android:background="@drawable/semiroundbtng"
+                />
+
+            <TextView
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="특수치료 가능항목"
+                android:textColor="@color/black"
+                android:fontFamily="@font/spoqahansansneomedium"
+                android:textSize="14sp"
+                />
+
+            <TextView
+                android:id="@+id/MKlist"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:text="더미텍스트, 더미텍스트, 더미텍스트, 더미텍스트, 더미텍스트, 더미텍스트, 더미텍스트, 더미텍스트, "
+                android:textColor="@color/black"
+                android:fontFamily="@font/spoqahansansneolight"
+                android:textSize="14sp"
+                android:background="@drawable/semiroundbtng"
+                />
+
+            <View
+                android:layout_marginTop="12dp"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/skyblue"
+                />
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:stretchColumns="*">
+
+                <TableRow>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="병상 수"
+                        android:textColor="@color/black"
+                        android:fontFamily="@font/spoqahansansneomedium"
+                        android:textSize="14sp"
+                        android:background="@drawable/tableborder"
+                        android:gravity="center"
+                        />
+                    <TextView
+                        android:id="@+id/hpbdn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="@color/black"
+                        android:fontFamily="@font/spoqahansansneolight"
+                        android:textSize="14sp"
+                        android:background="@drawable/tableborder"
+                        android:gravity="center"
+                        />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="응급실"
+                        android:textColor="@color/black"
+                        android:fontFamily="@font/spoqahansansneomedium"
+                        android:textSize="14sp"
+                        android:background="@drawable/tableborder"
+                        android:gravity="center"
+                        />
+                    <TextView
+                        android:id="@+id/hperyn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="@color/black"
+                        android:fontFamily="@font/spoqahansansneolight"
+                        android:textSize="14sp"
+                        android:background="@drawable/tableborder"
+                        android:gravity="center"
+                        />
+
+                </TableRow>
+                <TableRow>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="흉부중환자실"
+                        android:textColor="@color/black"
+                        android:fontFamily="@font/spoqahansansneomedium"
+                        android:textSize="14sp"
+                        android:background="@drawable/tableborder"
+                        android:gravity="center"
+                        />
+                    <TextView
+                        android:id="@+id/hpccuyn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="@color/black"
+                        android:fontFamily="@font/spoqahansansneolight"
+                        android:textSize="14sp"
+                        android:background="@drawable/tableborder"
+                        android:gravity="center"
+                        />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="신경중환자실"
+                        android:textColor="@color/black"
+                        android:fontFamily="@font/spoqahansansneomedium"
+                        android:textSize="14sp"
+                        android:background="@drawable/tableborder"
+                        android:gravity="center"
+                        />
+                    <TextView
+                        android:id="@+id/hpcuyn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="@color/black"
+                        android:fontFamily="@font/spoqahansansneolight"
+                        android:textSize="14sp"
+                        android:background="@drawable/tableborder"
+                        android:gravity="center"
+                        />
+
+                </TableRow>
+                <TableRow>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="신생아중환자실"
+                        android:textColor="@color/black"
+                        android:fontFamily="@font/spoqahansansneomedium"
+                        android:textSize="14sp"
+                        android:background="@drawable/tableborder"
+                        android:gravity="center"
+                        />
+                    <TextView
+                        android:id="@+id/hpnicuyn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="@color/black"
+                        android:fontFamily="@font/spoqahansansneolight"
+                        android:textSize="14sp"
+                        android:background="@drawable/tableborder"
+                        android:gravity="center"
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="일반중환자실"
+                        android:textColor="@color/black"
+                        android:fontFamily="@font/spoqahansansneomedium"
+                        android:textSize="14sp"
+                        android:background="@drawable/tableborder"
+                        android:gravity="center"
+                        />
+                    <TextView
+                        android:id="@+id/hpicuyn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="@color/black"
+                        android:fontFamily="@font/spoqahansansneolight"
+                        android:textSize="14sp"
+                        android:background="@drawable/tableborder"
+                        android:gravity="center"
+                        />
+                </TableRow>
+                <TableRow>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="입원실"
+                        android:textColor="@color/black"
+                        android:fontFamily="@font/spoqahansansneomedium"
+                        android:textSize="14sp"
+                        android:background="@drawable/tableborder"
+                        android:gravity="center"
+                        />
+                    <TextView
+                        android:id="@+id/hpgryn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="@color/black"
+                        android:fontFamily="@font/spoqahansansneolight"
+                        android:textSize="14sp"
+                        android:background="@drawable/tableborder"
+                        android:gravity="center"
+                        />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="수술실"
+                        android:textColor="@color/black"
+                        android:fontFamily="@font/spoqahansansneomedium"
+                        android:textSize="14sp"
+                        android:background="@drawable/tableborder"
+                        android:gravity="center"
+                        />
+                    <TextView
+                        android:id="@+id/hpopyn"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="@color/black"
+                        android:fontFamily="@font/spoqahansansneolight"
+                        android:textSize="14sp"
+                        android:background="@drawable/tableborder"
+                        android:gravity="center"
+                        />
+                </TableRow>
+            </TableLayout>
+
+            <View
+                android:layout_marginTop="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/white"
+                />
+
+        </LinearLayout>
+
 
 </com.sothree.slidinguppanel.SlidingUpPanelLayout>
