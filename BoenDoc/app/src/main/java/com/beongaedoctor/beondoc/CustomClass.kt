@@ -265,11 +265,17 @@ interface DiseaseService{
 }
 
 data class ChatResponse(
-    @SerializedName("test")
-    var test : List<String>
+    @SerializedName("string")
+    var string : String
+)
+
+data class ChatResult(
+    @SerializedName("diseaseName1")
+    var diseaseName1 : String
+
 )
 
 interface ChatResponseService{
-    @POST("test")
+    @POST("api/start")
     fun sendResponse2Model(@Body test: ChatResponse) : Call<List<String>>
 }

@@ -33,9 +33,9 @@ class DResultActivity : AppCompatActivity() {
     private var diseaseID2 : Long? = null
     private var diseaseID3 : Long? = null
 
-    private var diseaseProb1 : Double? = null
-    private var diseaseProb2 : Double? = null
-    private var diseaseProb3 : Double? = null
+    private var diseaseProb1 : String? = null
+    private var diseaseProb2 : String? = null
+    private var diseaseProb3 : String? = null
 
     private var probability : String? = null
 
@@ -57,26 +57,15 @@ class DResultActivity : AppCompatActivity() {
             memberInfo = App.prefs.getMember("memberInfo", "")
 
         if (fromChat) {
-
-            //모델 업데이트 전까지는 동일한거 3개
-            //diseaseName1 = "근근막 통증 증후군"
-            //diseaseName2 = diseaseName1
-            //diseaseName3 = diseaseName1
-
             diseaseName1 = intent.getStringExtra("diseaseName1")
-            diseaseName2 = diseaseName1
-            diseaseName3 = diseaseName1
+            diseaseName2 = intent.getStringExtra("diseaseName2")
+            diseaseName3 = intent.getStringExtra("diseaseName3")
 
-            //diseaseName2 = intent.getStringExtra("diseaseName2")
-            //diseaseName3 = intent.getStringExtra("diseaseName3")
+            diseaseProb1 = intent.getStringExtra("diseaseProb1")
+            diseaseProb2 = intent.getStringExtra("diseaseProb2")
+            diseaseProb3 = intent.getStringExtra("diseaseProb3")
 
-            probability = "90.00 70.15 60.71"
-            //probability = intent.getStringExtra("probability")
-            val probs = probability!!.split(' ')
-
-            diseaseProb1 = probs[0].toDouble()
-            diseaseProb2 = probs[1].toDouble()
-            diseaseProb3 = probs[2].toDouble()
+            probability = "$diseaseProb1 $diseaseProb2 $diseaseProb3"
 
             //Flask에서 가져온거를 Spring에 넣기
             if (!App.noMember)
@@ -144,15 +133,15 @@ class DResultActivity : AppCompatActivity() {
                     println(dList)
                     diseaseID1 = dList[0].diseaseId
                     diseaseName1 = dList[0].diseaseName
-                    diseaseProb1 = dList[0].percent.toDouble()
+                    diseaseProb1 = dList[0].percent
 
                     diseaseID2 = dList[1].diseaseId
                     diseaseName2 =dList[1].diseaseName
-                    diseaseProb2 = dList[1].percent.toDouble()
+                    diseaseProb2 = dList[1].percent
 
                     diseaseID3 = dList[2].diseaseId
                     diseaseName3 =dList[2].diseaseName
-                    diseaseProb3 = dList[2].percent.toDouble()
+                    diseaseProb3 = dList[2].percent
 
                     // UI 셋팅
                     setUI()
@@ -167,7 +156,7 @@ class DResultActivity : AppCompatActivity() {
     }
 
     private fun setUI() {
-        binding.predD1Text.text = "$diseaseName2  $diseaseProb1%"
+        binding.predD1Text.text = "$diseaseName1  $diseaseProb1%"
         binding.predD2Text.text = "$diseaseName2  $diseaseProb2%"
         binding.predD3Text.text = "$diseaseName3  $diseaseProb3%"
     }

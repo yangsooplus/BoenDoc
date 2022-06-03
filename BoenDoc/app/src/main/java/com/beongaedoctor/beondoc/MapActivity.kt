@@ -41,6 +41,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import java.lang.Boolean.FALSE
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -219,7 +220,10 @@ class MapActivity : AppCompatActivity(){
                 "Pharm" -> searchKeyword("약국", x!!, y!!)
                 "Egy" -> getEmergency()//응급실
                 else -> {
-                    if (mapKeyword.contains(',')) //진료과 여러개가 추천된 경우 {
+                    if (mapKeyword.contains("내과")) {
+                        searchKeyword("내과", x!!, y!!, 1000)
+                    }
+                    else if (mapKeyword.contains(',')) //진료과 여러개가 추천된 경우 {
                     {
                         searchKeyword(splitMapKeyword(mapKeyword), x!!, y!!)
                     }
@@ -342,7 +346,7 @@ class MapActivity : AppCompatActivity(){
 
 
     //https://mechacat.tistory.com/15?category=449793
-    private fun searchKeyword(keyword: String, x:String, y:String) {
+    private fun searchKeyword(keyword: String, x:String, y:String, radius: Int=2000) {
         Log.d("MAP", "searchKeyword: 검색")
         val retrofitMap = Retrofit.Builder()   // Retrofit 구성
             .baseUrl(BASE_URL)
@@ -350,7 +354,7 @@ class MapActivity : AppCompatActivity(){
             .build()
         val api = retrofitMap.create(KakaoAPI::class.java)   // 통신 인터페이스를 객체로 생성
 
-        var radius = 2000
+
 
         val call = api.getSearchKeyword(API_KEY, keyword, x, y, radius)   // 검색 조건 입력
 
@@ -364,7 +368,7 @@ class MapActivity : AppCompatActivity(){
 
                 if (response.isSuccessful) {
                     if (response.body()!!.meta.total_count > 0) {
-                        if (mapKeyword == "약국")
+                        if (mapKeyword == "Pharm")
                             for (ele in response.body()!!.documents)
                                 drawMapMarker(ele, null)
 
@@ -422,10 +426,13 @@ class MapActivity : AppCompatActivity(){
 
 
 
-        if (total_cnt <= 0) {
-            Toast.makeText(context(), "반경 2km 이내 검색결과가 없습니다.", Toast.LENGTH_LONG).show()
-            dialog!!.dismiss()
-        }
+
+        Handler().postDelayed({
+            if (total_cnt <= 0) {
+                Toast.makeText(context(), "반경 2km 이내 검색결과가 없습니다.", Toast.LENGTH_LONG).show()
+                dialog!!.dismiss()
+            }
+        }, 5000)
 
 
     }
@@ -455,15 +462,20 @@ class MapActivity : AppCompatActivity(){
 
         val emergencyAPI = retrofit_e.create(EmergencyAPI::class.java)
 
+
+
         emergencyAPI!!.getEmergencybyAdd(STAGE1, STAGE2, EKEY).enqueue(object : Callback<Emergency1> {
             override fun onResponse(call: Call<Emergency1>, response: Response<Emergency1>) {
                 if (response.isSuccessful) {
+                    println(response.body())
+
                     for (egy in response.body()!!.body.items.item) {
                         emergencyAPI!!.getEmergencybyID(egy.hpid!!, EKEY).enqueue(object : Callback<Emergency2> {
                             override fun onResponse(
                                 call: Call<Emergency2>,
                                 response: Response<Emergency2>
                             ) {
+                                println(response.body())
                                 if (response.isSuccessful) {
                                     drawMapMarker(egy, response.body()?.body?.items?.item?.get(0))
                                 }
@@ -495,6 +507,8 @@ class MapActivity : AppCompatActivity(){
         Log.d("MAP", "getHospital: 병원 정보 api")
         // timeout setting 해주기
         val okHttpClient = OkHttpClient().newBuilder()
+            .followRedirects(FALSE)
+            .followSslRedirects(FALSE)
             .connectTimeout(30, TimeUnit.SECONDS)
             .readTimeout(30, TimeUnit.SECONDS)
             .writeTimeout(30, TimeUnit.SECONDS)
@@ -510,8 +524,12 @@ class MapActivity : AppCompatActivity(){
 
         val hospitalAPI = retrofit_h.create(HospitalAPI::class.java)
 
-        for (place in searchResult) {
 
+        var cnt = 0
+
+        for (place in searchResult) {
+            cnt++
+            if (cnt > 20) break
             hospitalAPI!!.getHospitalInfobyName(STAGE2, place.place_name,1, 10, HKEY).enqueue(object : Callback<Hospital>{
                 override fun onResponse(call: Call<Hospital>, response: Response<Hospital>) {
                     if (response.isSuccessful) {

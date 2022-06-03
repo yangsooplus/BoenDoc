@@ -175,6 +175,7 @@ class BasicExamActivity : AppCompatActivity() {
         if (et.text.isNotBlank()) femininityText += " 생존 ${et.text}명,"
         member.femininity = femininityText
 
+        /*
         if (member.drug.equals(""))
             member.drug = "없음"
 
@@ -189,7 +190,7 @@ class BasicExamActivity : AppCompatActivity() {
 
         if (member.femininity.equals(""))
             member.femininity = "없음"
-
+*/
     }
 
 

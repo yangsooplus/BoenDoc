@@ -57,6 +57,7 @@ class RecordActivity : AppCompatActivity() {
                         diaList.add(dia)
                     }
 
+                    diaList.reverse()
                     dAdpater.notifyDataSetChanged()
 
                     //받아온 내역 리스트를 RecyclerView에 연결해서 표시

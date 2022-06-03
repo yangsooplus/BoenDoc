@@ -22,6 +22,8 @@ class DInfoActivity : AppCompatActivity() {
 
     var mapKeyword : String = ""
 
+    lateinit var dialog : LoadingDialog
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         DIBinding = ActivityDinfoBinding.inflate(layoutInflater)
@@ -33,6 +35,9 @@ class DInfoActivity : AppCompatActivity() {
 
         val dn = intent.getStringExtra("diseaseName")
         val did = intent.getLongExtra("diseaseID", -1L)
+
+        dialog = LoadingDialog(this)
+        dialog.show()
 
         if (did == -1L)
             getDiseaseInfo(dn!!)
@@ -59,12 +64,18 @@ class DInfoActivity : AppCompatActivity() {
     private fun getDiseaseInfo(searchFlag : String) {
         diseaseService.getDiseasebyString(DN(searchFlag)).enqueue(object : Callback<Disease> {
             override fun onResponse(call: Call<Disease>, response: Response<Disease>) {
-                if (response.isSuccessful)
+                if (response.isSuccessful) {
+                    mapKeyword = response.body()!!.department
                     setUI(response.body()!!)
+                }
+
+
+                dialog.dismiss()
             }
 
             override fun onFailure(call: Call<Disease>, t: Throwable) {
                 println(t.message)
+                dialog.dismiss()
             }
 
         })
@@ -77,12 +88,12 @@ class DInfoActivity : AppCompatActivity() {
                     mapKeyword = response.body()!!.department
                     setUI(response.body()!!)
                 }
-
+                dialog.dismiss()
             }
 
             override fun onFailure(call: Call<Disease>, t: Throwable) {
                 println(t.message)
-
+                dialog.dismiss()
             }
 
         })

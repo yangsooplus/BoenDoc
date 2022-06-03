@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.beongaedoctor.beondoc.databinding.ActivityChatBinding
 import com.beongaedoctor.beondoc.databinding.ActivitySignInBinding
@@ -29,8 +30,10 @@ class ChatActivity : AppCompatActivity() {
 
     lateinit var chatItemTestList : ArrayList<ChatItem>
     private val MemberchatItemList = arrayListOf(
-        ChatItem(ChatItem.TYPE_LEFT, "언제부터 증상이 나타났나요?"),
+        ChatItem(ChatItem.TYPE_LEFT, "다른 증상도 같이 나타난다면 알려주세요."),
         ChatItem(ChatItem.TYPE_LEFT, "증상이 있는 부위가 어디인가요?"),
+        ChatItem(ChatItem.TYPE_LEFT, "증상의 특징을 더 자세히 설명해주세요."),
+        ChatItem(ChatItem.TYPE_LEFT, "언제부터 증상이 나타났나요?"),
         ChatItem(ChatItem.TYPE_LEFT, "증상이 얼마나 지속되었나요?"),
         ChatItem(ChatItem.TYPE_LEFT, "증상의 양상이 어떤가요?"),
         ChatItem(ChatItem.TYPE_LEFT, "이전에도 같은 증상을 경험한 적이 있나요? 혹은 처음 겪는 증상인가요?"),
@@ -38,8 +41,10 @@ class ChatActivity : AppCompatActivity() {
     )
 
     private val NoMemberchatItemList = arrayListOf(
-        ChatItem(ChatItem.TYPE_LEFT, "언제부터 증상이 나타났나요?"),
+        ChatItem(ChatItem.TYPE_LEFT, "다른 증상도 같이 나타난다면 알려주세요."),
         ChatItem(ChatItem.TYPE_LEFT, "증상이 있는 부위가 어디인가요?"),
+        ChatItem(ChatItem.TYPE_LEFT, "증상의 특징을 더 자세히 설명해주세요."),
+        ChatItem(ChatItem.TYPE_LEFT, "언제부터 증상이 나타났나요?"),
         ChatItem(ChatItem.TYPE_LEFT, "증상이 얼마나 지속되었나요?"),
         ChatItem(ChatItem.TYPE_LEFT, "증상의 양상이 어떤가요?"),
         ChatItem(ChatItem.TYPE_LEFT, "이전에도 같은 증상을 경험한 적이 있나요? 혹은 처음 겪는 증상인가요?"),
@@ -48,9 +53,8 @@ class ChatActivity : AppCompatActivity() {
         ChatItem(ChatItem.TYPE_LEFT, "술, 담배, 커피, 직업 등 사회력을 알려주세요."),
         ChatItem(ChatItem.TYPE_LEFT, "가족력이 있다면 얘기해주세요"),
         ChatItem(ChatItem.TYPE_LEFT, "과거 앓았던 질병이나 수술 경험이 있다면 알려주세요."),
-        ChatItem(ChatItem.TYPE_LEFT, "개수 맞추기용"),
-        ChatItem(ChatItem.TYPE_LEFT, "개수 맞추기용")
-        //ChatItem(ChatItem.TYPE_LEFT, "여성분이실 경우 임신, 유산, ") 일단 미사용
+        ChatItem(ChatItem.TYPE_LEFT, "신장을 입력해주세요. 숫자만 입력해주세요. ex)170"),
+        ChatItem(ChatItem.TYPE_LEFT, "체중을 입력해주세요. 숫자만 입력해주세요. ex)70")
     )
 
     private var chatResposeList = arrayListOf<String>()
@@ -78,8 +82,10 @@ class ChatActivity : AppCompatActivity() {
 
         chatItemList.add(ChatItem(ChatItem.TYPE_LEFT, "안녕하세요 번개닥터입니다."))
         (binding.chatRecyclerView.adapter as ChatAdapter).notifyItemInserted(0) //메세지 넣고 어댑터에 갱신 신호
-        chatItemList.add(ChatItem(ChatItem.TYPE_LEFT, "현재 겪고 계신 증상이 어떤가요? 발생하는 모든 증상과 특성을 자세히 설명해주세요."))
+        chatItemList.add(ChatItem(ChatItem.TYPE_LEFT, "질문에 해당사항이 없을 경우엔 아무 내용 없이 전송 버튼을 눌러주세요."))
         (binding.chatRecyclerView.adapter as ChatAdapter).notifyItemInserted(1) //메세지 넣고 어댑터에 갱신 신호
+        chatItemList.add(ChatItem(ChatItem.TYPE_LEFT, "현재 겪고 계신 증상이 어떤가요? 발생하는 증상을 자세히 설명해주세요."))
+        (binding.chatRecyclerView.adapter as ChatAdapter).notifyItemInserted(2) //메세지 넣고 어댑터에 갱신 신호
 
 
         //채팅 전달 버튼
@@ -90,21 +96,16 @@ class ChatActivity : AppCompatActivity() {
             chatItemList.add(ChatItem(ChatItem.TYPE_RIGHT, sendText)) //string 담아서 채팅 아이템 추가
             chatResposeList.add(sendText) //응답 데이터로 사용할 string 담기
             if (chatResposeList.size == 1) { //지금 들어가 있는 모델은 3개 인자가 따로따로.
-                chatResposeList.add(sendText) //똑같은거 두 개 더 넣습니다
-                chatResposeList.add(sendText)
+                //chatResposeList.add(sendText) //똑같은거 두 개 더 넣습니다
+                //chatResposeList.add(sendText)
             }
 
 
             if (chatItemTestList.size == 0) { //모든 질문에 응답하면 결과 창으로 이동. 여기서 통신해서 로딩하다가 넘어가도록 수정 해야 함.
                 dialog.show()
+                Predict(this, combinateChatResponse())
 
-                if (App.noMember) {
-                    Predict(this, ChatResponse(chatResposeList))
-                }
-                else {
-                    val chatResponse = combinateChatResponse()
-                    Predict(this, chatResponse)
-                }
+
 
             }
             else if (chatItemTestList.size > 0) { //질문 남아 있으면 제일 앞거 출력과 동시에 지워버리기
@@ -122,7 +123,7 @@ class ChatActivity : AppCompatActivity() {
     }
 
 
-    private fun Predict(context: Context, chatResponse: ChatResponse) {
+    private fun Predict(context: Context, chatResponse: String) {
         val gson = GsonBuilder().setLenient().create()
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
@@ -140,59 +141,83 @@ class ChatActivity : AppCompatActivity() {
 
         val chatResponseService = retrofit_f.create(ChatResponseService::class.java)
 
-        val test : List<String> = listOf("배가 아파요",
-        "칼로 찢기는 듯한 통증, NRS 8점, 방사통 : 등으로 퍼짐",
-            "구토, 속쓰림,[응급] 어지러움,갈증,소변량 감소,2회 흰 물만 나옴",
-        "1일전",
-        "명치 부위",
-        "지속",
-        "심해짐",
-        "이전에도 3차례, 통증은 이번보다 약했음 ",
-        "자세에 따른 변화 : 오른쪽으로 돌아 누우면 완화, 반듯이 누우면 악화",
-        "없음",
-        "술 : 1주일 6~7번, 하루 소주 2~3병, 담배 : 30갑년, 식사 : 매우 불규칙, 직업 : 포크레인 조종수",
-        "없음",
-        "없음",
-        "없음",
-        "없음")
+        println(chatResponse)
 
-        //원래: combinateChatResponse()
-        //소화성궤양: ChatResponse(test)
-        chatResponseService.sendResponse2Model(chatResponse).enqueue(object :
+        chatResponseService.sendResponse2Model(ChatResponse(chatResponse)).enqueue(object :
             Callback<List<String>> {
             override fun onResponse(call: Call<List<String>>, response: Response<List<String>>) {
                 if (response.isSuccessful) {
-                    println("통신 성공: "+ (response.body()?.get(0)))
-                    dialog.dismiss()
-                    gotoResult(context, response.body()?.get(0))
+                    println("통신 성공: ${response.body()}")
+
+                    gotoResult(context, response.body()!!)
                 }
+                else
+                    Toast.makeText(context, "1오류가 발생했습니다.", Toast.LENGTH_LONG).show()
+
+                dialog.dismiss()
             }
 
             override fun onFailure(call: Call<List<String>>, t: Throwable) {
                 println(t.message)
                 dialog.dismiss()
-                gotoResult(context, "서버 연결 에러")
+                Toast.makeText(context, "오류가 발생했습니다.", Toast.LENGTH_LONG).show()
             }
 
         })
     }
 
-    private fun combinateChatResponse() : ChatResponse {
-        val memberInfo = App.prefs.getMember("memberInfo", "")!!
+    private fun combinateChatResponse() : String {
+        var responseStr = ""
 
-        chatResposeList.add(memberInfo.drug)
-        chatResposeList.add(memberInfo.social)
-        chatResposeList.add(memberInfo.family)
-        chatResposeList.add(memberInfo.trauma)
-        chatResposeList.add(memberInfo.trauma)
-        chatResposeList.add(memberInfo.femininity)
 
-        return ChatResponse(chatResposeList)
+        if (App.noMember) {
+            var obesity: String
+
+            val bmi = chatResposeList[14].toDouble()/(chatResposeList[13].toDouble()/100)*(chatResposeList[13].toDouble()/100)
+            if (bmi < 0.0) obesity = "알 수 없음"
+            else if (bmi < 20.0)  obesity = "저체중"
+            else if (bmi <= 24.0)  obesity = "정상"
+            else if (bmi <= 29.0)  obesity = "과체중"
+            else obesity = "비만"
+
+            responseStr = "${chatResposeList[4]} ${chatResposeList[7]} ${chatResposeList[9]} ${chatResposeList[10]} " +
+                    "${chatResposeList[11]} ${chatResposeList[12]} ${chatResposeList[2]} " +
+                    "  ${chatResposeList[5]} ${chatResposeList[6]} ${chatResposeList[0]} " +
+                    "${chatResposeList[1]} ${chatResposeList[3]} ${chatResposeList[8]} $obesity"
+
+        }
+        else {
+            val memberInfo = App.prefs.getMember("memberInfo", "")
+            var obesity: String
+
+            val bmi = memberInfo.weight.toDouble()/(memberInfo.height.toDouble()/100)*(memberInfo.height.toDouble()/100)
+            if (bmi < 0.0) obesity = "알 수 없음"
+            else if (bmi < 20.0)  obesity = "저체중"
+            else if (bmi <= 24.0)  obesity = "정상"
+            else if (bmi <= 29.0)  obesity = "과체중"
+            else obesity = "비만"
+
+
+            responseStr = "${chatResposeList[4]} ${chatResposeList[7]} ${memberInfo.drug} ${memberInfo.social} " +
+                    "${memberInfo.family} ${memberInfo.trauma} ${chatResposeList[2]} " +
+                    "  ${chatResposeList[5]} ${chatResposeList[6]} ${chatResposeList[0]} " +
+                    "${chatResposeList[1]} ${chatResposeList[3]} ${chatResposeList[8]} $obesity"
+        }
+
+
+
+        return responseStr
     }
 
-    private fun gotoResult(context: Context, result : String?) {
+    private fun gotoResult(context: Context, result : List<String>) {
         val resultIntent = Intent(context, DResultActivity::class.java)
-        resultIntent.putExtra("diseaseName1", result)
+
+        resultIntent.putExtra("diseaseName1", result[0])
+        resultIntent.putExtra("diseaseName2", result[1])
+        resultIntent.putExtra("diseaseName3", result[2])
+        resultIntent.putExtra("diseaseProb1", result[3])
+        resultIntent.putExtra("diseaseProb2", result[4])
+        resultIntent.putExtra("diseaseProb3", result[5])
         resultIntent.putExtra("fromChat", true)
         startActivity(resultIntent)
     }
