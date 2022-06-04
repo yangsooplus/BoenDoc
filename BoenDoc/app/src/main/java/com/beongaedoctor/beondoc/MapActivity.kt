@@ -172,6 +172,15 @@ class MapActivity : AppCompatActivity(){
         }
     }
 
+    //뒤로가기 버튼 눌렀을 때
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val intent = Intent(this, MainActivity::class.java) //지금 액티비티에서 다른 액티비티로 이동하는 인텐트 설정
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP //인텐트 플래그 설정
+        startActivity(intent) //인텐트 이동
+        finish() //현재 액티비티 종료
+    }
+
     private fun startLocationUpdates() {
         Log.d("MAP", "startLocationUpdate: 기기 위치 업데이트")
 
@@ -284,6 +293,9 @@ class MapActivity : AppCompatActivity(){
             // 권한이 있는 상태
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
                 startTracking() //카카오맵 위치 트래킹 시작
+                startLocationUpdates() //사용자 현재 위치 추적
+            }
+            else {
                 startLocationUpdates() //사용자 현재 위치 추적
             }
         }
