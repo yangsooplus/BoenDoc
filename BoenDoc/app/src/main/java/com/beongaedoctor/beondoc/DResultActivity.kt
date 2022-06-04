@@ -156,9 +156,9 @@ class DResultActivity : AppCompatActivity() {
     }
 
     private fun setUI() {
-        binding.predD1Text.text = "$diseaseName1  $diseaseProb1%"
-        binding.predD2Text.text = "$diseaseName2  $diseaseProb2%"
-        binding.predD3Text.text = "$diseaseName3  $diseaseProb3%"
+        binding.predD1Text.text = diseaseName1
+        binding.predD2Text.text = diseaseName2
+        binding.predD3Text.text = diseaseName3
     }
 
     private fun gotoDInfo(context : Context, dName : String? = null, dId : Long? = null) {
