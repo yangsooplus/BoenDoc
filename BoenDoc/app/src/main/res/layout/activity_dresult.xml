@@ -39,21 +39,20 @@
                 android:id="@+id/imageView2"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:layout_marginStart="28dp"
+                android:layout_marginStart="10dp"
                 android:layout_marginTop="48dp"
                 android:src="@drawable/beondoc2"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:layout_width="240dp"
+                android:layout_width="260dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
                 android:background="@drawable/result"
                 android:fontFamily="@font/spoqahansansneolight"
                 android:gravity="center"
                 android:paddingHorizontal="20dp"
-                android:text="본 결과는 문진 데이터를 기반으로 번개닥터 AI가 예상한 결과이며,반드시 의료기관에 방문하여 전문의에게 진료를 받으시기 바랍니다."
+                android:text="본 결과는 문진 데이터를 기반으로 번개닥터 AI가 예상한 결과이며, 반드시 의료기관에 방문하여 전문의에게 진료를 받으시기 바랍니다."
                 android:textColor="@color/black"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/imageView2"
@@ -75,7 +74,7 @@
             android:id="@+id/predD1Text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="35dp"
+            android:layout_marginTop="50dp"
             android:layout_marginHorizontal="16dp"
             android:layout_gravity="center"
             android:background="@drawable/selectlarge"
@@ -133,7 +132,7 @@
             android:gravity="center"
             android:fontFamily="@font/spoqahansansneolight"
             android:textColor="@color/black"
-            android:text="위 확률은 번개닥터AI 내에서의 정확도 지표이며,\n질병의 발병확률이 아님을 밝힙니다."
+            android:text=""
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imageView2" />
 

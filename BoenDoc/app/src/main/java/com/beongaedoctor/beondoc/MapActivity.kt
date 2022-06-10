@@ -150,6 +150,14 @@ class MapActivity : AppCompatActivity(){
         super.onStart()
         binding.mapText.text = "가까운 $mapKeyword 입니다."
 
+        if (mapKeyword != "Pharm" && mapKeyword != "Egy") {
+            AlertDialog.Builder(this)
+                .setTitle("주의사항")
+                .setMessage("반경 2km 이내 진료기관 검색 결과입니다. 실제 접수 마감 시간과는 차이가 있을 수 있으니 방문 전에 해당 기관에 문의하시기 바랍니다.")
+                .create()
+                .show()
+        }
+
         if (checkLocationService()) { // GPS가 켜져있을 경우
             //startLocationUpdates() //사용자 현재 위치 추적
             permissionCheck() //위치 권한 체크
