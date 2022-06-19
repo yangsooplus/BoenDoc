@@ -15,10 +15,9 @@ class MainMypageActivity : AppCompatActivity() {
 
     // 전역 변수로 바인딩 객체 선언
     private var mainmpbinding: ActivityMainMypageBinding? = null
-
     // 매번 null 체크 하지 않도록 바인딩 변수 재선언
     private val binding get() = mainmpbinding!!
-
+    //유저 정보
     lateinit var memberInfo : Member
 
 
@@ -29,7 +28,7 @@ class MainMypageActivity : AppCompatActivity() {
         mainmpbinding = ActivityMainMypageBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        //유저 정보
+        //유저 정보 불러오기 - 상단에 이름과 이메일 표시
         memberInfo = App.prefs.getMember("memberInfo", "")!!
         binding.username.text = memberInfo.name
         binding.useremail.text = memberInfo.loginId
@@ -65,19 +64,21 @@ class MainMypageActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        //로그아웃
+        binding.signoutbtn.setOnClickListener {
+            goToSignIn()
+        }
+
+        //탈퇴하기
         binding.leavebtn.setOnClickListener {
             val customDialog = CustomDialog(this)
-            customDialog.showCustomDialog("정말로 탈퇴하시겠습니까?")
+            customDialog.showCustomDialog("정말로 탈퇴하시겠습니까?") //한번 더 안내창을 출력
             customDialog.setOnClickListener(object : CustomDialog.ButtonClickListener{
                 override fun onClicked(yes: Boolean) {
                     if (yes)
                         leaveBeonDoc()
                 }
             })
-        }
-
-        binding.signoutbtn.setOnClickListener {
-            goToSignIn()
         }
     }
 
@@ -90,28 +91,30 @@ class MainMypageActivity : AppCompatActivity() {
         finish() //현재 액티비티 종료
     }
 
+    //회원 탈퇴
     private fun leaveBeonDoc() {
         val retrofit = RetrofitClass.getInstance()
         val memberService = retrofit.create(MemberService::class.java)
 
+        //DB의 유저 id에 맞는 회원 정보를 삭제한다.
         memberService!!.deleteProfile(memberInfo.id).enqueue(object : Callback<Unit>
         {
             override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
-
                 goToSignIn()
                 Toast.makeText(context(), "탈퇴되었습니다.", Toast.LENGTH_SHORT).show()//변경 알림
             }
 
             override fun onFailure(call: Call<Unit>, t: Throwable) {
-
+                Toast.makeText(context(), "오류 발생", Toast.LENGTH_SHORT).show()//변경 알림
             }
 
         })
     }
 
+    //SignInActivity로 이동
     private fun goToSignIn() {
-        App.prefs.deleteByKey("memberInfo")
-        App.prefs.deleteByKey("AUTOLOGIN")
+        App.prefs.deleteByKey("memberInfo") //저장된 유저 정보를 삭제
+        App.prefs.deleteByKey("AUTOLOGIN") //자동로그인 여부를 삭제
         val intent = Intent(this, SignInActivity::class.java) //지금 액티비티에서 다른 액티비티로 이동하는 인텐트 설정
         startActivity(intent) //인텐트 이동
     }

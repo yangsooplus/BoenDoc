@@ -20,7 +20,6 @@ class SplashActivity : AppCompatActivity() {
 
         getHashKey()
         showSplash()
-
     }
 
 

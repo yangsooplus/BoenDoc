@@ -5,7 +5,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Query
 
-//https://jangstory.tistory.com/43?category=874426
+
 // 검색 결과를 담는 클래스
 data class ResultSearchKeyword(
     var meta: PlaceMeta, // 장소 메타데이터
@@ -49,6 +49,5 @@ interface KakaoAPI {
         @Query("x") x: String, //중심 좌표의 x
         @Query("y") y: String, //중심 좌표의 y
         @Query("radius") radius: Int //중심 좌표로부터 (radius)m
-
     ): Call<ResultSearchKeyword> // 받아온 정보가 ResultSearchKeyword 클래스의 구조로 담김
 }

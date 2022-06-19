@@ -17,15 +17,18 @@ class DInfoActivity : AppCompatActivity() {
     // 매번 null 체크 하지 않도록 바인딩 변수 재선언
     private val binding get() = DIBinding!!
 
+    //Http통신
     private lateinit var retrofit: Retrofit
     private lateinit var diseaseService : DiseaseService
 
+    //MapActivity에서 검색할 Keyword
     var mapKeyword : String = ""
 
-    lateinit var dialog : LoadingDialog
+    lateinit var dialog : LoadingDialog //로딩창
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        //뷰바인딩
         DIBinding = ActivityDinfoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -33,73 +36,69 @@ class DInfoActivity : AppCompatActivity() {
         retrofit = RetrofitClass.getInstance()
         diseaseService = retrofit.create(DiseaseService::class.java)
 
-        val dn = intent.getStringExtra("diseaseName")
-        val did = intent.getLongExtra("diseaseID", -1L)
+        val dn = intent.getStringExtra("diseaseName") //DResult에서 질병 이름을 가져온다
+        val did = intent.getLongExtra("diseaseID", -1L) //DResult에서 질병 id를 가져온다. 없는 경우에는 -1L을 초기값으로
 
-        dialog = LoadingDialog(this)
-        dialog.show()
+        dialog = LoadingDialog(this) //로딩 창
+        dialog.show() //로딩창 출현
 
-        if (did == -1L)
+        if (did == -1L) //질병id가 없으면 질병 이름으로 정보 조회
             getDiseaseInfo(dn!!)
-        else
+        else //질병 id가 있으면 질병 id로 정보 조회
             getDiseaseInfo(did)
     }
 
     override fun onStart() {
         super.onStart()
-
+        //병원 검색 버튼을 누르면
         binding.gotoHospital.setOnClickListener {
             val intent = Intent(this, MapActivity::class.java)
-            intent.putExtra("mapKeyword", mapKeyword)
+            intent.putExtra("mapKeyword", mapKeyword) //진료과를 검색 키워드로
             startActivity(intent)
         }
-
+        //약국 검색 버튼을 누르면
         binding.gotoPharmacy.setOnClickListener {
             val intent = Intent(this, MapActivity::class.java)
-            intent.putExtra("mapKeyword", "Pharm")
+            intent.putExtra("mapKeyword", "Pharm") //약국을 검색 키워드로
             startActivity(intent)
         }
     }
 
+    //질병 이름으로 질병 정보 조회
     private fun getDiseaseInfo(searchFlag : String) {
         diseaseService.getDiseasebyString(DN(searchFlag)).enqueue(object : Callback<Disease> {
             override fun onResponse(call: Call<Disease>, response: Response<Disease>) {
-                if (response.isSuccessful) {
-                    mapKeyword = response.body()!!.department
-                    setUI(response.body()!!)
+                if (response.isSuccessful) { //통신이 성공적이면
+                    mapKeyword = response.body()!!.department //진료과를 검색 키워드로 저장
+                    setUI(response.body()!!) //UI 갱신
                 }
-
-
-                dialog.dismiss()
+                dialog.dismiss() //로딩창 종료
             }
-
             override fun onFailure(call: Call<Disease>, t: Throwable) {
                 println(t.message)
-                dialog.dismiss()
+                dialog.dismiss() //로딩창 종료
             }
-
         })
     }
 
+    //질병 id로 질병 정보 조회
     private fun getDiseaseInfo(searchFlag : Long) {
         diseaseService.getDiseasebyID(searchFlag).enqueue(object : Callback<Disease> {
             override fun onResponse(call: Call<Disease>, response: Response<Disease>) {
-                if (response.isSuccessful) {
-                    mapKeyword = response.body()!!.department
-                    setUI(response.body()!!)
+                if (response.isSuccessful) { //통신이 성공적이면
+                    mapKeyword = response.body()!!.department //진료과를 검색 키워드로 저장
+                    setUI(response.body()!!) //Ui 갱신
                 }
-                dialog.dismiss()
+                dialog.dismiss() //로딩창 종료
             }
-
             override fun onFailure(call: Call<Disease>, t: Throwable) {
                 println(t.message)
-                dialog.dismiss()
+                dialog.dismiss() //로딩창 종료
             }
-
         })
     }
 
-    private fun setUI(disease: Disease) {
+    private fun setUI(disease: Disease) { //UI 갱신
        binding.DinfoName.text = disease.name
        binding.DinfoDepart.text = disease.department
        binding.DinfoCause.text = disease.cause

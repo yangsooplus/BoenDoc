@@ -64,8 +64,7 @@ class BasicExamActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-
-        //UI 갱신을 onCreateView 다음인 onStart 에서 시켜준다. onCreate 에서 하면 갱신이 안 된다.
+        //UI 갱신을 Fragment의 onCreateView 다음인 onStart 에서 시켜준다. onCreate 에서 하면 프래그먼트의 UI 갱신이 안 된다.
         if (isRevise) { //수정 버전인 경우
             if (member.drug.isNotEmpty()) //저장된 정보가 있을 경우
                 fragmentArray[0].view?.findViewById<EditText>(R.id.drugedittext)?.setText(member.drug) //해당하는 editText 에 값을 채워서 보여준다.
@@ -77,11 +76,9 @@ class BasicExamActivity : AppCompatActivity() {
                 fragmentArray[3].view?.findViewById<EditText>(R.id.physicaledittext)?.setText(member.trauma)
         }
 
-
         binding.nextBtn.setOnClickListener { //다음 버튼 눌렀을 시 실행
             switchFragment(true)
         }
-
         binding.prevBtn.setOnClickListener { //이전 버튼 눌렀을 시 실행
             switchFragment(false)
         }
@@ -92,7 +89,8 @@ class BasicExamActivity : AppCompatActivity() {
     private fun switchFragment( next : Boolean) {
 
         if (next && ((!isMan && pageNum == 4) || (isMan && pageNum == 3))) { //(여성+산과력) (남성+외상력) 입력 후 다음을 누르면 완료
-            setData() //작성 완료
+            setBasicExam() //기초 문진을 member에 저장
+            saveMember2Server(member) //서버에 member 정보 저장
             return
         }
         else if (!next && pageNum < 1) //0페이지에서 이전을 누르면 무반응
@@ -104,8 +102,6 @@ class BasicExamActivity : AppCompatActivity() {
         transaction.hide(fragmentArray[pageNum])
 
         if (next) pageNum++ else pageNum-- //페이지 바꾸기
-
-
 
         when (pageNum) { //앞으로 표시할 페이지에 따라 실행
             0 -> { //drugFragment는 액티비티 생성 시 만들었음. 숨겼던 프래그먼트를 보여준다.
@@ -144,8 +140,6 @@ class BasicExamActivity : AppCompatActivity() {
                 }
             }
         }
-
-
     }
 
 
@@ -157,8 +151,7 @@ class BasicExamActivity : AppCompatActivity() {
         member.family = fragmentArray[2].requireView().findViewById<EditText>(R.id.familyedittext).text.toString()
         member.trauma = fragmentArray[3].requireView().findViewById<EditText>(R.id.physicaledittext).text.toString()
 
-        if (isMan) return //남성인 경우 산과력은 PASS
-
+        if (isMan) return //남성인 경우 산과력을 저장하지 않고 끝낸다.
 
         //여성인 경우 산과력/여성력 Fragment에 대한 처리도 한다.
         val womanFragment = fragmentArray[4].requireView()
@@ -182,8 +175,6 @@ class BasicExamActivity : AppCompatActivity() {
         if (et.text.isNotBlank()) femininityText += " 생존 ${et.text}명,"
 
         member.femininity = femininityText //완성된 String을 저장
-
-
     }
 
 
@@ -218,20 +209,13 @@ class BasicExamActivity : AppCompatActivity() {
                 }
                 override fun onFailure(call: Call<Member>, t: Throwable) {
                     Toast.makeText(App.context(), "서버 통신 에러", Toast.LENGTH_SHORT).show()
-                    //realConfirm()
-                    //개발 중 테스트로 넘어가도록 설정
                 }
             })
         }
     }
 
-    private fun setData() {
-        //회원 정보를 마친다는 거시기랑 진짜 확인 하면 서버에 저장
-        setBasicExam() //기초 문진을 member에 저장
-        saveMember2Server(member) //서버에 member 정보 저장
-    }
 
-    private fun realConfirm() { //찐찐 확인
+    private fun realConfirm() {
         //기기에 정보 저장 - SharedPreferences
         App.prefs.setMember("memberInfo", member)
         App.noMember = false
@@ -244,7 +228,6 @@ class BasicExamActivity : AppCompatActivity() {
             val mainIntent = Intent(this, MainActivity::class.java)
             startActivity(mainIntent)
         }
-
     }
 
     private fun getUpdateMember(member: Member): UpdateMember {

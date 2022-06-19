@@ -27,17 +27,15 @@ class MainActivity : AppCompatActivity() {
         mainbinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        if (App.noMember) {
-            binding.mypageBtn.visibility = View.GONE
-            binding.username.text = "비회원"
+        if (App.noMember) { //비회원 진료의 경우
+            binding.mypageBtn.visibility = View.GONE //마이페이지 버튼을 숨긴다
+            binding.username.text = "비회원" //이름을 비회원으로 출력한다
         }
         else {
             //멤버 정보 불러와서 이름 보여주기
             val memberInfo = App.prefs.getMember("memberInfo", "")
             binding.username.text = memberInfo?.name
         }
-
-
     }
 
     override fun onStart() {
@@ -55,15 +53,16 @@ class MainActivity : AppCompatActivity() {
             startActivity(mypageIntent)
         }
 
+        //지도 액티비티로 (응급실 버전)
         binding.egyBtn.setOnClickListener {
             val intent = Intent(this, MapActivity::class.java)
-            intent.putExtra("mapKeyword", "Egy")
+            intent.putExtra("mapKeyword", "Egy") //지도 액티비티에서 응급실 조회하도록 키워드 지정
             startActivity(intent)
         }
     }
 
 
-    override fun onBackPressed() {
+    override fun onBackPressed() { //빠르게 두번 뒤로가기를 누르면 앱 종료
         // 뒤로가기 버튼 클릭
         if(System.currentTimeMillis() - mBackWait >=2000 ) {
             mBackWait = System.currentTimeMillis()

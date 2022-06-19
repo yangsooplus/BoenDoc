@@ -66,32 +66,22 @@ data class HItem(
     var dutyTel1 : String?,
     @PropertyElement(name = "dutyTel3")
     var dutyTel3 : String?,
-
     @PropertyElement(name = "dutyTime1c")
     var dutyTime1c : Int?,
-
     @PropertyElement(name = "dutyTime2c")
     var dutyTime2c : Int?,
-
     @PropertyElement(name = "dutyTime3c")
     var dutyTime3c : Int?,
-
     @PropertyElement(name = "dutyTime4c")
     var dutyTime4c : Int?,
-
     @PropertyElement(name = "dutyTime5c")
     var dutyTime5c : Int?,
-
     @PropertyElement(name = "dutyTime6c")
     var dutyTime6c : Int?,
-
     @PropertyElement(name = "dutyTime7c")
     var dutyTime7c : Int?,
-
     @PropertyElement(name = "dutyTime8c")
     var dutyTime8c : Int?,
-
-
     @PropertyElement(name = "dutyTime1s")
     var dutyTime1s : Int?,
     @PropertyElement(name = "dutyTime2s")
@@ -108,7 +98,6 @@ data class HItem(
     var dutyTime7s : Int?,
     @PropertyElement(name = "dutyTime8s")
     var dutyTime8s : Int?,
-
     @PropertyElement(name = "hpid")
     var hpid : String?,
     @PropertyElement(name = "postCdn1")
@@ -131,10 +120,6 @@ interface HospitalAPI {
         @Query("ServiceKey") ServiceKey : String
     ) : Call<Hospital>
 }
-
-
-
-
 
 @Xml(name = "response")
 data class Emergency1(
@@ -220,18 +205,13 @@ data class EItems2(
 data class EItem2(
     @PropertyElement(name = "hpid") var hpid : String?,
     @PropertyElement(name = "dutyName") var dutyName : String?,
-
-
-
     @PropertyElement(name = "postCdn1") var postCdn1 : String?,
     @PropertyElement(name = "postCdn2") var postCdn2 : String?,
     @PropertyElement(name = "dutyAddr") var dutyAddr : String?,
     @PropertyElement(name = "dutyTel1") var dutyTel1 : String?,
     @PropertyElement(name = "dutyTel3") var dutyTel3 : String?,
-
     @PropertyElement(name = "dutyHayn") var dutyHayn : Int?,
     @PropertyElement(name = "dutyEryn") var dutyEryn : Int?,
-
     @PropertyElement(name = "MKioskTy25") var MKioskTy25 : String?,
     @PropertyElement(name = "MKioskTy1") var MKioskTy1 : String?,
     @PropertyElement(name = "MKioskTy2") var MKioskTy2 : String?,

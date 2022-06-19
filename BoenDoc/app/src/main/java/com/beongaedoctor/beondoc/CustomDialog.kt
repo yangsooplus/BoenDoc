@@ -43,7 +43,4 @@ class CustomDialog(context: Context) {
     fun setOnClickListener(listener: ButtonClickListener) {
         onClickListener = listener
     }
-
-
-
 }

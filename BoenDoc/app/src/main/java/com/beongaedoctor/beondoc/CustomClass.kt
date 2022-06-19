@@ -10,32 +10,32 @@ import java.time.LocalDateTime
 
 data class Member (
     @SerializedName("id")
-    var id : Long = 0,
+    var id : Long = 0, //DB에서의 유저 id
     @SerializedName("loginId")
-    var loginId: String = "",
+    var loginId: String = "", //이메일(로그인 아이디)
     @SerializedName("password")
-    var password: String = "",
+    var password: String = "", //비밀번호
     @SerializedName("name")
-    var name : String = "",
+    var name : String = "", //이름
     @SerializedName("age")
-    var age : String = "",
+    var age : String = "", //나이
     @SerializedName("height")
-    var height : String = "",
+    var height : String = "", //신장
     @SerializedName("weight")
-    var weight : String = "",
+    var weight : String = "", //체중
     @SerializedName("gender")
-    var gender : Long = 0,
+    var gender : Long = 0, //성별. 0 - 여성, 1 - 남성.
     @SerializedName("drug")
-    var drug : String = "",
+    var drug : String = "", //약물 투약력
     @SerializedName("social")
-    var social : String = "",
+    var social : String = "", //사회력
     @SerializedName("family")
-    var family : String = "",
+    var family : String = "", //가족력
     @SerializedName("trauma")
-    var trauma : String = "",
+    var trauma : String = "", //외상력, 과거력
     @SerializedName("femininity")
-    var femininity : String = ""
-        ) : Serializable
+    var femininity : String = "" //여성력
+        ) : Serializable //Intent로 Member 객체를 주고 받기 위해 직렬화.
 
 
 data class UpdateMember (
@@ -104,26 +104,30 @@ data class PWcheck(
 )
 
 interface MemberService {
+    //새로운 회원 정보 등록
     @POST("api/members")
     fun setProfile(@Body profile: Member) : Call<Member>
 
+    //회원 정보 수정
     @PUT("api/members/{id}")
     fun reviseProfile(@Path("id") id : Long
                       ,@Body member: UpdateMember) : Call<UpdateMemberResponse>
 
+    //회원 정보 삭제
     @DELETE("api/members/{id}")
     fun deleteProfile(@Path("id") id : Long) : Call<Unit>
 
+    //이메일(아이디) 중복 체크
     @POST("api/members/loginIdCheck/")
     fun checkAlreadyID(@Body loginId: Emailcheck) : Call<Int> //이미 있으면 1, 없으면 0
 
+    //비밀번호 일치 여부 체크
     @POST("api/members/pwcheck/{id}")
-    fun passwordCheck(@Path("id") id: Long, @Body password: PWcheck) : Call<Int> //같으면 0, 다르면 1 ... 반대로 해야하는거 아냐?
+    fun passwordCheck(@Path("id") id: Long, @Body password: PWcheck) : Call<Int> //같으면 0, 다르면 1
 
-
+    //비밀번호 수정
     @PUT("api/members/pwupdate/{id}")
     fun passwordUpdate(@Path("id") id: Long, @Body password: PWcheck) : Call<Unit>
-
 }
 
 
@@ -171,13 +175,13 @@ interface LoginService {
 
 data class Diagnosis(
     @SerializedName("id")
-    var id: Long,
+    var id: Long, //진단 id. 진단 DB에서 id로 조회할 수 있다.
     @SerializedName("diseaseName")
-    var diseaseName : String,
+    var diseaseName : String, //질병명
     @SerializedName("percent")
-    var percent : String, //통짜 확률
+    var percent : String, //한 진단에 나오는 3개의 질병 확률을 공백으로 구분하여 작성
     @SerializedName("localDate")
-    var localDate : String
+    var localDate : String //진단 일시
 )
 
 data class DiagnosisList(
@@ -205,10 +209,6 @@ data class DiagnosisNotID(
     var percent : String //단일 확률
 )
 
-data class DiagnosisNotIDList(
-    @SerializedName("data")
-    val diseaseList : List<DiagnosisNotID>
-)
 
 
 
@@ -217,15 +217,15 @@ interface DiagnosisService{
     @GET("api/diagnosisList/{id}")
     fun getDiagnosisRecord(@Path("id") id:Long) : Call<DiagnosisList>
 
-    //DB에 저장됨 (초회 진단 결과)
+    //진단 결과를 DB에 저장 (초회 진단 결과 수신 시 호출)
     @POST("api/diagnosis/{id}")
     fun recordDiagnosis2DB(@Path("id") id:Long, @Body D2DB : Diagnosis2DB) : Call<DiseaseList>
 
-
-    //DB에 저장 안 됨 (진단 기록 조회 시)
+    //진단 결과를 조회 (기존 진단 기록 조회 시 호출)
     @POST("api/diagnosis2/{id}")
     fun accessDiagnosis2DB(@Path("id") id:Long, @Body D2DB : Diagnosis2DB) : Call<DiseaseList>
 
+    //진단 id로 특정 진단 기록을 조회
     @GET("api/diagnosisByOne/{id}")
     fun getDiagnosisByOne(@Path("id") id:Long) : Call<List<DiagnosisNotID>>
 
@@ -257,9 +257,11 @@ data class DiseaseList(
 
 
 interface DiseaseService{
+    //질병 id로 질병 정보 조회
     @GET("api/disease/{id}")
     fun getDiseasebyID(@Path("id") diseaseid : Long) : Call<Disease>
 
+    //질병 이름으로 질병 정보 조회
     @POST("api/disease/byString")
     fun getDiseasebyString(@Body diseaseName: DN) : Call<Disease>
 }
@@ -276,6 +278,7 @@ data class ChatResult(
 )
 
 interface ChatResponseService{
+    //Flask의 예측 모델에 사용자의 응답을 전달
     @POST("api/start")
     fun sendResponse2Model(@Body test: ChatResponse) : Call<List<String>>
 }

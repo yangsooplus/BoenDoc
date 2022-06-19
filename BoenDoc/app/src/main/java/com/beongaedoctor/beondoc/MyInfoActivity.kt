@@ -19,21 +19,16 @@ import retrofit2.Retrofit
 
 
 class MyInfoActivity : AppCompatActivity() {
-
     // 전역 변수로 바인딩 객체 선언
     private var minfobinding: ActivityMyInfoBinding? = null
-
     // 매번 null 체크 하지 않도록 바인딩 변수 재선언
     private val binding get() = minfobinding!!
 
-    private lateinit var retrofit: Retrofit
-    private var memberService : MemberService? = null
-
-
-    lateinit var memberInfo : Member
-    var autoLogin = false
-
-    lateinit var dialog : LoadingDialog
+    private lateinit var retrofit: Retrofit //retrofit
+    private var memberService : MemberService? = null //회원 api
+    lateinit var memberInfo : Member //회원 정보
+    var autoLogin = false //자동로그인 선택 여부
+    lateinit var dialog : LoadingDialog //로딩창
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,11 +40,10 @@ class MyInfoActivity : AppCompatActivity() {
         retrofit = RetrofitClass.getInstance()
         memberService = retrofit.create(MemberService::class.java)
 
-        //기기에 저장된 유저 정보
+        //기기에 저장된 유저 정보, 자동로그인 설정 불러오기
         memberInfo = App.prefs.getMember("memberInfo", "")
         autoLogin = App.prefs.getBool("AUTOLOGIN", false)
-
-        dialog = LoadingDialog(this)
+        dialog = LoadingDialog(this) //로딩창 가져오기
     }
 
     override fun onStart() {
@@ -60,16 +54,14 @@ class MyInfoActivity : AppCompatActivity() {
             this, R.array.sexitemList, android.R.layout.simple_spinner_item
         )
         binding.resexSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            //https://stickode.tistory.com/8
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-                memberInfo!!.gender = position.toLong()
+                memberInfo!!.gender = position.toLong() //여성 - 0, 남성 - 1로 설정
             }
-
             override fun onNothingSelected(p0: AdapterView<*>?) {
-                memberInfo!!.gender = -1 //디버깅용
             }
         }
 
+        //기존 유저 정보를 입력란의 hint 로 표시해준다.
         binding.reusername.hint = memberInfo!!.name
         binding.resexSpinner.setSelection(memberInfo!!.gender.toInt())
         binding.reuserage.hint = memberInfo!!.age
@@ -78,42 +70,52 @@ class MyInfoActivity : AppCompatActivity() {
         binding.autologinCheck.isChecked = autoLogin
 
 
-
+        //이름
         binding.reusernameBtn.setOnClickListener {
-            if(binding.reusername.text.isNotBlank())
+            if(binding.reusername.text.isNotBlank()) //변경사항이 있으면 반영한다.
                 memberInfo!!.name = binding.reusername.text.toString()
         }
 
+        //나이
         binding.reuserageBtn.setOnClickListener {
             if(binding.reuserage.text.isNotBlank())
                 memberInfo!!.age = binding.reuserage.text.toString()
         }
 
+        //신장
         binding.reuserheightBtn.setOnClickListener {
             if(binding.reuserheight.text.isNotBlank())
                 memberInfo!!.height = binding.reuserheight.text.toString()
 
         }
+
+        //체중
         binding.reuserweightBtn.setOnClickListener {
             if(binding.reuserweight.text.isNotBlank())
                 memberInfo!!.weight = binding.reuserweight.text.toString()
 
         }
 
+        //수정완료 버튼
         binding.reviseDone.setOnClickListener {
-            reviseMyInfo(this)
+            reviseMyInfo(this) //정보 수정
         }
-
     }
 
+    //뒤로가기 버튼 눌렀을 때
+    override fun onBackPressed() {
+        reviseMyInfo(this)
+    }
+
+    //회원 정보를 수정한다
     private fun reviseMyInfo(context : Context) {
 
-        dialog!!.show()
+        dialog!!.show() //통신하는 동안 로딩창을 표시
 
         //기기에도 정보 저장 - SharedPreferences
         App.prefs.setMember("memberInfo", memberInfo)
 
-        if (binding.autologinCheck.isChecked)
+        if (binding.autologinCheck.isChecked) //오토 로그인 설정에 맞게 저장한다.
             App.prefs.setBool("AUTOLOGIN", true)
         else
             App.prefs.setBool("AUTOLOGIN", false)
@@ -124,25 +126,20 @@ class MyInfoActivity : AppCompatActivity() {
         ).enqueue(object : Callback<UpdateMemberResponse> {
             override fun onResponse(call: Call<UpdateMemberResponse>, response: Response<UpdateMemberResponse>) {
                 if (response.isSuccessful) {
-                    dialog!!.dismiss()
-                    Toast.makeText(context, "회원 정보 수정", Toast.LENGTH_LONG).show()//변경 알림
+                    dialog!!.dismiss() //로딩창 삭제
+                    Toast.makeText(context, "회원 정보 수정", Toast.LENGTH_LONG).show() //변경 알림
                     val mypageIntent = Intent(context, MainMypageActivity::class.java)
                     startActivity(mypageIntent) //마이페이지 메인으로 이동
                 }
             }
 
             override fun onFailure(call: Call<UpdateMemberResponse>, t: Throwable) {
-                println(t.message)
-                dialog!!.dismiss()
-                //나중에 아래 지우기
-                Toast.makeText(context, "로컬은 변경했고, DB는 안됐어", Toast.LENGTH_LONG).show()//변경 알림
-                val mypageIntent = Intent(context, MainMypageActivity::class.java)
-                startActivity(mypageIntent) //마이페이지 메인으로 이동
+                Toast.makeText(context, "오류 발생", Toast.LENGTH_LONG).show() //오류 알림
+                dialog!!.dismiss() //로딩창 삭제
             }
-
         })
-
     }
+
 
     //멤버 정보 수정 통신에는 id가 미포함.
     private fun getUpdateMember(member: Member): UpdateMember {
@@ -161,8 +158,5 @@ class MyInfoActivity : AppCompatActivity() {
         )
     }
 
-    //뒤로가기 버튼 눌렀을 때
-    override fun onBackPressed() {
-        reviseMyInfo(this)
-    }
+
 }
